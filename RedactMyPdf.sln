@@ -3,21 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Viewer", "RedactMyPdf.Viewer\RedactMyPdf.Viewer.csproj", "{98358B78-AB05-45B4-B551-04A039A50B26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.Viewer", "RedactMyPdf.Viewer\RedactMyPdf.Viewer.csproj", "{98358B78-AB05-45B4-B551-04A039A50B26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D289C6E8-F03A-4E63-BBF9-A69FC062F977}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.FileHandler.Tests", "RedactMyPdf.FileHandler.Tests\RedactMyPdf.FileHandler.Tests.csproj", "{741B0A33-EB6B-4949-977D-0DC291CED7EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.FileHandler.Tests", "RedactMyPdf.FileHandler.Tests\RedactMyPdf.FileHandler.Tests.csproj", "{741B0A33-EB6B-4949-977D-0DC291CED7EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Core", "RedactMyPdf.Core\RedactMyPdf.Core.csproj", "{59952695-3E48-4662-B27D-0846D192145B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.Core", "RedactMyPdf.Core\RedactMyPdf.Core.csproj", "{59952695-3E48-4662-B27D-0846D192145B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.FileHandler", "RedactMyPdf.FileHandler\RedactMyPdf.FileHandler.csproj", "{78A9BEFA-4FFC-4C17-A092-398933353099}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.FileHandler", "RedactMyPdf.FileHandler\RedactMyPdf.FileHandler.csproj", "{78A9BEFA-4FFC-4C17-A092-398933353099}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Repository.Mongo", "RedactMyPdf.Repository.Mongo\RedactMyPdf.Repository.Mongo.csproj", "{150B83E9-E5A5-493C-B0C9-A48A997E7E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.Repository.Mongo", "RedactMyPdf.Repository.Mongo\RedactMyPdf.Repository.Mongo.csproj", "{150B83E9-E5A5-493C-B0C9-A48A997E7E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.BurnShapesWorker", "RedactMyPdf.BurnShapesWorker\RedactMyPdf.BurnShapesWorker.csproj", "{AC8D1A79-8878-4C62-A146-0F80BBC4B72C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.BurnShapesWorker", "RedactMyPdf.BurnShapesWorker\RedactMyPdf.BurnShapesWorker.csproj", "{AC8D1A79-8878-4C62-A146-0F80BBC4B72C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.ConversionWorker", "RedactMyPdf.ConversionWorker\RedactMyPdf.ConversionWorker.csproj", "{54068636-622C-48CF-B6AF-510F9CF62B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.ConversionWorker", "RedactMyPdf.ConversionWorker\RedactMyPdf.ConversionWorker.csproj", "{54068636-622C-48CF-B6AF-510F9CF62B0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Tests.Core", "RedactMyPdf.Tests.Core\RedactMyPdf.Tests.Core.csproj", "{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Repository.Tests", "RedactMyPdf.Repository.Tests\RedactMyPdf.Repository.Tests.csproj", "{64FC95E2-B70F-4525-B842-B7DF4595FBA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.Workers.Tests", "RedactMyPdf.Workers.Tests\RedactMyPdf.Workers.Tests.csproj", "{2C593F50-466A-422F-A91C-CEE4EE0E2272}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,12 +59,27 @@ Global
 		{54068636-622C-48CF-B6AF-510F9CF62B0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54068636-622C-48CF-B6AF-510F9CF62B0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54068636-622C-48CF-B6AF-510F9CF62B0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64FC95E2-B70F-4525-B842-B7DF4595FBA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64FC95E2-B70F-4525-B842-B7DF4595FBA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64FC95E2-B70F-4525-B842-B7DF4595FBA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64FC95E2-B70F-4525-B842-B7DF4595FBA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C593F50-466A-422F-A91C-CEE4EE0E2272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C593F50-466A-422F-A91C-CEE4EE0E2272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C593F50-466A-422F-A91C-CEE4EE0E2272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C593F50-466A-422F-A91C-CEE4EE0E2272}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{741B0A33-EB6B-4949-977D-0DC291CED7EC} = {D289C6E8-F03A-4E63-BBF9-A69FC062F977}
+		{E9D3F202-DF5C-4F6C-8278-9583EBF0A27B} = {D289C6E8-F03A-4E63-BBF9-A69FC062F977}
+		{64FC95E2-B70F-4525-B842-B7DF4595FBA0} = {D289C6E8-F03A-4E63-BBF9-A69FC062F977}
+		{2C593F50-466A-422F-A91C-CEE4EE0E2272} = {D289C6E8-F03A-4E63-BBF9-A69FC062F977}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A4DD4C2D-1F28-45A0-97E7-12E11D323334}

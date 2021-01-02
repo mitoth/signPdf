@@ -10,7 +10,7 @@
       "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
     ],
     "originalTargetFrameworks": [
-      "netcoreapp3.1"
+      "net50"
     ],
     "sources": {
       "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -18,8 +18,12 @@
       "https://pkgs.dev.azure.com/BelugaViewer/_packaging/BelugaViewer/nuget/v3/index.json": {}
     },
     "frameworks": {
-      "netcoreapp3.1": {
-        "projectReferences": {}
+      "netcoreapp5.0": {
+        "projectReferences": {
+          "C:\\beluga\\v6\\RedactMyPdf\\RedactMyPdf.FileHandler\\RedactMyPdf.FileHandler.csproj": {
+            "projectPath": "C:\\beluga\\v6\\RedactMyPdf\\RedactMyPdf.FileHandler\\RedactMyPdf.FileHandler.csproj"
+          }
+        }
       }
     },
     "warningProperties": {
@@ -29,7 +33,27 @@
     }
   },
   "frameworks": {
-    "netcoreapp3.1": {
+    "netcoreapp5.0": {
+      "dependencies": {
+        "MSTest.TestAdapter": {
+          "target": "Package",
+          "version": "[2.1.2, )"
+        },
+        "Microsoft.NET.Test.Sdk": {
+          "target": "Package",
+          "version": "[16.7.1, )"
+        },
+        "NUnit": {
+          "target": "Package",
+          "version": "[3.12.0, )"
+        },
+        "NUnit3TestAdapter": {
+          "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[3.17.0, )"
+        }
+      },
       "imports": [
         "net461",
         "net462",
