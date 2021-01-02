@@ -5,6 +5,9 @@
     <projectFile>RedactMyPdf.ConversionWorker/RedactMyPdf.ConversionWorker.csproj</projectFile>
     <projectFile>RedactMyPdf.FileHandler.Tests/RedactMyPdf.FileHandler.Tests.csproj</projectFile>
     <projectFile>RedactMyPdf.BurnShapesWorker/RedactMyPdf.BurnShapesWorker.csproj</projectFile>
+    <projectFile>RedactMyPdf.Tests.Core/RedactMyPdf.Tests.Core.csproj</projectFile>
+    <projectFile>RedactMyPdf.Repository.Tests/RedactMyPdf.Repository.Tests.csproj</projectFile>
+    <projectFile>RedactMyPdf.Workers.Tests/RedactMyPdf.Workers.Tests.csproj</projectFile>
   </component>
   <component name="BranchesTreeState">
     <expand>
@@ -16,7 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c68882a7-ac39-4a9a-8e11-c427f88403a2" name="Default Changelist" comment="" />
+    <list default="true" id="c68882a7-ac39-4a9a-8e11-c427f88403a2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,6 +29,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/RedactMyPdf.Repository.Tests/obj/Debug/netcoreapp3.1/.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1mWgJQlfC3Hxzr70r8SmdVJR76j" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -182,13 +190,22 @@
       <option name="presentableId" value="Default" />
       <updated>1609614695811</updated>
       <workItem from="1609614763911" duration="109000" />
+      <workItem from="1609623532419" duration="926000" />
     </task>
+    <task id="LOCAL-00001" summary="test projects">
+      <created>1609623834026</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1609623834026</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -200,14 +217,21 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="test projects" />
+    <option name="LAST_COMMIT_MESSAGE" value="test projects" />
   </component>
   <component name="WindowStateProjectService">
     <state x="690" y="175" key="ImportDialog.Title" timestamp="1609614841844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="175" key="ImportDialog.Title/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1609614841844" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1609623839392">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1609623839392" />
   </component>
 </project>
