@@ -1,0 +1,13 @@
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.exe
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.deps.json
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.runtimeconfig.json
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.runtimeconfig.dev.json
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.dll
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\bin\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.pdb
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.csprojAssemblyReference.cache
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.AssemblyInfoInputs.cache
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.AssemblyInfo.cs
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.csproj.CoreCompileInputs.cache
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.dll
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.pdb
+C:\beluga\v6\RedactMyPdf\RedactMyPdf.FileHandler.Tests\obj\Debug\netcoreapp3.1\RedactMyPdf.FileHandler.Tests.genruntimeconfig.cache
