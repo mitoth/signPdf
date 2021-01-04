@@ -29,7 +29,7 @@ namespace RedactMyPdf.Viewer
         private const string TopicExchangeName = Constants.Exchange.TopicExchangeName;
 
 
-        public ConversionCompletedHostedTask(IConnectionFactory connectionFactory, ILogger<ConversionCompletedHostedTask> logger, IMemoryCache cache, 
+        public ConversionCompletedHostedTask(IConnectionFactory connectionFactory, ILogger<ConversionCompletedHostedTask> logger, IMemoryCache cache,
             IHubContext<FileProcessedHub> hub, IDocumentRepository documentRepository)
         {
             this.connectionFactory = connectionFactory;
@@ -42,44 +42,51 @@ namespace RedactMyPdf.Viewer
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var topicConnection = connectionFactory.CreateConnection();
-            using var topicChannel = topicConnection.CreateModel();
-            topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
-            var queueName = topicChannel.QueueDeclare().QueueName;
-            topicChannel.QueueBind(queue: queueName,
-                exchange: TopicExchangeName,
-                routingKey: Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey);
-            topicChannel.QueueBind(queue: queueName,
-                exchange: TopicExchangeName,
-                routingKey: Constants.RoutingKeys.DoneBurnDocumentRoutingKey);
-            logger.LogInformation(" [*] Waiting for completed conversion tasks.");
-
-            var consumer = new EventingBasicConsumer(topicChannel);
-            consumer.Received += async (model, ea) =>
+            try
             {
-                switch (ea.RoutingKey.ToLower())
+                using var topicConnection = connectionFactory.CreateConnection();
+                using var topicChannel = topicConnection.CreateModel();
+                topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
+                var queueName = topicChannel.QueueDeclare().QueueName;
+                topicChannel.QueueBind(queue: queueName,
+                    exchange: TopicExchangeName,
+                    routingKey: Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey);
+                topicChannel.QueueBind(queue: queueName,
+                    exchange: TopicExchangeName,
+                    routingKey: Constants.RoutingKeys.DoneBurnDocumentRoutingKey);
+                logger.LogInformation(" [*] Waiting for completed conversion tasks.");
+
+                var consumer = new EventingBasicConsumer(topicChannel);
+                consumer.Received += async (model, ea) =>
                 {
-                    case Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey:
+                    switch (ea.RoutingKey.ToLower())
                     {
-                        await ProcessCompletedConversionTask(stoppingToken, ea);
-                        break;
+                        case Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey:
+                            {
+                                await ProcessCompletedConversionTask(stoppingToken, ea);
+                                break;
+                            }
+                        case Constants.RoutingKeys.DoneBurnDocumentRoutingKey:
+                            await ProcessCompletedBurnTask(stoppingToken, ea);
+                            break;
+                        default:
+                            throw new NotSupportedException($"Error while processing done task information. Routing key {ea.RoutingKey} is not known");
                     }
-                    case Constants.RoutingKeys.DoneBurnDocumentRoutingKey:
-                        await ProcessCompletedBurnTask(stoppingToken, ea);
-                        break;
-                    default:
-                        throw new NotSupportedException($"Error while processing done task information. Routing key {ea.RoutingKey} is not known");
-                }
-                
-            };
-            topicChannel.BasicConsume(queue: queueName,
-                autoAck: true,
-                consumer: consumer);
 
-            //keep it alive - not the best solution - maybe something like https://stackoverflow.com/questions/35058443/c-sharp-keep-event-handling-thread-alive-in-cpu-friendly-way
-            while (!stoppingToken.IsCancellationRequested)
+                };
+                topicChannel.BasicConsume(queue: queueName,
+                    autoAck: true,
+                    consumer: consumer);
+
+                //keep it alive - not the best solution - maybe something like https://stackoverflow.com/questions/35058443/c-sharp-keep-event-handling-thread-alive-in-cpu-friendly-way
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    await Task.Delay(1000, stoppingToken);
+                }
+            }
+            catch (Exception e)
             {
-                await Task.Delay(1000, stoppingToken);
+                logger.LogError($"Cannot start the completed events listener");
             }
         }
 
