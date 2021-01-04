@@ -78,21 +78,10 @@ const Editor = (props: IProps): ReactElement => {
             {
                 PageNumber: 1,
                 Shapes: rectangleShapes,
-                // {
-                //   width: 100,
-                //   height: 100,
-                //   borderHtmlColorCode: "#FF5733",
-                //   borderLineWidth: 2,
-                //   fillHtmlColorCode: "#FF5733",
-                //   axis: { x: 100, y: 100 },
-                // },
             },
         ];
 
-        const connection = new HubConnectionBuilder()
-            .withUrl('http://localhost:59048/hubs/files')
-            .withAutomaticReconnect()
-            .build();
+        const connection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
         if (connection) {
             connection
                 .start()
@@ -106,7 +95,7 @@ const Editor = (props: IProps): ReactElement => {
                     connection.on('FileBurned', (docJson) => {
                         const fileId = JSON.parse(docJson);
                         console.log('FileBurned' + fileId);
-                        setDownloadPath(`http://localhost:59048/api/v1/Document/${fileId}/burn`);
+                        setDownloadPath(`/api/v1/Document/${fileId}/burn`);
                     });
                 })
                 .catch((e) => console.log('Connection failed: ', e));

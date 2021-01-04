@@ -19,7 +19,7 @@ const PageDrawStage = (props: IProps): ReactElement => {
     const width = props.width;
     const height = props.height;
 
-    const url = `http://localhost:59048/api/v1/Document/${props.fileId}/page/${pageNumber}/file`;
+    const url = `/api/v1/Document/${props.fileId}/page/${pageNumber}/file`;
 
     return (
         <>

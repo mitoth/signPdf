@@ -54,10 +54,7 @@ const UploadFiles = (): ReactElement => {
     };
 
     useEffect(() => {
-        const newConnection = new HubConnectionBuilder()
-            .withUrl('http://localhost:59048/hubs/files')
-            .withAutomaticReconnect()
-            .build();
+        const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
 
         setConnection(newConnection);
     }, []);
