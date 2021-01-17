@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Beluga.Viewer.ConversionWorker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

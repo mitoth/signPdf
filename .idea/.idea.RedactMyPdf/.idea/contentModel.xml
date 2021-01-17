@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\beluga\RedactMyPdf" t="IncludeFlat">
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="RedactMyPdf.BurnShapesWorker" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="appsettings.Test.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BurnApp.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.BurnShapesWorker.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="RedactMyPdf.BurnShapesWorker.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="RedactMyPdf.ConversionWorker" t="IncludeRecursive">
+        <e p=".gitignore" t="Include" />
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="appsettings.Test.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="ConvertApp.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.ConversionWorker.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="RedactMyPdf.ConversionWorker.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="RedactMyPdf.Core" t="IncludeRecursive">
+        <e p="Abstractions" t="Include">
+          <e p="Repositories" t="Include">
+            <e p="IBurnedDocumentRepository.cs" t="Include" />
+            <e p="IDocumentRepository.cs" t="Include" />
+            <e p="IFileRepository.cs" t="Include" />
+          </e>
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="MessageQueue" t="Include">
+          <e p="BurnShapesToPdfMessage.cs" t="Include" />
+          <e p="Constants.cs" t="Include" />
+          <e p="ConvertToPdfMessage.cs" t="Include" />
+        </e>
+        <e p="Models" t="Include">
+          <e p="BurnedDocument.cs" t="Include" />
+          <e p="ConvertedImage.cs" t="Include" />
+          <e p="Document.cs" t="Include" />
+          <e p="Draw" t="Include">
+            <e p="Axis.cs" t="Include" />
+            <e p="DocumentShapes.cs" t="Include" />
+            <e p="PageShapes.cs" t="Include" />
+            <e p="Rectangle.cs" t="Include" />
+            <e p="Shape.cs" t="Include" />
+            <e p="TextBox.cs" t="Include" />
+          </e>
+          <e p="Page.cs" t="Include" />
+          <e p="RawFile.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Core.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedactMyPdf.Core.csproj" t="IncludeRecursive" />
+        <e p="Utils" t="Include">
+          <e p="ShapeJsonConverter.cs" t="Include" />
+          <e p="UnitsOfMeasure.cs" t="Include" />
+        </e>
+      </e>
+      <e p="RedactMyPdf.FileHandler" t="IncludeRecursive">
+        <e p="Aspose" t="Include">
+          <e p="Conversion" t="Include">
+            <e p="PdfToJpgConverter.cs" t="Include" />
+          </e>
+          <e p="Drawing" t="Include">
+            <e p="DrawService.cs" t="Include" />
+            <e p="IPencil.cs" t="Include" />
+            <e p="RectanglePencil.cs" t="Include" />
+            <e p="TextBoxPencil.cs" t="Include" />
+          </e>
+        </e>
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="IDrawService.cs" t="Include" />
+        <e p="IPdfToJpgConverter.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.FileHandler.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedactMyPdf.FileHandler.csproj" t="IncludeRecursive" />
+        <e p="services" t="Include">
+          <e p="Conversion" t="Include">
+            <e p="ConvertPdfToJpgService.cs" t="Include" />
+            <e p="IConvertPdfToJpgService.cs" t="Include" />
+          </e>
+          <e p="Drawing" t="Include">
+            <e p="BurnDocumentService.cs" t="Include" />
+            <e p="IBurnDocumentService.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="RedactMyPdf.FileHandler.Tests" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Conversion" t="Include">
+          <e p="ConversionTests.cs" t="Include" />
+        </e>
+        <e p="Drawing" t="Include">
+          <e p="DrawingTests.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.FileHandler.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="PdfTestFiles" t="Include">
+          <e p="onePage.pdf" t="Include" />
+          <e p="talisman.pdf" t="Include" />
+          <e p="test12PagesDocument.pdf" t="Include" />
+          <e p="test4PagesDocument.pdf" t="Include" />
+          <e p="testNotWorking.pdf" t="Include" />
+        </e>
+        <e p="RedactMyPdf.FileHandler.Tests.csproj" t="IncludeRecursive" />
+        <e p="RedactMyPdf.FileHandler.Tests.csproj.DotSettings" t="Include" />
+        <e p="Util" t="Include">
+          <e p="FileUtil.cs" t="Include" />
+        </e>
+      </e>
+      <e p="RedactMyPdf.Repository.Mongo" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BurnedDocumentRepository.cs" t="Include" />
+        <e p="Configuration" t="Include">
+          <e p="ClassMappings.cs" t="Include" />
+          <e p="CommonSettingsFactory.cs" t="Include" />
+          <e p="IMongoClientConfiguration.cs" t="Include" />
+          <e p="MongoClientConfiguration.cs" t="Include" />
+        </e>
+        <e p="DocumentRepository.cs" t="Include" />
+        <e p="FileRepository.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Repository.Mongo.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedactMyPdf.Repository.Mongo.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="RedactMyPdf.Repository.Tests" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BurnedDocumentRepositoryTests.cs" t="Include" />
+        <e p="DocumentRepositoryTests.cs" t="Include" />
+        <e p="FileRepositoryTest.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Repository.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedactMyPdf.Repository.Tests.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="RedactMyPdf.sln" t="IncludeFlat" />
+      <e p="RedactMyPdf.Tests.Core" t="IncludeRecursive">
+        <e p="BaseRepositoryTest.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="JsonConverterTests.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Tests.Core.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="RedactMyPdf.Tests.Core.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="RedactMyPdf.Viewer" t="IncludeRecursive">
+        <e p=".gitignore" t="Include" />
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="appsettings.Test.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="ClientApp" t="Include">
+          <e p=".eslintcache" t="Include" />
+          <e p=".eslintrc.js" t="Include" />
+          <e p=".gitignore" t="Include" />
+          <e p=".prettierrc.js" t="Include" />
+          <e p="package-lock.json" t="Include" />
+          <e p="package.json" t="Include" />
+          <e p="public" t="Include">
+            <e p="favicon.ico" t="Include" />
+            <e p="index.html" t="Include" />
+            <e p="logo192.png" t="Include" />
+            <e p="logo512.png" t="Include" />
+            <e p="manifest.json" t="Include" />
+            <e p="robots.txt" t="Include" />
+          </e>
+          <e p="README.md" t="Include" />
+          <e p="src" t="Include">
+            <e p="App.css" t="Include" />
+            <e p="App.test.tsx" t="Include" />
+            <e p="App.tsx" t="Include" />
+            <e p="components" t="Include">
+              <e p="Editor.tsx" t="Include" />
+              <e p="FileDownload.tsx" t="Include" />
+              <e p="FileUpload.tsx" t="Include" />
+              <e p="KonvaDrawLayer.tsx" t="Include" />
+              <e p="PageDrawStage.tsx" t="Include" />
+              <e p="PageImage.tsx" t="Include" />
+              <e p="RectangleShape.tsx" t="Include" />
+            </e>
+            <e p="index.css" t="Include" />
+            <e p="index.tsx" t="Include" />
+            <e p="interfaces" t="Include">
+              <e p="Page.ts" t="Include" />
+              <e p="Rectangle.ts" t="Include" />
+              <e p="UploadEvent.ts" t="Include" />
+            </e>
+            <e p="logo.svg" t="Include" />
+            <e p="react-app-env.d.ts" t="Include" />
+            <e p="reportWebVitals.ts" t="Include" />
+            <e p="services" t="Include">
+              <e p="FileUploadService.ts" t="Include" />
+            </e>
+            <e p="setupTests.ts" t="Include" />
+          </e>
+          <e p="tsconfig.json" t="Include" />
+        </e>
+        <e p="Controllers" t="Include">
+          <e p="DocumentController.cs" t="Include" />
+        </e>
+        <e p="ConversionCompletedHostedTask.cs" t="Include" />
+        <e p="Dtos" t="Include">
+          <e p="ProcessedDocumentDto.cs" t="Include" />
+          <e p="ProcessedPageImageDto.cs" t="Include" />
+        </e>
+        <e p="Examples" t="Include">
+          <e p="ListPageShapesExample.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Viewer.AssemblyInfo.cs" t="Include" />
+              <e p="RedactMyPdf.Viewer.RazorAssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Pages" t="Include">
+          <e p="_ViewImports.cshtml" t="Include" />
+          <e p="Error.cshtml" t="Include" />
+          <e p="Error.cshtml.cs" t="Include" />
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="RedactMyPdf.Viewer.csproj" t="IncludeRecursive" />
+        <e p="SignalR" t="Include">
+          <e p="FileProcessedHub.cs" t="Include" />
+        </e>
+        <e p="Startup.cs" t="Include" />
+        <e p="Utils" t="Include">
+          <e p="JsonCamelCaseConverter.cs" t="Include" />
+          <e p="ShapeModelBinder.cs" t="Include" />
+        </e>
+      </e>
+      <e p="RedactMyPdf.Workers.Tests" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="BurnShapesWorkerTests.cs" t="Include" />
+        <e p="ConversionWorkerTests.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.Workers.Tests.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="PdfTestFiles" t="Include">
+          <e p="test4PagesDocument.pdf" t="Include" />
+        </e>
+        <e p="RedactMyPdf.Workers.Tests.csproj" t="IncludeRecursive" />
+      </e>
+      <e p="tests" t="Include" />
+    </e>
+    <e p="C:\Users\Mihai Toth\.nuget\packages\microsoft.net.test.sdk\16.7.1\build\netcoreapp2.1" t="Include">
+      <e p="Microsoft.NET.Test.Sdk.Program.cs" t="Include" />
+    </e>
+    <e p="C:\Users\Mihai Toth\.nuget\packages\microsoft.testplatform.testhost\16.7.1\build\netcoreapp2.1\x64\testhost.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\microsoft.testplatform.testhost\16.7.1\build\netcoreapp2.1\x64\testhost.exe" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\mstest.testadapter\2.1.2\build\_common\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\mstest.testadapter\2.1.2\build\_common\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\mstest.testadapter\2.1.2\build\netcoreapp1.0\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\nunit3testadapter\3.17.0\build\netcoreapp2.1\nunit.engine.api.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\nunit3testadapter\3.17.0\build\netcoreapp2.1\nunit.engine.core.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\nunit3testadapter\3.17.0\build\netcoreapp2.1\nunit.engine.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\nunit3testadapter\3.17.0\build\netcoreapp2.1\NUnit3.TestAdapter.dll" t="Include" />
+    <e p="C:\Users\Mihai Toth\.nuget\packages\nunit3testadapter\3.17.0\build\netcoreapp2.1\NUnit3.TestAdapter.pdb" t="Include" />
+    <e p="C:\Users\Mihai Toth\AppData\Local\JetBrains\Rider2020.2\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Mihai Toth\AppData\Local\JetBrains\Rider2020.2\resharper-host\Local\Transient\Rider\v202\SolutionCaches\_RedactMyPdf.126223249.00" t="ExcludeRecursive" />
+  </component>
+</project>
