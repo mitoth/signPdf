@@ -50,7 +50,7 @@ namespace RedactMyPdf.ConversionWorker
                 };
             });
 
-            services.AddScoped<IPdfToJpgConverter, PdfToJpgConverter>();
+            services.AddSingleton<IPdfToJpgConverter, PdfToJpgConverter>();
             services.AddSingleton<IConvertPdfToJpgService, ConvertPdfToJpgService>();
             services.AddSingleton<IMongoClientConfiguration>(s =>
             {

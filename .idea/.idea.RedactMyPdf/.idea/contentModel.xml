@@ -3,33 +3,14 @@
   <component name="ContentModelStore">
     <e p="C:\beluga\RedactMyPdf" t="IncludeFlat">
       <e p="packages" t="ExcludeRecursive" />
-      <e p="RedactMyPdf.BurnShapesWorker" t="IncludeRecursive">
+      <e p="RedactMyPdf.BurnPdfWorker" t="IncludeRecursive">
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
-        <e p="appsettings.Test.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="BurnApp.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="net5.0" t="Include">
-              <e p="RedactMyPdf.BurnShapesWorker.AssemblyInfo.cs" t="Include" />
-            </e>
-          </e>
-        </e>
-        <e p="Program.cs" t="Include" />
-        <e p="RedactMyPdf.BurnShapesWorker.csproj" t="IncludeRecursive" />
-      </e>
-      <e p="RedactMyPdf.ConversionWorker" t="IncludeRecursive">
-        <e p=".gitignore" t="Include" />
-        <e p="appsettings.Development.json" t="Include" />
-        <e p="appsettings.json" t="Include" />
-        <e p="appsettings.Test.json" t="Include" />
-        <e p="bin" t="ExcludeRecursive" />
-        <e p="ConvertApp.cs" t="Include" />
-        <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
-            <e p="net5.0" t="Include">
-              <e p="RedactMyPdf.ConversionWorker.AssemblyInfo.cs" t="Include" />
+              <e p="RedactMyPdf.BurnPdfWorker.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
         </e>
@@ -37,7 +18,26 @@
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
         </e>
-        <e p="RedactMyPdf.ConversionWorker.csproj" t="IncludeRecursive" />
+        <e p="RedactMyPdf.BurnPdfWorker.csproj" t="IncludeRecursive" />
+        <e p="Worker.cs" t="Include" />
+      </e>
+      <e p="RedactMyPdf.ConvertPdfWorker" t="IncludeRecursive">
+        <e p="appsettings.Development.json" t="Include" />
+        <e p="appsettings.json" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="net5.0" t="Include">
+              <e p="RedactMyPdf.ConvertPdfWorker.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Program.cs" t="Include" />
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="RedactMyPdf.ConvertPdfWorker.csproj" t="IncludeRecursive" />
+        <e p="Worker.cs" t="Include" />
       </e>
       <e p="RedactMyPdf.Core" t="IncludeRecursive">
         <e p="Abstractions" t="Include">

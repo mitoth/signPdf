@@ -4,6 +4,10 @@
 # User-specific files
 *.suo
 .suo
+.eslintcache
+.idea/
+contentModel.xml
+workspace.xml
 *.cache
 *.user
 *.userosscache
