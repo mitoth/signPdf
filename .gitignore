@@ -26,6 +26,10 @@ Bin/
 obj/
 Obj/
 
+.idea/
+workspace.xml
+
+
 # Visual Studio 2015 cache/options directory
 .vs/
 /wwwroot/dist/

@@ -20,43 +20,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c68882a7-ac39-4a9a-8e11-c427f88403a2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/Debug/net5.0/RedactMyPdf.BurnShapesWorker.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/Debug/net5.0/RedactMyPdf.BurnShapesWorker.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/Debug/net5.0/RedactMyPdf.BurnShapesWorker.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/Debug/net5.0/RedactMyPdf.BurnShapesWorker.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/RedactMyPdf.BurnShapesWorker.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/RedactMyPdf.BurnShapesWorker.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.BurnShapesWorker/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/Debug/net5.0/RedactMyPdf.ConversionWorker.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/Debug/net5.0/RedactMyPdf.ConversionWorker.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/Debug/net5.0/RedactMyPdf.ConversionWorker.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/Debug/net5.0/RedactMyPdf.ConversionWorker.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/RedactMyPdf.ConversionWorker.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/RedactMyPdf.ConversionWorker.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.ConversionWorker/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/Debug/net5.0/RedactMyPdf.Core.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/Debug/net5.0/RedactMyPdf.Core.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/Debug/net5.0/RedactMyPdf.Core.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/Debug/net5.0/RedactMyPdf.Core.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/RedactMyPdf.Core.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/RedactMyPdf.Core.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Core/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/RedactMyPdf.FileHandler.Tests.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/RedactMyPdf.FileHandler.Tests.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler.Tests/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/Debug/net5.0/RedactMyPdf.FileHandler.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/RedactMyPdf.FileHandler.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/RedactMyPdf.FileHandler.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.FileHandler/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.csprojAssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/Debug/net5.0/RedactMyPdf.Repository.Mongo.csprojAssemblyReference.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/RedactMyPdf.Repository.Mongo.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/RedactMyPdf.Repository.Mongo.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Repository.Mongo/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RedactMyPdf/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/.eslintcache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/Editor.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/Editor.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/FileDownload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/FileDownload.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/FileUpload.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/FileUpload.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/KonvaDrawLayer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/KonvaDrawLayer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/PageDrawStage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/PageDrawStage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/PageImage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/PageImage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/RectangleShape.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/components/RectangleShape.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/Page.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/Page.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/Rectangle.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/Rectangle.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/UploadEvent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/interfaces/UploadEvent.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/react-app-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/react-app-env.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/reportWebVitals.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/reportWebVitals.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/services/FileUploadService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/services/FileUploadService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/setupTests.ts" beforeDir="false" afterPath="$PROJECT_DIR$/RedactMyPdf.Viewer/ClientApp/src/setupTests.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,6 +46,11 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/beluga/RedactMyPdf/RedactMyPdf.FileHandler/Aspose/Drawing/TextBoxPencil.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/beluga/RedactMyPdf/RedactMyPdf.FileHandler/Aspose/Drawing/TextBoxPencil.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/beluga/RedactMyPdf/RedactMyPdf.Core/Models/Draw/TextBox.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1mWgJQlfC3Hxzr70r8SmdVJR76j" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -226,6 +212,7 @@
       <workItem from="1609614763911" duration="109000" />
       <workItem from="1609623532419" duration="926000" />
       <workItem from="1610830996608" duration="161000" />
+      <workItem from="1610897628850" duration="1010000" />
     </task>
     <task id="LOCAL-00001" summary="test projects">
       <created>1609623834026</created>
@@ -234,7 +221,21 @@
       <option name="project" value="LOCAL" />
       <updated>1609623834026</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="ceva cu git sa scap de dll-uri">
+      <created>1610897736143</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1610897736143</updated>
+    </task>
+    <task id="LOCAL-00003" summary="add back">
+      <created>1610897820095</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1610897820095</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -257,16 +258,22 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="test projects" />
-    <option name="LAST_COMMIT_MESSAGE" value="test projects" />
+    <MESSAGE value="ceva cu git sa scap de dll-uri" />
+    <MESSAGE value="add back" />
+    <option name="LAST_COMMIT_MESSAGE" value="add back" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog" timestamp="1610898206250">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="92" y="92" width="1736" height="856" key="DiffContextDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1610898206250" />
     <state x="690" y="175" key="ImportDialog.Title" timestamp="1609614841844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="175" key="ImportDialog.Title/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1609614841844" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1609623839392">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1610897821645">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1609623839392" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1610897821645" />
   </component>
 </project>
