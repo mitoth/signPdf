@@ -41,9 +41,6 @@ namespace RedactMyPdf.FileHandler.Services.Conversion
                 var page = new Page(Guid.NewGuid(), addedPageId, image.Height, image.Width);
                 pages.Add(page);
             }
-            // var files = pagesStreams.Select((t, i) => new RawFile($"page_{fileBinaryId}_{i}", t.ImageStream)).ToList();
-            // var storedPagesIds = await fileRepository.AddAsync(files, cancellationToken);
-            // var pages = storedPagesIds.Select(p => new Page(Guid.NewGuid(), p )).ToList();
             var document = new Document(newDocumentId, $"doc_{fileBinaryId}", fileBinaryId, pages);
             await documentRepository.AddAsync(document, CancellationToken.None);
             return document;

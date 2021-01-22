@@ -58,33 +58,6 @@ namespace RedactMyPdf.Repository.Mongo
             return await AddFile(file.Name, file.Stream, bucket, cancellationToken);
         }
 
-        public async Task<IList<string>> AddAsync(IList<RawFile> files,
-            CancellationToken cancellationToken)
-        { 
-            using var session = await mongoClient.StartSessionAsync(cancellationToken: cancellationToken);
-            IGridFSBucket bucket = new GridFSBucket(database);
-            var addedFilesList = new List<string>();
-            session.StartTransaction();
-            try
-            {
-                foreach (var file in files)
-                {
-                    var id = await AddFile(file.Name, file.Stream, bucket, cancellationToken);
-                    addedFilesList.Add(id);
-                }
-
-                await session.CommitTransactionAsync(cancellationToken);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e ,$"Failed to insert files");
-                await session.AbortTransactionAsync(cancellationToken);
-                throw new ApplicationException($"Failed to insert files. Message: {e.Message}");
-            }
-
-            return addedFilesList;
-        }
-
         private async Task<string> AddFile(string name, Stream file, IGridFSBucket bucket, CancellationToken cancellationToken)
         {
             logger.LogDebug($"Adding file with name [{name}]");

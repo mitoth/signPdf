@@ -24,14 +24,5 @@ namespace RedactMyPdf.Core.Abstractions.Repositories
         /// <param name="cancellationToken"></param>
         /// <returns>The id of the inserted file</returns>
         Task<string> AddAsync(RawFile file, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Add a list of file streams
-        /// </summary>
-        /// <param name="files"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns>The ids of the inserted files. Order preserved</returns>
-        Task<IList<string>> AddAsync(IList<RawFile> files,
-            CancellationToken cancellationToken);
     }
 }
