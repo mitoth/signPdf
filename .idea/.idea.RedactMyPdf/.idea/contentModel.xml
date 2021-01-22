@@ -17,8 +17,17 @@
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+          <e p="PublishProfiles" t="Include">
+            <e p="redactMyPdf - Web Deploy.pubxml" t="Include" />
+          </e>
+          <e p="ServiceDependencies" t="Include">
+            <e p="redactMyPdf - Web Deploy" t="Include">
+              <e p="profile.arm.json" t="Include" />
+            </e>
+          </e>
         </e>
         <e p="RedactMyPdf.BurnPdfWorker.csproj" t="IncludeRecursive" />
+        <e p="Settings.job" t="Include" />
         <e p="Worker.cs" t="Include" />
       </e>
       <e p="RedactMyPdf.ConvertPdfWorker" t="IncludeRecursive">
@@ -35,8 +44,20 @@
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+          <e p="PublishProfiles" t="Include">
+            <e p="redactMyPdf - Web Deploy.pubxml" t="Include" />
+          </e>
+          <e p="ServiceDependencies" t="Include">
+            <e p="redactMyPdf - Web Deploy" t="Include">
+              <e p="profile.arm.json" t="Include" />
+            </e>
+            <e p="RedactMyPdfConvertPdfWorker20210117221006 - Web Deploy" t="Include">
+              <e p="profile.arm.json" t="Include" />
+            </e>
+          </e>
         </e>
         <e p="RedactMyPdf.ConvertPdfWorker.csproj" t="IncludeRecursive" />
+        <e p="Settings.job" t="Include" />
         <e p="Worker.cs" t="Include" />
       </e>
       <e p="RedactMyPdf.Core" t="IncludeRecursive">
@@ -202,6 +223,32 @@
           <e p=".eslintrc.js" t="Include" />
           <e p=".gitignore" t="Include" />
           <e p=".prettierrc.js" t="Include" />
+          <e p="build" t="Include">
+            <e p="asset-manifest.json" t="Include" />
+            <e p="favicon.ico" t="Include" />
+            <e p="index.html" t="Include" />
+            <e p="logo192.png" t="Include" />
+            <e p="logo512.png" t="Include" />
+            <e p="manifest.json" t="Include" />
+            <e p="robots.txt" t="Include" />
+            <e p="static" t="Include">
+              <e p="css" t="Include">
+                <e p="2.20aa2d7b.chunk.css" t="Include" />
+                <e p="2.20aa2d7b.chunk.css.map" t="Include" />
+                <e p="main.73efbf52.chunk.css" t="Include" />
+                <e p="main.73efbf52.chunk.css.map" t="Include" />
+              </e>
+              <e p="js" t="Include">
+                <e p="2.9c7d9b1c.chunk.js" t="Include" />
+                <e p="2.9c7d9b1c.chunk.js.LICENSE.txt" t="Include" />
+                <e p="2.9c7d9b1c.chunk.js.map" t="Include" />
+                <e p="main.b5f88499.chunk.js" t="Include" />
+                <e p="main.b5f88499.chunk.js.map" t="Include" />
+                <e p="runtime-main.7c6953fe.js" t="Include" />
+                <e p="runtime-main.7c6953fe.js.map" t="Include" />
+              </e>
+            </e>
+          </e>
           <e p="node_modules\@babel\parser" t="IncludeRecursive" />
           <e p="node_modules\@babel\types" t="IncludeRecursive" />
           <e p="node_modules\@bcoe\v8-coverage" t="IncludeRecursive" />
@@ -497,6 +544,14 @@
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+          <e p="PublishProfiles" t="Include">
+            <e p="redactMyPdf - Web Deploy.pubxml" t="Include" />
+          </e>
+          <e p="ServiceDependencies" t="Include">
+            <e p="redactMyPdf - Web Deploy" t="Include">
+              <e p="profile.arm.json" t="Include" />
+            </e>
+          </e>
         </e>
         <e p="RedactMyPdf.Viewer.csproj" t="IncludeRecursive" />
         <e p="SignalR" t="Include">
