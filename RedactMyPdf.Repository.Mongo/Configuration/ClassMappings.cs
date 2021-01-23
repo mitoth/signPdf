@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using RedactMyPdf.Core.Models;
 using RedactMyPdf.Core.Models.Draw;
 
@@ -11,9 +13,14 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
         public static void SetMappings()
         {
             if (mappingSet) return;
+#pragma warning disable 618
+                //https://jira.mongodb.org/browse/CSHARP-3179
+            BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+#pragma warning restore 618
+            BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
             BsonClassMap.RegisterClassMap<Document>(cm =>
             {
-                cm.MapIdMember(d => d.Id).SetElementName("_id");
+                cm.MapIdMember(d => d.Id);
                 cm.MapField(d => d.Name);
                 cm.MapField(d => d.FileBinaryId);
                 cm.MapField(d => d.Pages);
@@ -29,7 +36,7 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
             });
             BsonClassMap.RegisterClassMap<BurnedDocument>(cm =>
             {
-                cm.MapIdMember(d => d.Id).SetElementName("_id");
+                cm.MapIdMember(d => d.Id);
                 cm.MapField(d => d.FileBinaryId);
                 cm.MapField(d => d.OriginalDocumentId);
                 cm.MapField(d => d.DocumentShapes);

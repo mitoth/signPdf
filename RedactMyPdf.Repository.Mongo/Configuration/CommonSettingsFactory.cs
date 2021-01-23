@@ -5,13 +5,14 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
 {
     public static class CommonSettingsFactory
     {
-        public static MongoClientSettings GetMongoClientSettings(string host, int port)
+        public static string GetMongoConnectionString(string host, int port, string user = null, string password = null)
         {
-            return new MongoClientSettings
+            if (!string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(password))
             {
-                Server = new MongoServerAddress(host, port),
-                GuidRepresentation = GuidRepresentation.Standard
-            };
+                return $"mongodb://{user}:{password}@{host}:{port}";
+            }
+
+            return $"mongodb://{host}:{port}";
         }
     }
 }

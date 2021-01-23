@@ -64,7 +64,9 @@ namespace RedactMyPdf.BurnPdfWorker
                         var host = config["MongoSettings:Host"];
                         var port = config.GetValue<int>("MongoSettings:Port");
                         var databaseName = config["MongoSettings:Name"];
-                        var mongoClientSettings = CommonSettingsFactory.GetMongoClientSettings(host, port);
+                        var username = config["MongoSettings:Username"];
+                        var password = config["MongoSettings:Password"];
+                        var mongoClientSettings = CommonSettingsFactory.GetMongoConnectionString(host, port, username, password);
                         return new MongoClientConfiguration(mongoClientSettings, databaseName);
                     });
                     services.AddSingleton<IFileRepository, FileRepository>();

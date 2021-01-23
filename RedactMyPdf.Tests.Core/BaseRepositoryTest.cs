@@ -6,15 +6,15 @@ namespace RedactMyPdf.Tests.Core
     {
         private const string Host = "localhost";
         private const string DatabaseName = "belugatest";
-        protected IMongoClientConfiguration MongoClientConfiguration;
+        protected readonly IMongoClientConfiguration MongoClientConfiguration;
 
-        public BaseRepositoryTest() : this(DatabaseName)
+        protected BaseRepositoryTest() : this(DatabaseName)
         {
         }
 
-        public BaseRepositoryTest(string databaseName)
+        protected BaseRepositoryTest(string databaseName)
         {
-            var mongoClientSettings = CommonSettingsFactory.GetMongoClientSettings(Host, 27017);
+            var mongoClientSettings = CommonSettingsFactory.GetMongoConnectionString(Host, 27017);
             MongoClientConfiguration = new MongoClientConfiguration(mongoClientSettings, databaseName);
         }
     }

@@ -4,18 +4,18 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
 {
     public class MongoClientConfiguration : MongoClient, IMongoClientConfiguration
     {
-        private readonly MongoClientSettings mongoClientSettings;
+        private readonly string connectionString;
         private readonly string databaseName;
 
-        public MongoClientConfiguration(MongoClientSettings mongoClientSettings, string databaseName) : base(mongoClientSettings)
+        public MongoClientConfiguration(string connectionString, string databaseName) : base(connectionString)
         {
-            this.mongoClientSettings = mongoClientSettings;
+            this.connectionString = connectionString;
             this.databaseName = databaseName;
 
             ClassMappings.SetMappings();
         }
 
-        public IMongoClient GetClient() => new MongoClient(mongoClientSettings);
+        public IMongoClient GetClient() => new MongoClient(connectionString);
 
         public IMongoDatabase GetDatabase() => GetDatabase(databaseName);
 

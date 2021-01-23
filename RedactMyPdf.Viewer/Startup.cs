@@ -60,7 +60,9 @@ namespace RedactMyPdf.Viewer
                 var host = Configuration["MongoSettings:Host"];
                 var port = Configuration.GetValue<int>("MongoSettings:Port");
                 var databaseName = Configuration["MongoSettings:Name"];
-                var mongoClientSettings = CommonSettingsFactory.GetMongoClientSettings(host, port);
+                var username = Configuration["MongoSettings:Username"];
+                var password = Configuration["MongoSettings:Password"];
+                var mongoClientSettings = CommonSettingsFactory.GetMongoConnectionString(host, port, username, password);
                 return new MongoClientConfiguration(mongoClientSettings, databaseName);
             });
 
