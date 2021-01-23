@@ -51,9 +51,6 @@
             <e p="redactMyPdf - Web Deploy" t="Include">
               <e p="profile.arm.json" t="Include" />
             </e>
-            <e p="RedactMyPdfConvertPdfWorker20210117221006 - Web Deploy" t="Include">
-              <e p="profile.arm.json" t="Include" />
-            </e>
           </e>
         </e>
         <e p="RedactMyPdf.ConvertPdfWorker.csproj" t="IncludeRecursive" />
