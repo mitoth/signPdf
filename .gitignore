@@ -8,6 +8,8 @@
 .idea/
 contentModel.xml
 workspace.xml
+.idea/.idea.RedactMyPdf/.idea/contentModel.xml
+contentModel.xml
 *.cache
 *.user
 *.userosscache
