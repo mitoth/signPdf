@@ -25,12 +25,12 @@ namespace RedactMyPdf.ConvertPdfWorker
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
             try
             {
-                Log.Information($"Starting up convert pdf service on environment {AppDataInfo.Environment()}. {AppDataInfo.GetDbsInfo(config)}");
+                Log.Logger.Warning($"Starting up convert pdf service on environment {AppDataInfo.Environment()}. {AppDataInfo.GetDbsInfo(config)}");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)
             {
-                Log.Fatal(e, "There was an exception starting up the convert pdf service");
+                Log.Logger.Fatal(e, "There was an exception starting up the convert pdf service");
             }
             finally
             {

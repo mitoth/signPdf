@@ -25,12 +25,12 @@ namespace RedactMyPdf.BurnPdfWorker
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
             try
             {
-                Log.Warning($"Starting up burn pdf service on environment '{AppDataInfo.Environment()}'. {AppDataInfo.GetDbsInfo(config)}");
+                Log.Logger.Warning($"Starting up burn pdf service on environment '{AppDataInfo.Environment()}'. {AppDataInfo.GetDbsInfo(config)}");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)
             {
-                Log.Fatal(e, "There was an exception starting up the burn pdf service");
+                Log.Logger.Fatal(e, "There was an exception starting up the burn pdf service");
             }
             finally
             {
