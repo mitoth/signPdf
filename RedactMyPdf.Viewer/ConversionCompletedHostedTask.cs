@@ -86,7 +86,7 @@ namespace RedactMyPdf.Viewer
             }
             catch (Exception e)
             {
-                logger.LogError($"Cannot start the completed events listener");
+                logger.LogError(e, $"Cannot start the completed events listener");
             }
         }
 

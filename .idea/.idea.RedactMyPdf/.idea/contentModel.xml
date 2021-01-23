@@ -95,6 +95,7 @@
         </e>
         <e p="RedactMyPdf.Core.csproj" t="IncludeRecursive" />
         <e p="Utils" t="Include">
+          <e p="AppDataInfo.cs" t="Include" />
           <e p="ShapeJsonConverter.cs" t="Include" />
           <e p="UnitsOfMeasure.cs" t="Include" />
         </e>

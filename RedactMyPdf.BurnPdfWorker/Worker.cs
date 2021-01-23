@@ -1,12 +1,11 @@
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -23,9 +22,9 @@ namespace RedactMyPdf.BurnPdfWorker
         private readonly IConnectionFactory connectionFactory;
         private readonly IBurnDocumentService burnDocumentService;
 
-        private const string ExchangeName = Core.MessageQueue.Constants.Exchange.DirectExchangeName;
-        private const string QueueName = Core.MessageQueue.Constants.Queue.BurnDocumentQueueName;
-        private const string RoutingKey = Core.MessageQueue.Constants.RoutingKeys.BurnDocumentRoutingKey;
+        private const string ExchangeName = Constants.Exchange.DirectExchangeName;
+        private const string QueueName = Constants.Queue.BurnDocumentQueueName;
+        private const string RoutingKey = Constants.RoutingKeys.BurnDocumentRoutingKey;
 
         private const string TopicExchangeName = Constants.Exchange.TopicExchangeName;
 
@@ -36,7 +35,7 @@ namespace RedactMyPdf.BurnPdfWorker
             this.burnDocumentService = burnDocumentService;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Setting up messaging queue");
             using var connection = connectionFactory.CreateConnection();
@@ -47,21 +46,19 @@ namespace RedactMyPdf.BurnPdfWorker
             channel.BasicQos(0, 10, false);
             logger.LogInformation("Done. Message queuing setup. Waiting for messages to process");
 
-
-            //setup topic exchange - used for signaling that the burn task was finished
-            using var topicConnection = connectionFactory.CreateConnection();
-            using var topicChannel = topicConnection.CreateModel();
-            topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
-
             var consumer = new EventingBasicConsumer(channel);
             consumer.Received += async (model, ea) =>
             {
                 logger.LogDebug("Message received. Start processing");
                 try
                 {
+                    //setup topic exchange - used for signaling that the burn task was finished
+                    using var topicConnection = connectionFactory.CreateConnection();
+                    using var topicChannel = topicConnection.CreateModel();
+                    topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
                     var body = ea.Body;
                     var arrayBody = Encoding.UTF8.GetString(body.ToArray());
-                    var message = JsonConvert.DeserializeObject<BurnShapesToPdfMessage>(arrayBody, new JsonSerializerSettings() { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
+                    var message = JsonConvert.DeserializeObject<BurnShapesToPdfMessage>(arrayBody, new JsonSerializerSettings { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
                     EnsureArg.IsNotNull(message, nameof(message));
                     EnsureArg.IsNotDefault(message.DocumentId, nameof(message.DocumentId));
                     EnsureArg.IsNotNull(message.DocumentShapes, nameof(message.DocumentShapes));
@@ -85,6 +82,7 @@ namespace RedactMyPdf.BurnPdfWorker
             {
 
             }
+            return Task.CompletedTask;
         }
     }
 }

@@ -36,9 +36,10 @@ namespace RedactMyPdf.Viewer.Utils
                 var shapes = JsonConvert.DeserializeObject<IEnumerable<PageShapes>>(valueFromBody, settings);
                 bindingContext.Result = ModelBindingResult.Success(shapes);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 bindingContext.Result = ModelBindingResult.Failed();
+                throw;
             }
 
 

@@ -20,9 +20,9 @@ namespace RedactMyPdf.ConvertPdfWorker
         private readonly IConnectionFactory connectionFactory;
         private readonly IConvertPdfToJpgService converter;
 
-        private const string DirectExchangeName = Core.MessageQueue.Constants.Exchange.DirectExchangeName;
-        private const string QueueName = Core.MessageQueue.Constants.Queue.ConvertDocumentQueueName;
-        private const string RoutingKey = Core.MessageQueue.Constants.RoutingKeys.ConvertDocumentToJpgRoutingKey;
+        private const string DirectExchangeName = Constants.Exchange.DirectExchangeName;
+        private const string QueueName = Constants.Queue.ConvertDocumentQueueName;
+        private const string RoutingKey = Constants.RoutingKeys.ConvertDocumentToJpgRoutingKey;
 
         private const string TopicExchangeName = Constants.Exchange.TopicExchangeName;
 
@@ -33,7 +33,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             this.converter = converter;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Setting up messaging queue");
 
@@ -45,11 +45,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             directChannel.QueueBind(QueueName, DirectExchangeName, RoutingKey);
             directChannel.BasicQos(0, 10, false);
             logger.LogInformation("Done. Incoming message queuing setup. Waiting for messages to process");
-
-            //setup topic exchange - used for signaling that the convert task was finished
-            using var topicConnection = connectionFactory.CreateConnection();
-            using var topicChannel = topicConnection.CreateModel();
-            topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
+            
 
             var consumer = new EventingBasicConsumer(directChannel);
             consumer.Received += async (model, ea) =>
@@ -71,6 +67,10 @@ namespace RedactMyPdf.ConvertPdfWorker
 
                     var convertDoneMessage = JsonConvert.SerializeObject(message.NewDocumentGuid);
                     var byteArray = Encoding.ASCII.GetBytes(convertDoneMessage);
+                    //setup topic exchange - used for signaling that the convert task was finished
+                    using var topicConnection = connectionFactory.CreateConnection();
+                    using var topicChannel = topicConnection.CreateModel();
+                    topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
                     topicChannel.BasicPublish(TopicExchangeName, Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey, null, byteArray);
                 }
                 catch (Exception e)
@@ -85,6 +85,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             {
 
             }
+            return Task.CompletedTask;
         }
     }
 }

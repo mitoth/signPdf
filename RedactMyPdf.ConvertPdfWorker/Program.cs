@@ -6,6 +6,7 @@ using Serilog;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
+using RedactMyPdf.Core.Utils;
 using RedactMyPdf.FileHandler;
 using RedactMyPdf.FileHandler.Aspose.Conversion;
 using RedactMyPdf.FileHandler.Services.Conversion;
@@ -24,7 +25,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
             try
             {
-                Log.Information($"Starting up convert pdf service on environment {Environment()}");
+                Log.Information($"Starting up convert pdf service on environment {AppDataInfo.Environment()}. {AppDataInfo.GetDbsInfo(config)}");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception e)
@@ -87,15 +88,10 @@ namespace RedactMyPdf.ConvertPdfWorker
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment()}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{AppDataInfo.Environment()}.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
             return builder.Build();
-        }
-
-        public static string Environment()
-        {
-            return System.Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "";
         }
     }
 }

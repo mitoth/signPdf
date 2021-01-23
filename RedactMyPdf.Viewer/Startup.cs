@@ -6,9 +6,11 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
+using RedactMyPdf.Core.Utils;
 using RedactMyPdf.Repository.Mongo;
 using RedactMyPdf.Repository.Mongo.Configuration;
 using RedactMyPdf.Viewer.SignalR;
@@ -97,7 +99,7 @@ namespace RedactMyPdf.Viewer
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -136,6 +138,8 @@ namespace RedactMyPdf.Viewer
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
+            
+            logger.LogWarning($"Started web api on environment {AppDataInfo.Environment()}. {AppDataInfo.GetDbsInfo(Configuration)}");
         }
     }
 }
