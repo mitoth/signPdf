@@ -35,7 +35,7 @@ namespace RedactMyPdf.BurnPdfWorker
             this.burnDocumentService = burnDocumentService;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Setting up messaging queue");
             using var connection = connectionFactory.CreateConnection();
@@ -80,9 +80,8 @@ namespace RedactMyPdf.BurnPdfWorker
             channel.BasicConsume(QueueName, true, consumer);
             while (!stoppingToken.IsCancellationRequested)
             {
-
+                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }
-            return Task.CompletedTask;
         }
     }
 }

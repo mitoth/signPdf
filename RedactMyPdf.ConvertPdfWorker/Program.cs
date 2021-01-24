@@ -44,11 +44,6 @@ namespace RedactMyPdf.ConvertPdfWorker
                 {
                     var config = hostContext.Configuration;
                     services.AddSingleton(config);
-                    services.AddLogging(builder =>
-                    {
-                        var serilogger = new LoggerConfiguration().ReadFrom.Configuration(config).CreateLogger();
-                        builder.AddSerilog(serilogger);
-                    });
 
                     services.AddSingleton<IConnectionFactory>(s =>
                     {

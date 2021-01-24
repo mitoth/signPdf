@@ -33,7 +33,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             this.converter = converter;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             logger.LogInformation("Setting up messaging queue");
 
@@ -83,9 +83,8 @@ namespace RedactMyPdf.ConvertPdfWorker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-
+                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }
-            return Task.CompletedTask;
         }
     }
 }
