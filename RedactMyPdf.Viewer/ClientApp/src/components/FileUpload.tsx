@@ -5,7 +5,6 @@ import { Redirect } from 'react-router-dom';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
 const UploadFiles = (): ReactElement => {
-    const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
     const [currentFile, setCurrentFile] = useState<string>();
     const [progress, setProgress] = useState(0);
     const [message, setMessage] = useState('');
@@ -13,12 +12,9 @@ const UploadFiles = (): ReactElement => {
     const [signalRConnectionId, setSignalRConnectionId] = useState<string>();
     const [pages, setPages] = useState([]);
     const [connection, setConnection] = useState<HubConnection>();
-    const selectFile = (event: UploadEvent) => {
-        setSelectedFiles(event.target.files);
-    };
 
-    const upload = () => {
-        const currentFile = selectedFiles[0];
+    const upload = (event: UploadEvent) => {
+        const currentFile = event.target.files[0];
 
         setProgress(0);
         setCurrentFile(currentFile);
@@ -49,8 +45,6 @@ const UploadFiles = (): ReactElement => {
                 setMessage('Could not upload the file!');
                 setCurrentFile(undefined);
             });
-
-        setSelectedFiles([]);
     };
 
     useEffect(() => {
@@ -85,30 +79,30 @@ const UploadFiles = (): ReactElement => {
 
     return (
         <div>
-            {currentFile && (
-                <div className="progress">
-                    <div
-                        className="progress-bar progress-bar-info progress-bar-striped"
-                        role="progressbar"
-                        aria-valuenow={progress}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        style={{ width: progress + '%' }}
-                    >
-                        {progress}%
+            <h1 className="font-weight-bold center-vertical-text text-primary">Welcome to your PDF editor</h1>
+
+            <input type="file" id="file" accept="application/pdf" onChange={upload} />
+
+            <div className="center">
+                <label htmlFor="file" className="btn btn-primary btn-lg">
+                    Choose a PDF
+                </label>
+                {currentFile && (
+                    <div className="progress center-vertical fullwidth">
+                        <div
+                            className="progress-bar progress-bar-info progress-bar-striped bg-success"
+                            role="progressbar"
+                            aria-valuenow={progress}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            style={{ width: progress + '%' }}
+                        >
+                            {progress}%
+                        </div>
                     </div>
-                </div>
-            )}
-
-            <label className="btn btn-default">
-                <input type="file" onChange={selectFile} />
-            </label>
-
-            <button className="btn btn-success" disabled={!selectedFiles} onClick={upload}>
-                Upload
-            </button>
-
-            <div className="alert alert-light" role="alert">
+                )}
+            </div>
+            <div className="alert alert-light center-vertical-text" role="alert">
                 {message}
             </div>
             {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}

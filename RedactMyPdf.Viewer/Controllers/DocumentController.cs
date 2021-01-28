@@ -87,7 +87,7 @@ namespace RedactMyPdf.Viewer.Controllers
             await using var uploadStream = new MemoryStream();
             await file.CopyToAsync(uploadStream, cancellationToken);
             uploadStream.Position = 0;
-            logger.LogDebug($"Successfully uploaded file [{file.FileName}]");
+            logger.LogInformation($"Successfully uploaded file [{file.FileName}]");
 
             var fileId = await fileRepository.AddAsync(new RawFile(file.FileName, uploadStream), cancellationToken);
             var toBeCreatedDocumentId = Guid.NewGuid();
@@ -243,7 +243,7 @@ namespace RedactMyPdf.Viewer.Controllers
 
         private void SendConvertMessage(string fileBinaryId, Guid toBeCreatedDocumentId)
         {
-            logger.LogInformation("Setting up messaging queue for convert");
+            logger.LogDebug("Setting up messaging queue for convert");
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
             channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
@@ -251,18 +251,19 @@ namespace RedactMyPdf.Viewer.Controllers
             channel.QueueBind(ConvertQueueName, ExchangeName, ConvertRoutingKey);
             channel.BasicQos(0, 10, false);
 
-            logger.LogInformation($"Sending convert message for fileBinaryId: [{fileBinaryId}] and toBeCreatedDocumentId: [{toBeCreatedDocumentId}]");
+            logger.LogDebug($"Sending convert message for fileBinaryId: [{fileBinaryId}] and toBeCreatedDocumentId: [{toBeCreatedDocumentId}]");
             var convertMessage = new ConvertToPdfMessage(fileBinaryId, toBeCreatedDocumentId);
             // ReSharper disable once MethodHasAsyncOverload
             var convertM = JsonConvert.SerializeObject(convertMessage);
             var byteArray = Encoding.ASCII.GetBytes(convertM);
 
             channel.BasicPublish(ExchangeName, ConvertRoutingKey, null, byteArray);
+            logger.LogInformation($"Sent convert message for fileBinaryId: [{fileBinaryId}] and toBeCreatedDocumentId: [{toBeCreatedDocumentId}]");
         }
 
         private void SendBurnMessage(Guid documentId, DocumentShapes documentShapes)
         {
-            logger.LogInformation("Setting up messaging queue for burn");
+            logger.LogDebug("Setting up messaging queue for burn");
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
             channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
@@ -270,13 +271,14 @@ namespace RedactMyPdf.Viewer.Controllers
             channel.QueueBind(BurnQueueName, ExchangeName, BurnRoutingKey);
             channel.BasicQos(0, 10, false);
 
-            logger.LogInformation($"Sending burn shapes message for documentId: [{documentId}] and document shapes: [{documentShapes}]");
+            logger.LogDebug($"Sending burn shapes message for documentId: [{documentId}] and document shapes: [{documentShapes}]");
             var burnMessage = new BurnShapesToPdfMessage(documentId, documentShapes);
             // ReSharper disable once MethodHasAsyncOverload
             var convertM = JsonConvert.SerializeObject(burnMessage);
             var byteArray = Encoding.ASCII.GetBytes(convertM);
 
             channel.BasicPublish(ExchangeName, BurnRoutingKey, null, byteArray);
+            logger.LogInformation($"Sent burn shapes message for documentId: [{documentId}] and document shapes: [{documentShapes}]");
         }
     }
 }

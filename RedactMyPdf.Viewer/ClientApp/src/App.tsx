@@ -8,10 +8,7 @@ import Editor from './components/Editor';
 
 function App(): ReactElement {
     return (
-        <div style={{ width: '600px' }}>
-            <div className="my-3">
-                <h4>React Hooks File Upload</h4>
-            </div>
+        <div>
             <BrowserRouter>
                 <Switch>
                     <Route exact path="/" component={FileUpload} />
