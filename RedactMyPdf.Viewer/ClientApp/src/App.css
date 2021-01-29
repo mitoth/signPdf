@@ -2,22 +2,27 @@ input[type='file'] {
     display: none;
 }
 
-.center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.center-vertical-text {
+.center-vertical {
     margin: auto;
     width: 60%;
-    padding: 10px;
+    height: 90vh;
     text-align: center;
-    padding-top: 10%;
+    /* border: solid red 1px; */
+}
+
+.top15 {
     position: relative;
+    top: 10vh;
+}
+
+.top20 {
+    position: relative;
+    top: 20vh;
+}
+
+.top18 {
+    position: relative;
+    top: 18vh;
 }
 
 .fullwidth {

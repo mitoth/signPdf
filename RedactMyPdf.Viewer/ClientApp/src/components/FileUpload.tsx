@@ -27,6 +27,7 @@ const UploadFiles = (): ReactElement => {
         }
 
         UploadService.upload(currentFile, signalRConnectionId, (event) => {
+            setMessage('');
             const progresul = Math.round((100 * event.loaded) / event.total);
             if (progresul > 80) {
                 setProgress(80);
@@ -35,7 +36,10 @@ const UploadFiles = (): ReactElement => {
             }
         })
             .then(() => {
-                setMessage('Upload complete....processing document');
+                setTimeout(function () {
+                    setMessage('Could not process the file!');
+                }, 10000);
+                // setMessage('Upload complete....processing document');
                 // setProgress(90);
                 // setPages(response.data.pages);
                 // setEditorPath(`/editor/${response.data.id}/${response.data.pages.length}`);
@@ -78,17 +82,22 @@ const UploadFiles = (): ReactElement => {
     }, [connection]);
 
     return (
-        <div>
-            <h1 className="font-weight-bold center-vertical-text text-primary">Welcome to your PDF editor</h1>
+        <div className="center-vertical top15">
+            <h1 className="font-weight-bold text-primary">Welcome to your PDF editor</h1>
 
             <input type="file" id="file" accept="application/pdf" onChange={upload} />
 
-            <div className="center">
-                <label htmlFor="file" className="btn btn-primary btn-lg">
+            <div className="">
+                <label htmlFor="file" className="btn btn-primary btn-lg top15">
                     Choose a PDF
                 </label>
-                {currentFile && (
-                    <div className="progress center-vertical fullwidth">
+                {message && (
+                    <h2>
+                        <p className="top20 text-danger top18">{message}</p>
+                    </h2>
+                )}
+                {currentFile && !message && (
+                    <div className="progress top20 fullwidth">
                         <div
                             className="progress-bar progress-bar-info progress-bar-striped bg-success"
                             role="progressbar"
@@ -101,9 +110,6 @@ const UploadFiles = (): ReactElement => {
                         </div>
                     </div>
                 )}
-            </div>
-            <div className="alert alert-light center-vertical-text" role="alert">
-                {message}
             </div>
             {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}
         </div>
