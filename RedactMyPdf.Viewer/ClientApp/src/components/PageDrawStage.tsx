@@ -23,7 +23,7 @@ const PageDrawStage = (props: IProps): ReactElement => {
 
     return (
         <>
-            <Stage width={width} height={height}>
+            <Stage width={width} height={height} draggable={true}>
                 <Layer>
                     <MemoizedPageImage pageUrl={url} />
                 </Layer>
