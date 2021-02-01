@@ -5,15 +5,23 @@ import PropTypes from 'prop-types';
 
 interface IProps {
     pageUrl: string;
+    width: number;
+    height: number;
 }
 
-const PageImage = ({ pageUrl }: IProps) => {
+const PageImage = ({ pageUrl, width, height }: IProps) => {
     const [image] = useImage(pageUrl);
+    if (image) {
+        image.width = width;
+        image.height = height;
+    }
     return <Image image={image} />;
 };
 
 PageImage.propTypes = {
     pageUrl: PropTypes.string.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
 };
 
 export const MemoizedPageImage = React.memo(PageImage);
