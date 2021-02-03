@@ -14,30 +14,15 @@ interface IProps {
 }
 
 const PageDrawStage = (props: IProps): ReactElement => {
-    const rectangles = props.rectangles;
-    const pageNumber = props.pageNumber;
-    const pageWidth = props.width;
-    const pageHeight = props.height;
-    let width: number;
-    let height: number;
-    if (pageWidth > window.innerWidth) {
-        const shrinkRatio = pageWidth / window.innerWidth;
-        width = window.innerWidth;
-        height = pageHeight / shrinkRatio;
-    } else {
-        width = pageWidth;
-        height = pageHeight;
-    }
-
-    const url = `/api/v1/Document/${props.fileId}/page/${pageNumber}/file`;
+    const url = `/api/v1/Document/${props.fileId}/page/${props.pageNumber}/file`;
 
     return (
         <>
-            <Stage width={width} height={height}>
+            <Stage width={props.width} height={props.height}>
                 <Layer>
-                    <MemoizedPageImage pageUrl={url} width={width} height={height} />
+                    <MemoizedPageImage pageUrl={url} width={props.width} height={props.height} />
                 </Layer>
-                <KonvaDrawLayer rectangles={rectangles} setRectangles={props.setRectangles}></KonvaDrawLayer>
+                <KonvaDrawLayer rectangles={props.rectangles} setRectangles={props.setRectangles}></KonvaDrawLayer>
             </Stage>
         </>
     );

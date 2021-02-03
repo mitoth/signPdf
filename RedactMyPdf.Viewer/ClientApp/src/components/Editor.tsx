@@ -64,13 +64,32 @@ const Editor = (props: IProps): ReactElement => {
     const saveDocumentClick = () => {
         console.log(rectangles);
         const rectangleShapes = rectangles.map((r) => {
+            let width: number;
+            let height: number;
+            let x: number;
+            let y: number;
+            //TODO = use real index instead of 0
+            const pageWidth = props.location.state.pages[0].width;
+            if (pageWidth > window.innerWidth) {
+                const shrinkRatio = pageWidth / window.innerWidth;
+                width = r.width * shrinkRatio;
+                height = r.height * shrinkRatio;
+                x = r.x * shrinkRatio;
+                y = r.y * shrinkRatio;
+            } else {
+                width = r.width;
+                height = r.height;
+                x = r.x;
+                y = r.y;
+            }
+
             return {
-                width: r.width,
-                height: r.height,
+                width: width,
+                height: height,
                 borderHtmlColorCode: '#FF5733',
                 borderLineWidth: 2,
                 fillHtmlColorCode: '#FF5733',
-                axis: { x: r.x, y: r.y },
+                axis: { x: x, y: y },
             };
         });
 
@@ -121,6 +140,18 @@ const Editor = (props: IProps): ReactElement => {
                     .fill(0)
                     .map((_, idx) => 1 + idx)
                     .map((i) => {
+                        let width: number;
+                        let height: number;
+                        const pageWidth = props.location.state.pages[i - 1].width;
+                        const pageHeight = props.location.state.pages[i - 1].height;
+                        if (pageWidth > window.innerWidth) {
+                            const shrinkRatio = pageWidth / window.innerWidth;
+                            width = window.innerWidth;
+                            height = pageHeight / shrinkRatio;
+                        } else {
+                            width = pageWidth;
+                            height = pageHeight;
+                        }
                         return (
                             <PageDrawStage
                                 key={i}
@@ -128,8 +159,8 @@ const Editor = (props: IProps): ReactElement => {
                                 setRectangles={updateRectangles}
                                 fileId={fileId}
                                 pageNumber={i}
-                                width={props.location.state.pages[i - 1].width}
-                                height={props.location.state.pages[i - 1].height}
+                                width={width}
+                                height={height}
                             ></PageDrawStage>
                         );
                     })}
