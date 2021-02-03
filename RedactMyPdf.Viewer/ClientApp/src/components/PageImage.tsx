@@ -15,7 +15,7 @@ const PageImage = ({ pageUrl, width, height }: IProps) => {
         image.width = width;
         image.height = height;
     }
-    return <Image image={image} />;
+    return <Image image={image} preventDefault={false} />;
 };
 
 PageImage.propTypes = {
