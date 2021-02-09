@@ -1,13 +1,22 @@
 input[type='file'] {
     display: none;
 }
-
 .center-vertical {
     margin: auto;
     width: 60%;
     height: 90vh;
     text-align: center;
     /* border: solid red 1px; */
+}
+
+@media only screen and (min-width: 960px) {
+    #editor {
+        margin: auto;
+        width: 60%;
+        height: 90vh;
+        text-align: center;
+        border: solid red 1px;
+    }
 }
 
 .top15 {

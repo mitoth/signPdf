@@ -49,6 +49,7 @@ const Editor = (props: IProps): ReactElement => {
 
     const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
     const [downloadPath, setDownloadPath] = React.useState('');
+    const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     console.log(downloadPath);
 
     const addRectanglesClick = () => {
@@ -62,6 +63,7 @@ const Editor = (props: IProps): ReactElement => {
     const numberOfPages: number = parseInt(window.location.pathname.split('/')[3]);
 
     const saveDocumentClick = () => {
+        setIsDownloadInProgress(true);
         console.log(rectangles);
         const rectangleShapes = rectangles.map((r) => {
             let width: number;
@@ -115,6 +117,7 @@ const Editor = (props: IProps): ReactElement => {
                         const fileId = JSON.parse(docJson);
                         console.log('FileBurned' + fileId);
                         setDownloadPath(`/api/v1/Document/${fileId}/burn`);
+                        setIsDownloadInProgress(false);
                     });
                 })
                 .catch((e) => console.log('Connection failed: ', e));
@@ -129,42 +132,57 @@ const Editor = (props: IProps): ReactElement => {
         setRectangles(rects);
     };
 
+    const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
+
     return (
-        <>
-            {downloadPath && <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />}
-            <button onClick={addRectanglesClick}>Add rectangle</button>
-            <button onClick={saveDocumentClick}>Download</button>
-            {numberOfPages &&
-                numberOfPages > 0 &&
-                Array(numberOfPages)
-                    .fill(0)
-                    .map((_, idx) => 1 + idx)
-                    .map((i) => {
-                        let width: number;
-                        let height: number;
-                        const pageWidth = props.location.state.pages[i - 1].width;
-                        const pageHeight = props.location.state.pages[i - 1].height;
-                        if (pageWidth > window.innerWidth) {
-                            const shrinkRatio = pageWidth / window.innerWidth;
-                            width = window.innerWidth;
-                            height = pageHeight / shrinkRatio;
-                        } else {
-                            width = pageWidth;
-                            height = pageHeight;
-                        }
-                        return (
-                            <PageDrawStage
-                                key={i}
-                                rectangles={rectangles}
-                                setRectangles={updateRectangles}
-                                fileId={fileId}
-                                pageNumber={i}
-                                width={width}
-                                height={height}
-                            ></PageDrawStage>
-                        );
-                    })}
-        </>
+        <div>
+            <div>
+                {downloadPath && (
+                    <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
+                )}
+                <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
+                    Add rectangle
+                </button>
+                <button className="btn btn-success" onClick={saveDocumentClick}>
+                    {isDownloadInProgress && (
+                        <span className="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+                    )}
+                    Download
+                </button>
+            </div>
+            <div id="editor">
+                {numberOfPages &&
+                    numberOfPages > 0 &&
+                    Array(numberOfPages)
+                        .fill(0)
+                        .map((_, idx) => 1 + idx)
+                        .map((i) => {
+                            let width: number;
+                            let height: number;
+                            const pageWidth = props.location.state.pages[i - 1].width;
+                            const pageHeight = props.location.state.pages[i - 1].height;
+                            if (pageWidth > window.innerWidth) {
+                                const shrinkRatio = pageWidth / maxWidth;
+                                width = window.innerWidth;
+                                height = pageHeight / shrinkRatio;
+                            } else {
+                                width = pageWidth;
+                                height = pageHeight;
+                            }
+                            return (
+                                <PageDrawStage
+                                    key={i}
+                                    rectangles={rectangles}
+                                    setRectangles={updateRectangles}
+                                    fileId={fileId}
+                                    pageNumber={i}
+                                    width={width}
+                                    height={height}
+                                ></PageDrawStage>
+                            );
+                        })}
+            </div>
+        </div>
     );
 };
 
