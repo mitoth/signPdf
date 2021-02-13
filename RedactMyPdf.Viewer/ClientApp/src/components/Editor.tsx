@@ -135,22 +135,27 @@ const Editor = (props: IProps): ReactElement => {
     const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
 
     return (
-        <div>
-            <div>
-                {downloadPath && (
-                    <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
-                )}
-                <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
-                    Add rectangle
-                </button>
-                <button className="btn btn-success" onClick={saveDocumentClick}>
-                    {isDownloadInProgress && (
-                        <span className="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+        <table className="center">
+            <thead className="d-flex bd-highlight">
+                <td className="p-2 flex-grow-1">
+                    <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
+                        Add rectangle
+                    </button>
+                </td>
+                <td className="p-2">
+                    {downloadPath && (
+                        <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                     )}
-                    Download
-                </button>
-            </div>
-            <div id="editor">
+                    <button className="btn btn-success" onClick={saveDocumentClick}>
+                        {isDownloadInProgress && (
+                            <span className="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
+                        )}
+                        Download
+                    </button>
+                </td>
+            </thead>
+            <tbody>
+                <tr className="height5percent"></tr>
                 {numberOfPages &&
                     numberOfPages > 0 &&
                     Array(numberOfPages)
@@ -170,19 +175,20 @@ const Editor = (props: IProps): ReactElement => {
                                 height = pageHeight;
                             }
                             return (
-                                <PageDrawStage
-                                    key={i}
-                                    rectangles={rectangles}
-                                    setRectangles={updateRectangles}
-                                    fileId={fileId}
-                                    pageNumber={i}
-                                    width={width}
-                                    height={height}
-                                ></PageDrawStage>
+                                <tr key={i}>
+                                    <PageDrawStage
+                                        rectangles={rectangles}
+                                        setRectangles={updateRectangles}
+                                        fileId={fileId}
+                                        pageNumber={i}
+                                        width={width}
+                                        height={height}
+                                    ></PageDrawStage>
+                                </tr>
                             );
                         })}
-            </div>
-        </div>
+            </tbody>
+        </table>
     );
 };
 
