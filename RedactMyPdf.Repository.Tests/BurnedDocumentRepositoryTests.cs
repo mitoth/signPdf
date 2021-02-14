@@ -35,7 +35,7 @@ namespace RedactMyPdf.Repository.Tests
             };
 
             var documentId = Guid.NewGuid();
-            var addedDocument = new BurnedDocument(Guid.NewGuid(), documentId, "id", new DocumentShapes(shapes));
+            var addedDocument = new BurnedDocument(Guid.NewGuid(), documentId, "id", shapes);
             await burnedDocumentRepository.AddAsync(addedDocument, CancellationToken.None);
             var retrievedDocument = await burnedDocumentRepository.GetAsync(documentId, CancellationToken.None);
             Assert.AreEqual(addedDocument, retrievedDocument);

@@ -30,23 +30,20 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
             {
                 cm.MapField(p => p.FileBinaryId);
                 cm.MapField(p => p.Id);
-                cm.MapField(p => p.Width);
-                cm.MapField(p => p.Height);
-                cm.MapCreator(p => new Page(p.Id, p.FileBinaryId, p.Height, p.Width));
+                cm.MapField(p => p.ImageHeight);
+                cm.MapField(p => p.ImageWidth);
+                cm.MapField(p => p.PageHeight);
+                cm.MapField(p => p.PageWidth);
+                cm.MapCreator(p => new Page(p.Id, p.FileBinaryId, p.ImageWidth, p.ImageHeight, p.PageWidth, p.PageHeight));
             });
             BsonClassMap.RegisterClassMap<BurnedDocument>(cm =>
             {
                 cm.MapIdMember(d => d.Id);
                 cm.MapField(d => d.FileBinaryId);
                 cm.MapField(d => d.OriginalDocumentId);
-                cm.MapField(d => d.DocumentShapes);
+                cm.MapField(d => d.Shapes);
                 cm.MapField(d => d.CreationDate);
-                cm.MapCreator(d => new BurnedDocument(d.Id, d.OriginalDocumentId, d.FileBinaryId, d.DocumentShapes));
-            });
-            BsonClassMap.RegisterClassMap<DocumentShapes>(cm =>
-            {
-                cm.MapField(d => d.Pages);
-                cm.MapCreator(d => new DocumentShapes(d.Pages));
+                cm.MapCreator(d => new BurnedDocument(d.Id, d.OriginalDocumentId, d.FileBinaryId, d.Shapes));
             });
             BsonClassMap.RegisterClassMap<PageShapes>(cm =>
             {

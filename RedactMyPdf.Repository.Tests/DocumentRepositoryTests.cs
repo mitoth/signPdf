@@ -26,7 +26,7 @@ namespace RedactMyPdf.Repository.Tests
         [Test]
         public async Task AddGetDocumentTest()
         {
-            var document = new Document(Guid.NewGuid(), "test", Guid.NewGuid().ToString(), new List<Page> {new Page(Guid.NewGuid(), "idupaginii", 4, 6)});
+            var document = new Document(Guid.NewGuid(), "test", Guid.NewGuid().ToString(), new List<Page> {new Page(Guid.NewGuid(), "idupaginii", 4, 6, 2, 4)});
             var documentId = await documentRepository.AddAsync(document, CancellationToken.None);
             Assert.AreEqual(documentId, document.Id);
             var documentFromDatabase = await documentRepository.GetAsync(documentId, CancellationToken.None);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,10 +11,10 @@ namespace RedactMyPdf.FileHandler.Aspose.Drawing
 {
     public class DrawService : IDrawService
     {
-        public async Task<Stream> DrawAsync(Stream inputDocumentStream, DocumentShapes documentShapes, CancellationToken cancellationToken)
+        public async Task<Stream> DrawAsync(Stream inputDocumentStream, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken)
         {
             using var document = new Document(inputDocumentStream);
-            foreach (var pageShape in documentShapes.Pages)
+            foreach (var pageShape in shapes)
             {
                 await DrawToPage(document.Pages[pageShape.PageNumber], pageShape, cancellationToken);
             }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,11 +62,11 @@ namespace RedactMyPdf.BurnPdfWorker
                     var message = JsonConvert.DeserializeObject<BurnShapesToPdfMessage>(arrayBody, new JsonSerializerSettings { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
                     EnsureArg.IsNotNull(message, nameof(message));
                     EnsureArg.IsNotDefault(message.DocumentId, nameof(message.DocumentId));
-                    EnsureArg.IsNotNull(message.DocumentShapes, nameof(message.DocumentShapes));
+                    EnsureArg.IsNotNull(message.Shapes, nameof(message.Shapes));
                     logger.LogDebug($"Received burn message for file with id {message.DocumentId}");
                     await burnDocumentService.BurnShapes(message.DocumentId,
-                        message.DocumentShapes, stoppingToken);
-                    logger.LogDebug($"Burned shapes to document with id [{message.DocumentId}]. Shapes burned: [{message.DocumentShapes}]");
+                        message.Shapes.ToList(), stoppingToken);
+                    logger.LogDebug($"Burned shapes to document with id [{message.DocumentId}]. Shapes burned: [{message.Shapes}]");
 
                     var convertDoneMessage = JsonConvert.SerializeObject(message.DocumentId);
                     var byteArray = Encoding.ASCII.GetBytes(convertDoneMessage);

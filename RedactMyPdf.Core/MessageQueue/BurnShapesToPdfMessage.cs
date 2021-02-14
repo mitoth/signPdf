@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using RedactMyPdf.Core.Models.Draw;
 
 namespace RedactMyPdf.Core.MessageQueue
@@ -6,12 +7,12 @@ namespace RedactMyPdf.Core.MessageQueue
     public class BurnShapesToPdfMessage
     {
         public readonly Guid DocumentId;
-        public readonly DocumentShapes DocumentShapes;
+        public readonly IEnumerable<PageShapes> Shapes;
 
-        public BurnShapesToPdfMessage(Guid documentId, DocumentShapes documentShapes)
+        public BurnShapesToPdfMessage(Guid documentId, IEnumerable<PageShapes> shapes)
         {
             DocumentId = documentId;
-            DocumentShapes = documentShapes;
+            Shapes = shapes;
         }
     }
 }

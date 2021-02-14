@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using RedactMyPdf.Core.Abstractions.Repositories;
@@ -22,14 +24,13 @@ namespace RedactMyPdf.FileHandler.Services.Drawing
             this.burnedDocumentRepository = burnedDocumentRepository;
         }
 
-        public async Task BurnShapes(Guid documentId, DocumentShapes documentShapes, CancellationToken cancellationToken)
+        public async Task BurnShapes(Guid documentId, List<PageShapes> shapes, CancellationToken cancellationToken)
         {
             var document = await documentRepository.GetAsync(documentId, cancellationToken);
-            var documentFileBinaryId = document.FileBinaryId;
-            await using var documentStream = await fileRepository.GetAsync(documentFileBinaryId, cancellationToken);
-            await using var burnedFileStream = await drawService.DrawAsync(documentStream, documentShapes, cancellationToken);
+            await using var documentStream = await fileRepository.GetAsync(document.FileBinaryId, cancellationToken);
+            await using var burnedFileStream = await drawService.DrawAsync(documentStream, shapes, cancellationToken);
             var storedFileId = await fileRepository.AddAsync(new RawFile($"burned_{documentId}", burnedFileStream), cancellationToken);
-            var burnedDocument = new BurnedDocument(Guid.NewGuid(), documentId, storedFileId, documentShapes);
+            var burnedDocument = new BurnedDocument(Guid.NewGuid(), documentId, storedFileId, shapes);
             await burnedDocumentRepository.AddAsync(burnedDocument, cancellationToken);
         }
     }

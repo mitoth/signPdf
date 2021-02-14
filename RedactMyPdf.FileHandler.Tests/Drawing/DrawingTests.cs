@@ -52,10 +52,9 @@ namespace RedactMyPdf.FileHandler.Tests.Drawing
                         new Rectangle(new Axis(100, 100), 300, 300, "#FFC0CB", 5, "#3377FF")
                     }));
             }
-            var documentShapes = new DocumentShapes(pageShapesList);
 
             await using var stream = new MemoryStream(fileBinary);
-            await using var stampedStream = await drawService.DrawAsync(stream, documentShapes, CancellationToken.None);
+            await using var stampedStream = await drawService.DrawAsync(stream, pageShapesList, CancellationToken.None);
             await using var testFileStream = File.Create(Path.Combine(OutputFolderPath, "test1.pdf"));
             stampedStream.Seek(0, SeekOrigin.Begin);
             await stampedStream.CopyToAsync(testFileStream);

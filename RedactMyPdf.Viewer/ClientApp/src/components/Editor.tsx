@@ -142,7 +142,7 @@ const Editor = (props: IProps): ReactElement => {
                         Add rectangle
                     </button>
                 </td>
-                <td className="p-2">
+                <td className="p-2 ">
                     {downloadPath && (
                         <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                     )}

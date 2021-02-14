@@ -34,18 +34,22 @@ namespace RedactMyPdf.FileHandler.Aspose.Conversion
                 var pageHeightInPixels = UnitsOfMeasure.ToPixels(Convert.ToInt32(page.Rect.Height));
                 
                 // Create JPEG device with default resolution and maximum quality
-                JpegDevice jpegDevice = new JpegDevice(Convert.ToInt32(pageWidthInPixels), Convert.ToInt32(pageHeightInPixels));
+                // JpegDevice jpegDevice = new JpegDevice(Convert.ToInt32(pageWidthInPixels), Convert.ToInt32(pageHeightInPixels));
+                JpegDevice jpegDevice = new JpegDevice();
 
                 // Convert a particular page and save the image to stream
                 jpegDevice.Process(page, imageStream);
                 imageStream.Seek(0, SeekOrigin.Begin);
 
                 var img = new Bitmap(imageStream);
+                
                 return new ConvertedImage
                 {
                     ImageStream = imageStream,
-                    Height = img.Height,
-                    Width = img.Width
+                    ImageHeight = img.Height,
+                    ImageWidth = img.Width,
+                    PageWidth = pageWidthInPixels,
+                    PageHeight = pageHeightInPixels
                 };
             }, cancellationToken);
         }

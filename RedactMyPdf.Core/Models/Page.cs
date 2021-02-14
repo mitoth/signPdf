@@ -6,20 +6,41 @@ namespace RedactMyPdf.Core.Models
     {
         public readonly Guid Id;
         public readonly string FileBinaryId;
-        public readonly int Height;
-        public readonly int Width;
 
-        public Page(Guid id, string fileBinaryId, int height, int width)
+        /// <summary>
+        /// Width in pixels of the image which was extract from the pdf page
+        /// </summary>
+        public readonly int ImageWidth;
+
+        /// <summary>
+        /// Height in pixels of the image which was extract from the pdf page
+        /// </summary>
+        public readonly int ImageHeight;
+
+        /// <summary>
+        /// Pdf page width in pixels (as determined by aspose)
+        /// </summary>
+        public readonly int PageWidth;
+
+        /// <summary>
+        /// Pdf page height in pixels (as determined by aspose)
+        /// </summary>
+        public readonly int PageHeight;
+
+
+        public Page(Guid id, string fileBinaryId, int imageWidth, int imageHeight, int pageWidth, int pageHeight)
         {
             Id = id;
             FileBinaryId = fileBinaryId;
-            Height = height;
-            Width = width;
+            ImageWidth = imageWidth;
+            ImageHeight = imageHeight;
+            PageWidth = pageWidth;
+            PageHeight = pageHeight;
         }
 
         protected bool Equals(Page other)
         {
-            return Id.Equals(other.Id) && FileBinaryId == other.FileBinaryId && Height == other.Height && Width == other.Width;
+            return Id.Equals(other.Id) && FileBinaryId == other.FileBinaryId && ImageWidth == other.ImageWidth && ImageHeight == other.ImageHeight && PageWidth == other.PageWidth && PageHeight == other.PageHeight;
         }
 
         public override bool Equals(object obj)
@@ -32,15 +53,7 @@ namespace RedactMyPdf.Core.Models
 
         public override int GetHashCode()
         {
-            unchecked
-            {
-                return (Id.GetHashCode() + Height + Width * 397) ^ (FileBinaryId != null ? FileBinaryId.GetHashCode() : 0);
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(Id)}: {Id}, {nameof(FileBinaryId)}: {FileBinaryId}, {nameof(Height)}: {Height}, {nameof(Width)}: {Width}";
+            return HashCode.Combine(Id, FileBinaryId, ImageWidth, ImageHeight, PageWidth, PageHeight);
         }
     }
 }

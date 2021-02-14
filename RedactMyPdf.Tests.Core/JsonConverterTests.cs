@@ -31,16 +31,14 @@ namespace RedactMyPdf.Tests.Core
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
                 })
             };
-            var documentShapes = new DocumentShapes(shapes);
-
 
             // ReSharper disable once MethodHasAsyncOverload
-            var serializedShapes = JsonConvert.SerializeObject(documentShapes);
+            var serializedShapes = JsonConvert.SerializeObject(shapes);
 
-            var deserializedShapes = JsonConvert.DeserializeObject<DocumentShapes>(serializedShapes, new JsonSerializerSettings() { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
+            var deserializedShapes = JsonConvert.DeserializeObject<List<PageShapes>>(serializedShapes, new JsonSerializerSettings() { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
 
             Assert.NotNull(deserializedShapes);
-            Assert.AreEqual(4, deserializedShapes.Pages.Count());
+            Assert.AreEqual(4, deserializedShapes.Count());
         }
     }
 }

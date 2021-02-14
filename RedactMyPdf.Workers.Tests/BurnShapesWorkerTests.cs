@@ -106,9 +106,7 @@ namespace RedactMyPdf.Workers.Tests
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
                 })
             };
-            var documentShapes = new DocumentShapes(shapes);
-
-            var burnShapesMessage = new BurnShapesToPdfMessage(convertedDocument.Id, documentShapes);
+            var burnShapesMessage = new BurnShapesToPdfMessage(convertedDocument.Id, shapes);
 
             // ReSharper disable once MethodHasAsyncOverload
             var convertM = JsonConvert.SerializeObject(burnShapesMessage);

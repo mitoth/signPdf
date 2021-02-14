@@ -154,9 +154,8 @@ namespace RedactMyPdf.Viewer.Controllers
             [FromQuery] string connectionId, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotDefault(documentId, nameof(documentId));
-            var documentShapes = new DocumentShapes(shapesList);
             cache.Set(documentId, connectionId);
-            SendBurnMessage(documentId, documentShapes);
+            SendBurnMessage(documentId, shapesList);
             return Accepted();
         }
 
@@ -193,22 +192,6 @@ namespace RedactMyPdf.Viewer.Controllers
             logger.LogDebug($"Getting burned version of document with id [{documentId}]");
             var burnedDocument = await burnedDocumentRepository.GetAsync(documentId, cancellationToken);
             return burnedDocument;
-        }
-
-        //temporary - replace with signalR or add another rabbit queue for processed messages (type of mq should be fanout)
-        private async Task WaitForFileToBeBurned(Guid documentId, CancellationToken cancellationToken)
-        {
-            await Task.Run(async () =>
-            {
-                var timeout = 100;
-                var spentTime = 0;
-                BurnedDocument doc = null;
-                while (spentTime < timeout && doc == null)
-                {
-                    spentTime++;
-                    doc = await GetBurnedDocument(documentId, cancellationToken);
-                }
-            }, cancellationToken);
         }
 
         private static async Task<bool> IsPdfFileSignature(IFormFile file, CancellationToken cancellationToken)
@@ -261,7 +244,7 @@ namespace RedactMyPdf.Viewer.Controllers
             logger.LogInformation($"Sent convert message for fileBinaryId: [{fileBinaryId}] and toBeCreatedDocumentId: [{toBeCreatedDocumentId}]");
         }
 
-        private void SendBurnMessage(Guid documentId, DocumentShapes documentShapes)
+        private void SendBurnMessage(Guid documentId, IEnumerable<PageShapes> documentShapes)
         {
             logger.LogDebug("Setting up messaging queue for burn");
             using var connection = connectionFactory.CreateConnection();
