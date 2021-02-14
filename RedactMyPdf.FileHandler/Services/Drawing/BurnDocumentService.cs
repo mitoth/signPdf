@@ -28,7 +28,7 @@ namespace RedactMyPdf.FileHandler.Services.Drawing
         {
             var document = await documentRepository.GetAsync(documentId, cancellationToken);
             await using var documentStream = await fileRepository.GetAsync(document.FileBinaryId, cancellationToken);
-            await using var burnedFileStream = await drawService.DrawAsync(documentStream, shapes, cancellationToken);
+            await using var burnedFileStream = await drawService.DrawAsync(documentStream, document, shapes, cancellationToken);
             var storedFileId = await fileRepository.AddAsync(new RawFile($"burned_{documentId}", burnedFileStream), cancellationToken);
             var burnedDocument = new BurnedDocument(Guid.NewGuid(), documentId, storedFileId, shapes);
             await burnedDocumentRepository.AddAsync(burnedDocument, cancellationToken);

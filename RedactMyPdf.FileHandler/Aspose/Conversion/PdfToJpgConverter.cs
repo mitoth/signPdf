@@ -30,9 +30,6 @@ namespace RedactMyPdf.FileHandler.Aspose.Conversion
             {
                 var imageStream = new MemoryStream();
 
-                var pageWidthInPixels = UnitsOfMeasure.ToPixels(Convert.ToInt32(page.Rect.Width));
-                var pageHeightInPixels = UnitsOfMeasure.ToPixels(Convert.ToInt32(page.Rect.Height));
-                
                 // Create JPEG device with default resolution and maximum quality
                 // JpegDevice jpegDevice = new JpegDevice(Convert.ToInt32(pageWidthInPixels), Convert.ToInt32(pageHeightInPixels));
                 JpegDevice jpegDevice = new JpegDevice();

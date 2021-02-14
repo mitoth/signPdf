@@ -19,35 +19,37 @@ namespace RedactMyPdf.FileHandler.Aspose.Drawing
             this.rectangle = rectangle;
         }
 
-        public void Draw(Page page)
+        public void Draw(Page asposePage, Core.Models.Page documentPage)
         {
-            SetPageMargins(page);
+            SetPageMargins(asposePage);
 
-            var widthInPoints = (float)Math.Truncate(page.Rect.Width);
-            var heightInPoints = (float)Math.Truncate(page.Rect.Height);
+            var widthInPoints = (float)Math.Round(asposePage.Rect.Width);
+            var heightInPoints = (float)Math.Round(asposePage.Rect.Height);
 
-            
             var canvas = new Graph(widthInPoints, heightInPoints);
-            if (page.Paragraphs.FirstOrDefault(g =>
+            if (asposePage.Paragraphs.FirstOrDefault(g =>
                 g is Graph graph && Math.Abs(graph.Width - widthInPoints) < 0.1 && Math.Abs(graph.Height - heightInPoints) < 0.1) is Graph existingCanvas)
             {
                 canvas = existingCanvas;
             }
             else
             {
-                page.Paragraphs.Add(canvas);   
+                asposePage.Paragraphs.Add(canvas);   
             }
             var c = ColorTranslator.FromHtml(rectangle.BorderHtmlColorCode);
+
+            var widthRatio = (float) (asposePage.Rect.Width / documentPage.Width);
+            var heightRatio = (float) (asposePage.Rect.Height / documentPage.Height);
             
             //HACK - In aspose X = 0 is in the bottom left corner of the page like in Geometry;
             //however, most of the UI tools consider x=0 to be the top left corner; hack needed to adapt to this
-            var yInPoints = heightInPoints - UnitsOfMeasure.ToPoints(rectangle.Axis.Y) - UnitsOfMeasure.ToPoints(rectangle.Height);
-            
+            var translatedY = documentPage.Height - rectangle.Axis.Y - rectangle.Height;
+
             var rect = new AsposePdf.Drawing.Rectangle(
-                UnitsOfMeasure.ToPoints(rectangle.Axis.X), 
-                yInPoints, 
-                UnitsOfMeasure.ToPoints(rectangle.Width),
-                UnitsOfMeasure.ToPoints(rectangle.Height))
+                rectangle.Axis.X * widthRatio,
+                translatedY * heightRatio, 
+                rectangle.Width * widthRatio,
+                rectangle.Height * heightRatio)
             {
                 GraphInfo =
                 {

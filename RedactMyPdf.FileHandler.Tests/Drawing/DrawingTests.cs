@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using RedactMyPdf.Core.Models;
 using RedactMyPdf.Core.Models.Draw;
 using RedactMyPdf.FileHandler.Aspose.Drawing;
 using RedactMyPdf.FileHandler.Tests.Util;
@@ -54,7 +56,7 @@ namespace RedactMyPdf.FileHandler.Tests.Drawing
             }
 
             await using var stream = new MemoryStream(fileBinary);
-            await using var stampedStream = await drawService.DrawAsync(stream, pageShapesList, CancellationToken.None);
+            await using var stampedStream = await drawService.DrawAsync(stream, new Document(new Guid(), "","", new List<Page>()),  pageShapesList, CancellationToken.None);
             await using var testFileStream = File.Create(Path.Combine(OutputFolderPath, "test1.pdf"));
             stampedStream.Seek(0, SeekOrigin.Begin);
             await stampedStream.CopyToAsync(testFileStream);

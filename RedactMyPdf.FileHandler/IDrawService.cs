@@ -8,6 +8,6 @@ namespace RedactMyPdf.FileHandler
 {
     public interface IDrawService
     {
-        Task<Stream> DrawAsync(Stream inputDocumentStream, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken);
+        Task<Stream> DrawAsync(Stream inputDocumentStream,Core.Models.Document doc, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken);
     }
 }

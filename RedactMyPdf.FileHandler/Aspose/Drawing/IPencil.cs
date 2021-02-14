@@ -8,6 +8,6 @@ namespace RedactMyPdf.FileHandler.Aspose.Drawing
         /// Draw shapes on a page
         /// </summary>
         /// <param name="page">The Aspose page where to draw the shapes</param>
-        void Draw(Page page);
+        void Draw(Page page, Core.Models.Page documentPage);
     }
 }
