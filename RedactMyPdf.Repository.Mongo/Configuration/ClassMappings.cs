@@ -30,11 +30,9 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
             {
                 cm.MapField(p => p.FileBinaryId);
                 cm.MapField(p => p.Id);
-                cm.MapField(p => p.ImageHeight);
-                cm.MapField(p => p.ImageWidth);
-                cm.MapField(p => p.PageHeight);
-                cm.MapField(p => p.PageWidth);
-                cm.MapCreator(p => new Page(p.Id, p.FileBinaryId, p.ImageWidth, p.ImageHeight, p.PageWidth, p.PageHeight));
+                cm.MapField(p => p.Height);
+                cm.MapField(p => p.Width);
+                cm.MapCreator(p => new Page(p.Id, p.FileBinaryId, p.Width, p.Height));
             });
             BsonClassMap.RegisterClassMap<BurnedDocument>(cm =>
             {

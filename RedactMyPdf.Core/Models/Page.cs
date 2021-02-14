@@ -10,37 +10,25 @@ namespace RedactMyPdf.Core.Models
         /// <summary>
         /// Width in pixels of the image which was extract from the pdf page
         /// </summary>
-        public readonly int ImageWidth;
+        public readonly int Width;
 
         /// <summary>
         /// Height in pixels of the image which was extract from the pdf page
         /// </summary>
-        public readonly int ImageHeight;
-
-        /// <summary>
-        /// Pdf page width in pixels (as determined by aspose)
-        /// </summary>
-        public readonly int PageWidth;
-
-        /// <summary>
-        /// Pdf page height in pixels (as determined by aspose)
-        /// </summary>
-        public readonly int PageHeight;
+        public readonly int Height;
 
 
-        public Page(Guid id, string fileBinaryId, int imageWidth, int imageHeight, int pageWidth, int pageHeight)
+        public Page(Guid id, string fileBinaryId, int width, int height)
         {
             Id = id;
             FileBinaryId = fileBinaryId;
-            ImageWidth = imageWidth;
-            ImageHeight = imageHeight;
-            PageWidth = pageWidth;
-            PageHeight = pageHeight;
+            Width = width;
+            Height = height;
         }
 
         protected bool Equals(Page other)
         {
-            return Id.Equals(other.Id) && FileBinaryId == other.FileBinaryId && ImageWidth == other.ImageWidth && ImageHeight == other.ImageHeight && PageWidth == other.PageWidth && PageHeight == other.PageHeight;
+            return Id.Equals(other.Id) && FileBinaryId == other.FileBinaryId && Width == other.Width && Height == other.Height;
         }
 
         public override bool Equals(object obj)
@@ -53,7 +41,7 @@ namespace RedactMyPdf.Core.Models
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id, FileBinaryId, ImageWidth, ImageHeight, PageWidth, PageHeight);
+            return HashCode.Combine(Id, FileBinaryId, Width, Height);
         }
     }
 }

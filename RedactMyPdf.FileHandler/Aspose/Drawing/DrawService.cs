@@ -41,7 +41,6 @@ namespace RedactMyPdf.FileHandler.Aspose.Drawing
             return shape switch
             {
                 Rectangle rectangle => new RectanglePencil(rectangle),
-                TextBox textBox => new TextBoxPencil(textBox),
                 _ => throw new NotSupportedException()
             };
         }

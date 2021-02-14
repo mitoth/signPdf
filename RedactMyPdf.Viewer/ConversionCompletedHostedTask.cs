@@ -101,7 +101,7 @@ namespace RedactMyPdf.Viewer
                 var processedDocument = new ProcessedDocumentDto
                 {
                     Id = processedFileId,
-                    Pages = addedDocument.Pages.Select(p => new ProcessedPageImageDto(p.ImageWidth, p.ImageHeight)).ToList()
+                    Pages = addedDocument.Pages.Select(p => new ProcessedPageImageDto(p.Width, p.Height)).ToList()
                 };
 
                 await hub.Clients.Client(clientId).SendAsync("FileProcessed",

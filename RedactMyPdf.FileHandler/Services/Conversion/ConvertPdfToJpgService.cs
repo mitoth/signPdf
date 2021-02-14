@@ -38,7 +38,7 @@ namespace RedactMyPdf.FileHandler.Services.Conversion
                 var image = convertedImages[i];
                 var rawFile = new RawFile($"page_{fileBinaryId}_{i}", image.ImageStream);
                 var addedPageId = await fileRepository.AddAsync(rawFile, cancellationToken);
-                var page = new Page(Guid.NewGuid(), addedPageId, image.ImageWidth, image.ImageHeight, image.PageWidth, image.PageHeight);
+                var page = new Page(Guid.NewGuid(), addedPageId, image.Width, image.Height);
                 pages.Add(page);
             }
             var document = new Document(newDocumentId, $"doc_{fileBinaryId}", fileBinaryId, pages);

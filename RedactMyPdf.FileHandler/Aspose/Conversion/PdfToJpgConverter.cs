@@ -46,10 +46,8 @@ namespace RedactMyPdf.FileHandler.Aspose.Conversion
                 return new ConvertedImage
                 {
                     ImageStream = imageStream,
-                    ImageHeight = img.Height,
-                    ImageWidth = img.Width,
-                    PageWidth = pageWidthInPixels,
-                    PageHeight = pageHeightInPixels
+                    Height = img.Height,
+                    Width = img.Width
                 };
             }, cancellationToken);
         }

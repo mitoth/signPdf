@@ -12,20 +12,10 @@ namespace RedactMyPdf.Core.Models
         /// <summary>
         /// Width in pixels of the image which was extract from the pdf page
         /// </summary>
-        public int ImageWidth { get; set; }
+        public int Width { get; set; }
         /// <summary>
         /// Height in pixels of the image which was extract from the pdf page
         /// </summary>
-        public int ImageHeight { get; set; }
-        
-        /// <summary>
-        /// Pdf page width in pixels (as determined by aspose)
-        /// </summary>
-        public int PageWidth { get; set; }
-        
-        /// <summary>
-        /// Pdf page height in pixels (as determined by aspose)
-        /// </summary>
-        public int PageHeight { get; set; }
+        public int Height { get; set; }
     }
 }
