@@ -38,18 +38,22 @@ namespace RedactMyPdf.FileHandler.Aspose.Drawing
             }
             var c = ColorTranslator.FromHtml(rectangle.BorderHtmlColorCode);
 
-            var widthRatio = (float) (asposePage.Rect.Width / documentPage.Width);
-            var heightRatio = (float) (asposePage.Rect.Height / documentPage.Height);
+            var widthRatio = widthInPoints / documentPage.Width;
+            var heightRatio = heightInPoints / documentPage.Height;
             
             //HACK - In aspose X = 0 is in the bottom left corner of the page like in Geometry;
             //however, most of the UI tools consider x=0 to be the top left corner; hack needed to adapt to this
             var translatedY = documentPage.Height - rectangle.Axis.Y - rectangle.Height;
 
+            var x = rectangle.Axis.X * widthRatio;
+            var y = translatedY * heightRatio;
+            var width = rectangle.Width * widthRatio;
+            var height = rectangle.Height * heightRatio;
             var rect = new AsposePdf.Drawing.Rectangle(
-                rectangle.Axis.X * widthRatio,
-                translatedY * heightRatio, 
-                rectangle.Width * widthRatio,
-                rectangle.Height * heightRatio)
+                x,
+                y, 
+                width,
+                height)
             {
                 GraphInfo =
                 {
