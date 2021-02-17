@@ -135,14 +135,14 @@ const Editor = (props: IProps): ReactElement => {
     const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
 
     return (
-        <table className="center">
-            <thead className="d-flex bd-highlight">
-                <td className="p-2 flex-grow-1">
+        <div>
+            <nav className="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+                <div className="p-2">
                     <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
                         Add rectangle
                     </button>
-                </td>
-                <td className="p-2 ">
+                </div>
+                <div className="p-2 ">
                     {downloadPath && (
                         <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                     )}
@@ -152,43 +152,56 @@ const Editor = (props: IProps): ReactElement => {
                         )}
                         Download
                     </button>
-                </td>
-            </thead>
-            <tbody>
-                <tr className="height5percent"></tr>
-                {numberOfPages &&
-                    numberOfPages > 0 &&
-                    Array(numberOfPages)
-                        .fill(0)
-                        .map((_, idx) => 1 + idx)
-                        .map((i) => {
-                            let width: number;
-                            let height: number;
-                            const pageWidth = props.location.state.pages[i - 1].width;
-                            const pageHeight = props.location.state.pages[i - 1].height;
-                            if (pageWidth > window.innerWidth) {
-                                const shrinkRatio = pageWidth / maxWidth;
-                                width = window.innerWidth;
-                                height = pageHeight / shrinkRatio;
-                            } else {
-                                width = pageWidth;
-                                height = pageHeight;
-                            }
-                            return (
-                                <tr key={i}>
-                                    <PageDrawStage
-                                        rectangles={rectangles}
-                                        setRectangles={updateRectangles}
-                                        fileId={fileId}
-                                        pageNumber={i}
-                                        width={width}
-                                        height={height}
-                                    ></PageDrawStage>
-                                </tr>
-                            );
-                        })}
-            </tbody>
-        </table>
+                </div>
+                <form className="form-inline ml-auto p-2">
+                    <input
+                        className="form-control mr-sm-2"
+                        type="search"
+                        placeholder="Search"
+                        aria-label="Search"
+                    ></input>
+                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
+                        Search
+                    </button>
+                </form>
+            </nav>
+            <table className="center">
+                <tbody>
+                    <tr className="height5percent"></tr>
+                    {numberOfPages &&
+                        numberOfPages > 0 &&
+                        Array(numberOfPages)
+                            .fill(0)
+                            .map((_, idx) => 1 + idx)
+                            .map((i) => {
+                                let width: number;
+                                let height: number;
+                                const pageWidth = props.location.state.pages[i - 1].width;
+                                const pageHeight = props.location.state.pages[i - 1].height;
+                                if (pageWidth > window.innerWidth) {
+                                    const shrinkRatio = pageWidth / maxWidth;
+                                    width = window.innerWidth;
+                                    height = pageHeight / shrinkRatio;
+                                } else {
+                                    width = pageWidth;
+                                    height = pageHeight;
+                                }
+                                return (
+                                    <tr key={i}>
+                                        <PageDrawStage
+                                            rectangles={rectangles}
+                                            setRectangles={updateRectangles}
+                                            fileId={fileId}
+                                            pageNumber={i}
+                                            width={width}
+                                            height={height}
+                                        ></PageDrawStage>
+                                    </tr>
+                                );
+                            })}
+                </tbody>
+            </table>
+        </div>
     );
 };
 
