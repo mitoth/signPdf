@@ -11,6 +11,8 @@ interface IProps {
     height: number;
     setRectangles: (rectangles: Rectangle[]) => void;
     fileId: string;
+    setSelectedShapeId: (selectedShapeId: number | null) => void;
+    selectedShapeId: number | null;
 }
 
 const PageDrawStage = (props: IProps): ReactElement => {
@@ -22,7 +24,12 @@ const PageDrawStage = (props: IProps): ReactElement => {
                 <Layer>
                     <MemoizedPageImage pageUrl={url} width={props.width} height={props.height} />
                 </Layer>
-                <KonvaDrawLayer rectangles={props.rectangles} setRectangles={props.setRectangles}></KonvaDrawLayer>
+                <KonvaDrawLayer
+                    rectangles={props.rectangles}
+                    setRectangles={props.setRectangles}
+                    selectedShapeId={props.selectedShapeId}
+                    setSelectedShapeId={props.setSelectedShapeId}
+                ></KonvaDrawLayer>
             </Stage>
         </>
     );

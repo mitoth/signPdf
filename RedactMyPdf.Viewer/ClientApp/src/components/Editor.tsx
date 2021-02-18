@@ -16,37 +16,34 @@ interface IProps {
     location: Location<PageState>;
 }
 
+let x = 0;
+let y = 0;
+
 const Editor = (props: IProps): ReactElement => {
-    const initialRectangles: Rectangle[] = [
-        {
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100,
-            fill: 'red',
-            id: 1,
-        },
-        {
-            x: 150,
-            y: 150,
-            width: 100,
-            height: 100,
-            fill: 'green',
-            id: 2,
-        },
-    ];
+    const initialRectangles: Rectangle[] = [];
 
     function generateRectangle(): Rectangle {
+        if (x > window.innerWidth - 50) {
+            x = 1;
+        }
+        if (y > window.innerHeight - 50) {
+            y = 1;
+        }
+
+        x += 15;
+        y += 15;
+
         return {
             id: Math.random(),
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: x,
+            y: y,
             width: 100,
             height: 100,
             fill: 'red',
         };
     }
 
+    const [selectedShapeId, setSelectedShapeId] = React.useState<number | null>(null);
     const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
@@ -57,6 +54,7 @@ const Editor = (props: IProps): ReactElement => {
         const updatedRectangles: Rectangle[] = [...rectangles];
         updatedRectangles.push(rectangle);
         setRectangles(updatedRectangles);
+        setSelectedShapeId(rectangle.id);
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
@@ -135,7 +133,7 @@ const Editor = (props: IProps): ReactElement => {
     const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
 
     return (
-        <div>
+        <div style={{ backgroundColor: '#f0f0f0' }}>
             <nav className="navbar navbar-expand-lg sticky-top navbar-light bg-light">
                 <div className="p-2">
                     <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
@@ -195,6 +193,8 @@ const Editor = (props: IProps): ReactElement => {
                                             pageNumber={i}
                                             width={width}
                                             height={height}
+                                            selectedShapeId={selectedShapeId}
+                                            setSelectedShapeId={setSelectedShapeId}
                                         ></PageDrawStage>
                                     </tr>
                                 );

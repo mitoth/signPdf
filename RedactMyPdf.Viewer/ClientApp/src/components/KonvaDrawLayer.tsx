@@ -7,13 +7,11 @@ import { KonvaEventObject } from 'konva/types/Node';
 interface IProps {
     rectangles: Rectangle[];
     setRectangles: (rectangles: Rectangle[]) => void;
+    setSelectedShapeId: (selectedShapeId: number | null) => void;
+    selectedShapeId: number | null;
 }
 
 const KonvaDrawLayer = (props: IProps): ReactElement => {
-    const rectangles = props.rectangles;
-
-    const [selectedId, selectShape] = React.useState<number | null>(null);
-
     const checkDeselect = (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
         // deselect when clicked on empty area
         if (e == null || e.target == null) {
@@ -21,23 +19,23 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
         }
         const clickedOnEmpty = e.target === e.target.getStage();
         if (clickedOnEmpty) {
-            selectShape(null);
+            props.setSelectedShapeId(null);
         }
     };
 
     return (
         <Layer onMouseDown={checkDeselect} onTouchStart={checkDeselect}>
-            {rectangles.map((rect, i) => {
+            {props.rectangles.map((rect, i) => {
                 return (
                     <RectangleShape
                         key={i}
                         shapeProps={rect}
-                        isSelected={rect.id === selectedId}
+                        isSelected={rect.id === props.selectedShapeId}
                         onSelect={() => {
-                            selectShape(rect.id);
+                            props.setSelectedShapeId(rect.id);
                         }}
                         onChange={(newAttrs: Rectangle) => {
-                            const rects = rectangles.slice();
+                            const rects = props.rectangles.slice();
                             rects[i] = newAttrs;
                             props.setRectangles(rects);
                         }}
