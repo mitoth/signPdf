@@ -13,13 +13,14 @@ interface IProps {
     fileId: string;
     setSelectedShapeId: (selectedShapeId: number | null) => void;
     selectedShapeId: number | null;
+    clickOnPageEvent: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 const PageDrawStage = (props: IProps): ReactElement => {
     const url = `/api/v1/Document/${props.fileId}/page/${props.pageNumber}/file`;
 
     return (
-        <>
+        <div onClick={props.clickOnPageEvent}>
             <Stage width={props.width} height={props.height}>
                 <Layer>
                     <MemoizedPageImage pageUrl={url} width={props.width} height={props.height} />
@@ -31,7 +32,7 @@ const PageDrawStage = (props: IProps): ReactElement => {
                     setSelectedShapeId={props.setSelectedShapeId}
                 ></KonvaDrawLayer>
             </Stage>
-        </>
+        </div>
     );
 };
 

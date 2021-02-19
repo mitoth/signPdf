@@ -47,14 +47,11 @@ const Editor = (props: IProps): ReactElement => {
     const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
+    const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
     console.log(downloadPath);
 
     const addRectanglesClick = () => {
-        const rectangle = generateRectangle();
-        const updatedRectangles: Rectangle[] = [...rectangles];
-        updatedRectangles.push(rectangle);
-        setRectangles(updatedRectangles);
-        setSelectedShapeId(rectangle.id);
+        setAddRectanglePressed(true);
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
@@ -132,6 +129,17 @@ const Editor = (props: IProps): ReactElement => {
 
     const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
 
+    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        if (addRectanglePressed) {
+            const rectangle = generateRectangle();
+            const updatedRectangles: Rectangle[] = [...rectangles];
+            updatedRectangles.push(rectangle);
+            setRectangles(updatedRectangles);
+            setSelectedShapeId(rectangle.id);
+            setAddRectanglePressed(false);
+        }
+    };
+
     return (
         <div style={{ backgroundColor: '#f0f0f0' }}>
             <nav className="navbar navbar-expand-lg sticky-top navbar-light bg-light">
@@ -185,18 +193,22 @@ const Editor = (props: IProps): ReactElement => {
                                     height = pageHeight;
                                 }
                                 return (
-                                    <tr key={i}>
-                                        <PageDrawStage
-                                            rectangles={rectangles}
-                                            setRectangles={updateRectangles}
-                                            fileId={fileId}
-                                            pageNumber={i}
-                                            width={width}
-                                            height={height}
-                                            selectedShapeId={selectedShapeId}
-                                            setSelectedShapeId={setSelectedShapeId}
-                                        ></PageDrawStage>
-                                    </tr>
+                                    <React.Fragment key={i}>
+                                        <tr className="height5percent">{i}</tr>
+                                        <tr>
+                                            <PageDrawStage
+                                                rectangles={rectangles}
+                                                setRectangles={updateRectangles}
+                                                fileId={fileId}
+                                                pageNumber={i}
+                                                width={width}
+                                                height={height}
+                                                selectedShapeId={selectedShapeId}
+                                                setSelectedShapeId={setSelectedShapeId}
+                                                clickOnPageEvent={clickOnPageEvent}
+                                            ></PageDrawStage>
+                                        </tr>
+                                    </React.Fragment>
                                 );
                             })}
                 </tbody>

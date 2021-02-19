@@ -34,7 +34,8 @@ table.center {
 
 .height5percent {
     height: 10px;
-    border: solid red 10px;
+    text-align: center;
+    /* border: solid red 10px; */
 }
 
 .border {
