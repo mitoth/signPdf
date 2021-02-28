@@ -97,11 +97,7 @@ namespace RedactMyPdf.Viewer.Controllers
 
             cache.Set(toBeCreatedDocumentId, connectionId);
       
-            return Accepted(new ProcessedDocumentDto
-            {
-                Id = toBeCreatedDocumentId,
-                Pages = new List<ProcessedPageImageDto>(){new ProcessedPageImageDto(1000, 1000)}
-            });
+            return Accepted(toBeCreatedDocumentId);
         }
 
         [HttpGet]

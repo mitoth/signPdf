@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
-// import FileDownload from './FileDownload';
 import Rectangle from '../interfaces/Rectangle';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
@@ -131,7 +130,10 @@ const Editor = (props: IProps): ReactElement => {
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (addRectanglePressed) {
+            console.log(e);
             const rectangle = generateRectangle();
+            rectangle.x = e.clientX;
+            rectangle.y = e.clientY;
             const updatedRectangles: Rectangle[] = [...rectangles];
             updatedRectangles.push(rectangle);
             setRectangles(updatedRectangles);
@@ -141,36 +143,47 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     return (
-        <div style={{ backgroundColor: '#f0f0f0' }}>
-            <nav className="navbar navbar-expand-lg sticky-top navbar-light bg-light">
-                <div className="p-2">
-                    <button className="btn btn-primary" type="button" onClick={addRectanglesClick}>
-                        Add rectangle
-                    </button>
+        <div style={{ backgroundColor: '#f4f6f5' }}>
+            <div className="sticky-top flexbox-top-container">
+                <div className="flexbox-container1 vw1-margin">
+                    <div>
+                        <button className="ui icon left labeled button large green" onClick={addRectanglesClick}>
+                            <i aria-hidden="true" className="edit icon"></i>Add Rectangle
+                        </button>
+                    </div>
                 </div>
-                <div className="p-2 ">
-                    {downloadPath && (
-                        <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
+                <div className="flexbox-container1">
+                    {addRectanglePressed && (
+                        <div className="ui green raised segment large">
+                            <i aria-hidden="true" className="info icon"></i>
+                            Click on the page where you want to add the rectangle.
+                        </div>
                     )}
-                    <button className="btn btn-success" onClick={saveDocumentClick}>
-                        {isDownloadInProgress && (
-                            <span className="spinner-border spinner-border-sm " role="status" aria-hidden="true"></span>
-                        )}
-                        Download
-                    </button>
                 </div>
-                <form className="form-inline ml-auto p-2">
-                    <input
-                        className="form-control mr-sm-2"
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                    ></input>
-                    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">
-                        Search
-                    </button>
-                </form>
-            </nav>
+                <div className="flexbox-container3">
+                    <div className="vw1-margin">
+                        <div className="ui buttons">
+                            {downloadPath && (
+                                <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
+                            )}
+                            <button className="ui button">Cancel</button>
+                            <div className="or"></div>
+                            {isDownloadInProgress && <button className="ui loading button green">Loading</button>}
+                            {!isDownloadInProgress && (
+                                <button className="ui positive button" onClick={saveDocumentClick}>
+                                    Download
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="ui icon input vw1-margin-right">
+                        <input type="text" placeholder="Search..." />
+                        <i aria-hidden="true" className="search circular inverted link icon"></i>
+                    </div>
+                </div>
+            </div>
+
             <table className="center">
                 <tbody>
                     <tr className="height5percent"></tr>
