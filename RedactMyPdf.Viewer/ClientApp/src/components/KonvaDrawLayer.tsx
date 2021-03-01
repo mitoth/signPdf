@@ -39,6 +39,15 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                             rects[i] = newAttrs;
                             props.setRectangles(rects);
                         }}
+                        onDelete={() => {
+                            if (props.rectangles.length == 1) {
+                                props.setRectangles([]);
+                            } else {
+                                const rects = props.rectangles.slice();
+                                rects.splice(i, 1);
+                                props.setRectangles(rects);
+                            }
+                        }}
                     />
                 );
             })}

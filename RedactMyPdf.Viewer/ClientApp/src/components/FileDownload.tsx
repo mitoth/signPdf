@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, useEffect, useRef } from 'react';
 
 interface IProps {
