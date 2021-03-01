@@ -56,6 +56,10 @@ const Editor = (props: IProps): ReactElement => {
     const fileId: string = window.location.pathname.split('/')[2];
     const numberOfPages: number = parseInt(window.location.pathname.split('/')[3]);
 
+    const cancelChangesClick = () => {
+        if (window.confirm('Are you sure you wish to revert all redactions?')) setRectangles([]);
+    };
+
     const saveDocumentClick = () => {
         setIsDownloadInProgress(true);
         console.log(rectangles);
@@ -130,10 +134,12 @@ const Editor = (props: IProps): ReactElement => {
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (addRectanglePressed) {
-            console.log(e);
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            const x = e.clientX - rect.left; //x position within the element.
+            const y = e.clientY - rect.top; //y position within the element.
             const rectangle = generateRectangle();
-            rectangle.x = e.clientX;
-            rectangle.y = e.clientY;
+            rectangle.x = x;
+            rectangle.y = y;
             const updatedRectangles: Rectangle[] = [...rectangles];
             updatedRectangles.push(rectangle);
             setRectangles(updatedRectangles);
@@ -143,11 +149,11 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     return (
-        <div style={{ backgroundColor: '#f4f6f5' }}>
+        <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
             <div className="sticky-top flexbox-top-container">
                 <div className="flexbox-container1 vw1-margin">
                     <div>
-                        <button className="ui icon left labeled button large green" onClick={addRectanglesClick}>
+                        <button className="ui icon left labeled button green" onClick={addRectanglesClick}>
                             <i aria-hidden="true" className="edit icon"></i>Add Rectangle
                         </button>
                     </div>
@@ -166,7 +172,9 @@ const Editor = (props: IProps): ReactElement => {
                             {downloadPath && (
                                 <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                             )}
-                            <button className="ui button">Cancel</button>
+                            <button className="ui button" onClick={cancelChangesClick}>
+                                Cancel
+                            </button>
                             <div className="or"></div>
                             {isDownloadInProgress && <button className="ui loading button green">Loading</button>}
                             {!isDownloadInProgress && (
