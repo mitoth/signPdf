@@ -137,15 +137,28 @@ const Editor = (props: IProps): ReactElement => {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
             const x = e.clientX - rect.left; //x position within the element.
             const y = e.clientY - rect.top; //y position within the element.
-            const rectangle = generateRectangle();
-            rectangle.x = x;
-            rectangle.y = y;
-            const updatedRectangles: Rectangle[] = [...rectangles];
-            updatedRectangles.push(rectangle);
-            setRectangles(updatedRectangles);
-            setSelectedShapeId(rectangle.id);
-            setAddRectanglePressed(false);
+            addRectangleOnPage(x, y);
         }
+    };
+
+    const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>) => {
+        if (addRectanglePressed) {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left; //x position within the element.
+            const y = e.touches[0].clientY - rect.top; //y position within the element.
+            addRectangleOnPage(x, y);
+        }
+    };
+
+    const addRectangleOnPage = (x: number, y: number) => {
+        const rectangle = generateRectangle();
+        rectangle.x = x;
+        rectangle.y = y;
+        const updatedRectangles: Rectangle[] = [...rectangles];
+        updatedRectangles.push(rectangle);
+        setRectangles(updatedRectangles);
+        setSelectedShapeId(rectangle.id);
+        setAddRectanglePressed(false);
     };
 
     return (
@@ -227,6 +240,7 @@ const Editor = (props: IProps): ReactElement => {
                                                 selectedShapeId={selectedShapeId}
                                                 setSelectedShapeId={setSelectedShapeId}
                                                 clickOnPageEvent={clickOnPageEvent}
+                                                touchStartEvent={touchStartEvent}
                                             ></PageDrawStage>
                                         </tr>
                                     </React.Fragment>

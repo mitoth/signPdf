@@ -14,13 +14,14 @@ interface IProps {
     setSelectedShapeId: (selectedShapeId: number | null) => void;
     selectedShapeId: number | null;
     clickOnPageEvent: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    touchStartEvent: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
 const PageDrawStage = (props: IProps): ReactElement => {
     const url = `/api/v1/Document/${props.fileId}/page/${props.pageNumber}/file`;
 
     return (
-        <div onClick={props.clickOnPageEvent}>
+        <div onClick={props.clickOnPageEvent} onTouchStart={props.touchStartEvent}>
             <Stage width={props.width} height={props.height}>
                 <Layer>
                     <MemoizedPageImage pageUrl={url} width={props.width} height={props.height} />
