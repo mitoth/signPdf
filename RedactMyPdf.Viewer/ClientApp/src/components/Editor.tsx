@@ -21,6 +21,12 @@ let y = 0;
 const Editor = (props: IProps): ReactElement => {
     const initialRectangles: Rectangle[] = [];
 
+    const [selectedShapeId, setSelectedShapeId] = React.useState<number | null>(null);
+    const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
+    const [downloadPath, setDownloadPath] = React.useState('');
+    const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
+    const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
+
     function generateRectangle(): Rectangle {
         if (x > window.innerWidth - 50) {
             x = 1;
@@ -41,13 +47,6 @@ const Editor = (props: IProps): ReactElement => {
             fill: 'red',
         };
     }
-
-    const [selectedShapeId, setSelectedShapeId] = React.useState<number | null>(null);
-    const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
-    const [downloadPath, setDownloadPath] = React.useState('');
-    const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
-    const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
-    console.log(downloadPath);
 
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
@@ -130,8 +129,6 @@ const Editor = (props: IProps): ReactElement => {
         setRectangles(rects);
     };
 
-    const maxWidth = window.innerWidth > 960 ? 960 : window.innerWidth;
-
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (addRectanglePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
@@ -171,14 +168,14 @@ const Editor = (props: IProps): ReactElement => {
                         </button>
                     </div>
                 </div>
-                <div className="flexbox-container1">
+                {/* <div className="flexbox-container1">
                     {addRectanglePressed && (
                         <div className="ui green raised segment large">
                             <i aria-hidden="true" className="info icon"></i>
                             Click on the page where you want to add the rectangle.
                         </div>
                     )}
-                </div>
+                </div> */}
                 <div className="flexbox-container3">
                     <div className="vw1-margin">
                         <div className="ui buttons">
@@ -219,7 +216,7 @@ const Editor = (props: IProps): ReactElement => {
                                 const pageWidth = props.location.state.pages[i - 1].width;
                                 const pageHeight = props.location.state.pages[i - 1].height;
                                 if (pageWidth > window.innerWidth) {
-                                    const shrinkRatio = pageWidth / maxWidth;
+                                    const shrinkRatio = pageWidth / window.innerWidth;
                                     width = window.innerWidth;
                                     height = pageHeight / shrinkRatio;
                                 } else {
