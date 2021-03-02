@@ -6,6 +6,8 @@ import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
 import { Location } from 'history';
 import { HubConnectionBuilder } from '@microsoft/signalr';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface PageState {
     pages: Page[];
@@ -50,6 +52,7 @@ const Editor = (props: IProps): ReactElement => {
 
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
+        toast('Click on the page where you want to add the rectangle!');
     };
 
     const fileId: string = window.location.pathname.split('/')[2];

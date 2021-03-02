@@ -5,6 +5,8 @@ import 'semantic-ui-css/semantic.min.css';
 
 import FileUpload from './components/FileUpload';
 import Editor from './components/Editor';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App(): ReactElement {
     return (
@@ -15,6 +17,7 @@ function App(): ReactElement {
                     <Route exact path="/editor/:slug/:slug2" component={Editor} />
                 </Switch>
             </BrowserRouter>
+            <ToastContainer position="top-center" />
         </div>
     );
 }
