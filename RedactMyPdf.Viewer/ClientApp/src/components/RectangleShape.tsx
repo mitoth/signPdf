@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Rect as RectKonvaShape } from 'konva/types/shapes/Rect';
-import { Circle as CircleKonvaShape } from 'konva/types/shapes/Circle';
+import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 import React, { ReactElement } from 'react';
-import { Rect, Circle, Text, Transformer } from 'react-konva';
+import { Rect, Tag, Label, Text, Transformer } from 'react-konva';
 
 interface IProps {
     shapeProps: any;
@@ -16,7 +16,8 @@ interface IProps {
 
 const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }: IProps): ReactElement => {
     const rectRef = React.useRef<RectKonvaShape>();
-    const circleRef = React.useRef<CircleKonvaShape>();
+    const labelRef = React.useRef<LabelKonvaShape>();
+
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
 
     React.useEffect(() => {
@@ -27,24 +28,40 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                 current!.nodes([rectRef.current]);
                 current!.getLayer()!.batchDraw();
             }
-            circleRef.current?.show();
+            labelRef.current?.show();
         } else {
-            circleRef.current?.hide();
+            labelRef.current?.hide();
         }
     }, [isSelected]);
 
     return (
         <React.Fragment>
-            <Circle
-                ref={circleRef as React.MutableRefObject<CircleKonvaShape>}
-                onClick={() => {
-                    onDelete();
-                }}
-                radius={10}
-                fill="red"
-                x={rectRef.current?.attrs.x ? rectRef.current?.attrs.x : shapeProps.x}
-                y={rectRef.current?.attrs.y ? rectRef.current?.attrs.y - 20 : shapeProps.y - 20}
-            ></Circle>
+            <Label
+                x={
+                    rectRef.current?.attrs.x
+                        ? rectRef.current?.attrs.x + rectRef.current.attrs.width
+                        : shapeProps.x + shapeProps.width
+                }
+                y={rectRef.current?.attrs.y ? rectRef.current?.attrs.y - 10 : shapeProps.y - 10}
+                ref={labelRef as React.MutableRefObject<LabelKonvaShape>}
+                opacity={0.9}
+            >
+                <Tag pointerDirection="down" pointerHeight={5} pointerWidth={8} fill="red"></Tag>
+                <Text
+                    text="X"
+                    onClick={() => {
+                        onDelete();
+                    }}
+                    padding={4}
+                    align="center"
+                    fontFamily="Calibri"
+                    fontStyle="bold"
+                    fontSize={15}
+                    width={20}
+                    height={20}
+                ></Text>
+            </Label>
+
             <Rect
                 onClick={onSelect}
                 onTap={onSelect}
@@ -53,12 +70,12 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                 draggable
                 onDragStart={() => {
                     if (isSelected) {
-                        circleRef.current?.hide();
+                        labelRef.current?.hide();
                     }
                 }}
                 onDragEnd={(e) => {
                     if (isSelected) {
-                        circleRef.current?.show();
+                        labelRef.current?.show();
                     }
                     onChange({
                         ...shapeProps,
@@ -68,12 +85,12 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                 }}
                 onTransformStart={() => {
                     if (isSelected) {
-                        circleRef.current?.hide();
+                        labelRef.current?.hide();
                     }
                 }}
                 onTransformEnd={() => {
                     if (isSelected) {
-                        circleRef.current?.show();
+                        labelRef.current?.show();
                     }
                     // transformer is changing scale of the node
                     // and NOT its width or height
