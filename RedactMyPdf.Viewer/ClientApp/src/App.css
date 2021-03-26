@@ -5,18 +5,18 @@ input[type='file'] {
     display: flex;
     flex-direction: column;
     margin: auto;
-    width: 90%;
-    height: 90vh;
+    width: 85%;
+    height: 75vh;
     text-align: center;
-    margin-bottom: 1vh;
+    margin-bottom: 5vh;
+
     /* border: solid red 1px; */
 }
 
 .header-text {
     color: #002984;
     margin-bottom: 5vh;
-    margin-top: 8vh;
-    padding-top: 2vh;
+    margin-top: 1vh;
     padding-bottom: 2vh;
     font-size: 6vh;
 }
@@ -32,7 +32,7 @@ input[type='file'] {
     #editor {
         margin: auto;
         width: 80%;
-        height: 80%;
+        height: 70%;
         text-align: center;
         /* border: solid red 1px; */
     }

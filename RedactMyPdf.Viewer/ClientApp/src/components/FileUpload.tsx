@@ -90,15 +90,15 @@ const UploadFiles = (): ReactElement => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            height: '75vh',
+            height: '65vh',
             marginBottom: '0.5vh',
-            marginTop: '0.5vh',
+            marginTop: '2vh',
         },
         active: {
             backgroundColor: '#a2cf6e',
         },
         text: {
-            alignItems: 'flex-start',
+            fontSize: '3vh',
         },
         icon: {
             color: '#fff',
