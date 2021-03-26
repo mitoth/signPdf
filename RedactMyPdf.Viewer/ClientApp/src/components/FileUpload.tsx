@@ -110,7 +110,7 @@ const UploadFiles = (): ReactElement => {
 
     return (
         <>
-            <div className="center-vertical top5">
+            <div className="center-vertical">
                 <h1 className="header-text">
                     <b>
                         <u>Sign</u> or <u>edit</u> your <u>pdf</u> in a few easy steps.
@@ -127,8 +127,7 @@ const UploadFiles = (): ReactElement => {
                     clearOnUnmount={true}
                     dropzoneProps={dropzoneProps}
                 />
-                <LinearProgress color="secondary" />
-                {/* <div className="margin-top1vh">{currentFile && !message && <LinearProgress color="secondary" />}</div> */}
+                <div className="margin-top1vh">{currentFile && !message && <LinearProgress color="secondary" />}</div>
             </div>
         </>
     );

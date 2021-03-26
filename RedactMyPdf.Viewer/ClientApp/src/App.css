@@ -9,7 +9,7 @@ input[type='file'] {
     height: 75vh;
     text-align: center;
     margin-bottom: 5vh;
-
+    margin-top: 3vh;
     /* border: solid red 1px; */
 }
 
@@ -69,10 +69,6 @@ td {
     margin: 1vw;
 }
 
-.own-class {
-    color: red;
-}
-
 .vw1-margin-right {
     margin-right: 1vw;
 }
@@ -80,20 +76,12 @@ td {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* background-color: teal; */
-    /* flex-grow: 1; */
 }
-.flexbox-container2 {
-    background-color: thistle;
-    /* flex-grow: 1; */
-}
+
 .flexbox-container3 {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    /* background-color: yellow; */
-    /* text-align: center; */
-    /* flex-grow: 1; */
 }
 
 .button {
@@ -118,32 +106,4 @@ table.center {
 .height5percent {
     height: 10px;
     text-align: center;
-    /* border: solid red 10px; */
-}
-
-.border {
-    border: solid green 1px;
-}
-
-.top5 {
-    position: relative;
-    top: 5vh;
-}
-
-.myDropzone {
-    background-color: yellow;
-}
-
-.top20 {
-    position: relative;
-    top: 20vh;
-}
-
-.top18 {
-    position: relative;
-    top: 18vh;
-}
-
-.fullwidth {
-    width: 100%;
 }
