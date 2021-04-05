@@ -4,10 +4,21 @@ import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
+import Button from '@material-ui/core/Button';
 import { Location } from 'history';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import CreateIcon from '@material-ui/icons/Create';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import UndoIcon from '@material-ui/icons/Undo';
+import IconButton from '@material-ui/core/IconButton';
+import green from '@material-ui/core/colors/green';
+import Tooltip from '@material-ui/core/Tooltip';
+import DeviceType from '../services/DeviceType';
 
 interface PageState {
     pages: Page[];
@@ -161,94 +172,153 @@ const Editor = (props: IProps): ReactElement => {
         setAddRectanglePressed(false);
     };
 
+    const useStyles = makeStyles((theme) => ({
+        fixedBottomRight: {
+            margin: theme.spacing(1),
+            zIndex: 1,
+            position: 'fixed',
+            bottom: '1vh',
+            right: '1px',
+        },
+        fixedTopRight: {
+            margin: theme.spacing(1),
+            zIndex: 1,
+            position: 'fixed',
+            top: '1vh',
+            right: '1px',
+        },
+        marginBottom: {
+            marginBottom: theme.spacing(2),
+            opacity: '1',
+        },
+        downloadButton: {
+            margin: theme.spacing(2),
+            backgroundColor: '#00a152',
+        },
+        extendedIcon: {
+            marginRight: theme.spacing(1),
+        },
+    }));
+
+    const classes = useStyles();
+
+    const DownloadButton = withStyles(() => ({
+        root: {
+            color: green[500],
+            '&:hover': {
+                backgroundColor: green[50],
+            },
+        },
+    }))(IconButton);
+    let buttonSize: 'small' | 'medium' | 'large';
+    let fontSize: 'inherit' | 'default' | 'small' | 'large';
+    if (DeviceType.IsPhone()) {
+        buttonSize = 'small';
+        fontSize = 'small';
+    } else if (DeviceType.IsTablet()) {
+        buttonSize = 'medium';
+        fontSize = 'default';
+    } else {
+        buttonSize = 'large';
+        fontSize = 'large';
+    }
+
     return (
-        <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
-            <div className="sticky-top flexbox-top-container">
-                <div className="flexbox-container1 vw1-margin">
-                    <div>
-                        <button className="ui icon left labeled button green" onClick={addRectanglesClick}>
-                            <i aria-hidden="true" className="edit icon"></i>Add Rectangle
-                        </button>
-                    </div>
-                </div>
-                {/* <div className="flexbox-container1">
-                    {addRectanglePressed && (
-                        <div className="ui green raised segment large">
-                            <i aria-hidden="true" className="info icon"></i>
-                            Click on the page where you want to add the rectangle.
-                        </div>
-                    )}
-                </div> */}
-                <div className="flexbox-container3">
-                    <div className="vw1-margin">
-                        <div className="ui buttons">
-                            {downloadPath && (
-                                <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
-                            )}
-                            <button className="ui button" onClick={cancelChangesClick}>
-                                Cancel
-                            </button>
-                            <div className="or"></div>
-                            {isDownloadInProgress && <button className="ui loading button green">Loading</button>}
-                            {!isDownloadInProgress && (
-                                <button className="ui positive button" onClick={saveDocumentClick}>
-                                    Download
-                                </button>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="ui icon input vw1-margin-right">
-                        <input type="text" placeholder="Search..." />
-                        <i aria-hidden="true" className="search circular inverted link icon"></i>
-                    </div>
-                </div>
+        <>
+            <ButtonGroup
+                orientation="vertical"
+                color="primary"
+                aria-label="vertical contained primary button group"
+                variant="contained"
+                className={classes.fixedBottomRight}
+            >
+                <Button
+                    onClick={addRectanglesClick}
+                    variant="contained"
+                    color="primary"
+                    size={buttonSize}
+                    className={classes.marginBottom}
+                    startIcon={<CheckBoxOutlineBlankIcon />}
+                >
+                    Erase
+                </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size={buttonSize}
+                    // className={classes.margin}
+                    startIcon={<CreateIcon />}
+                >
+                    Sign
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup
+                color="primary"
+                aria-label="contained primary button group"
+                variant="contained"
+                className={classes.fixedTopRight}
+            >
+                <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Revert all changes</span>}>
+                    <IconButton aria-label="Undo all" color="secondary" onClick={cancelChangesClick}>
+                        <UndoIcon fontSize={fontSize} />
+                    </IconButton>
+                </Tooltip>
+                <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Download File</span>}>
+                    <DownloadButton aria-label="download" onClick={saveDocumentClick}>
+                        <CloudDownloadIcon fontSize={fontSize} />
+                    </DownloadButton>
+                </Tooltip>
+                {downloadPath && (
+                    <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
+                )}
+            </ButtonGroup>
+            <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
+                <table className="center">
+                    <tbody>
+                        <tr className="height5percent"></tr>
+                        {numberOfPages &&
+                            numberOfPages > 0 &&
+                            Array(numberOfPages)
+                                .fill(0)
+                                .map((_, idx) => 1 + idx)
+                                .map((i) => {
+                                    let width: number;
+                                    let height: number;
+                                    const pageWidth = props.location.state.pages[i - 1].width;
+                                    const pageHeight = props.location.state.pages[i - 1].height;
+                                    if (pageWidth > window.innerWidth) {
+                                        const shrinkRatio = pageWidth / window.innerWidth;
+                                        width = window.innerWidth;
+                                        height = pageHeight / shrinkRatio;
+                                    } else {
+                                        width = pageWidth;
+                                        height = pageHeight;
+                                    }
+                                    return (
+                                        <React.Fragment key={i}>
+                                            <tr className="height5percent">{i}</tr>
+                                            <tr>
+                                                <PageDrawStage
+                                                    rectangles={rectangles}
+                                                    setRectangles={updateRectangles}
+                                                    fileId={fileId}
+                                                    pageNumber={i}
+                                                    width={width}
+                                                    height={height}
+                                                    selectedShapeId={selectedShapeId}
+                                                    setSelectedShapeId={setSelectedShapeId}
+                                                    clickOnPageEvent={clickOnPageEvent}
+                                                    touchStartEvent={touchStartEvent}
+                                                ></PageDrawStage>
+                                            </tr>
+                                        </React.Fragment>
+                                    );
+                                })}
+                    </tbody>
+                </table>
+                <div className="someSpace"></div>
             </div>
-
-            <table className="center">
-                <tbody>
-                    <tr className="height5percent"></tr>
-                    {numberOfPages &&
-                        numberOfPages > 0 &&
-                        Array(numberOfPages)
-                            .fill(0)
-                            .map((_, idx) => 1 + idx)
-                            .map((i) => {
-                                let width: number;
-                                let height: number;
-                                const pageWidth = props.location.state.pages[i - 1].width;
-                                const pageHeight = props.location.state.pages[i - 1].height;
-                                if (pageWidth > window.innerWidth) {
-                                    const shrinkRatio = pageWidth / window.innerWidth;
-                                    width = window.innerWidth;
-                                    height = pageHeight / shrinkRatio;
-                                } else {
-                                    width = pageWidth;
-                                    height = pageHeight;
-                                }
-                                return (
-                                    <React.Fragment key={i}>
-                                        <tr className="height5percent">{i}</tr>
-                                        <tr>
-                                            <PageDrawStage
-                                                rectangles={rectangles}
-                                                setRectangles={updateRectangles}
-                                                fileId={fileId}
-                                                pageNumber={i}
-                                                width={width}
-                                                height={height}
-                                                selectedShapeId={selectedShapeId}
-                                                setSelectedShapeId={setSelectedShapeId}
-                                                clickOnPageEvent={clickOnPageEvent}
-                                                touchStartEvent={touchStartEvent}
-                                            ></PageDrawStage>
-                                        </tr>
-                                    </React.Fragment>
-                                );
-                            })}
-                </tbody>
-            </table>
-        </div>
+        </>
     );
 };
 

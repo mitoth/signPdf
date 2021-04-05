@@ -44,6 +44,7 @@ namespace RedactMyPdf.Viewer
         {
             try
             {
+                logger.LogInformation(" [*] Setting up the waiting for completed conversion tasks.");
                 using var topicConnection = connectionFactory.CreateConnection();
                 using var topicChannel = topicConnection.CreateModel();
                 topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);

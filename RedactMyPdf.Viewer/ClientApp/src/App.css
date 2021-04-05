@@ -13,6 +13,10 @@ input[type='file'] {
     /* border: solid red 1px; */
 }
 
+.someSpace {
+    height: 10vh;
+}
+
 .header-text {
     color: #002984;
     margin-bottom: 5vh;
@@ -91,6 +95,12 @@ td {
     padding: 12px 30px;
     cursor: pointer;
     font-size: 20px;
+}
+
+.bottom-right {
+    position: 'fixed';
+    bottom: '1px';
+    right: '1px';
 }
 
 /* Darker background on mouse-over */
