@@ -6,7 +6,6 @@ const upload = async (
     signalRClientId: string,
     onUploadProgress: (progressEvent: any) => void,
 ): Promise<AxiosResponse<any>> => {
-    console.log('uploading');
     const formData = new FormData();
     formData.append('file', file);
     return axios.post(`/api/v1/document?connectionId=${signalRClientId}`, formData, {

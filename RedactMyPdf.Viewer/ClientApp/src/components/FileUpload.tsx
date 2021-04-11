@@ -22,7 +22,6 @@ const UploadFiles = (): ReactElement => {
 
         if (!currentFile) return;
 
-        console.log('uplaoded');
         setCurrentFile(currentFile);
         setDropzoneText("Processsing your file. We'll be quick");
         setDropzoneProps({ disabled: true });
@@ -43,7 +42,6 @@ const UploadFiles = (): ReactElement => {
     };
 
     useEffect(() => {
-        console.log('useeffect1');
         const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
 
         setConnection(newConnection);
@@ -53,20 +51,16 @@ const UploadFiles = (): ReactElement => {
     }, []);
 
     useEffect(() => {
-        console.log('useeffect2');
         if (connection) {
             connection
                 .start()
-                .then((result) => {
-                    console.log('Connected!', result);
+                .then(() => {
                     connection.invoke('getConnectionId').then((connectionId) => {
-                        console.log('getConnectionId ' + connectionId);
                         setSignalRConnectionId(connectionId);
                     });
 
                     connection.on('FileProcessed', (docJson) => {
                         const doc = JSON.parse(docJson);
-                        console.log('FileProcessed' + doc);
                         setMessage('gata');
                         setPages(doc.pages);
                         setEditorPath(`/editor/${doc.id}/${doc.pages.length}`);

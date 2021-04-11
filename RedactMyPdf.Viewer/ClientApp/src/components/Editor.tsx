@@ -19,6 +19,8 @@ import IconButton from '@material-ui/core/IconButton';
 import green from '@material-ui/core/colors/green';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceType from '../services/DeviceType';
+import ScreenSize from '../services/ScreenSize';
+import Snackbar from '@material-ui/core/Snackbar';
 
 interface PageState {
     pages: Page[];
@@ -39,12 +41,13 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
+    const [toastOpen, setToastOpen] = React.useState(false);
 
     function generateRectangle(): Rectangle {
-        if (x > window.innerWidth - 50) {
+        if (x > ScreenSize.GetScreenWidth() - 50) {
             x = 1;
         }
-        if (y > window.innerHeight - 50) {
+        if (y > ScreenSize.GetScreenWidth() - 50) {
             y = 1;
         }
 
@@ -63,7 +66,8 @@ const Editor = (props: IProps): ReactElement => {
 
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
-        toast('Click on the page where you want to add the rectangle!');
+        // toast('Click on the page where you want to add the rectangle!');
+        setToastOpen(true);
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
@@ -75,7 +79,6 @@ const Editor = (props: IProps): ReactElement => {
 
     const saveDocumentClick = () => {
         setIsDownloadInProgress(true);
-        console.log(rectangles);
         const rectangleShapes = rectangles.map((r) => {
             let width: number;
             let height: number;
@@ -83,8 +86,8 @@ const Editor = (props: IProps): ReactElement => {
             let y: number;
             //TODO = use real index instead of 0
             const pageWidth = props.location.state.pages[0].width;
-            if (pageWidth > window.innerWidth) {
-                const shrinkRatio = pageWidth / window.innerWidth;
+            if (pageWidth > ScreenSize.GetScreenWidth()) {
+                const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
                 width = r.width * shrinkRatio;
                 height = r.height * shrinkRatio;
                 x = r.x * shrinkRatio;
@@ -118,15 +121,12 @@ const Editor = (props: IProps): ReactElement => {
             connection
                 .start()
                 .then(() => {
-                    console.log('Connected from editor!');
                     connection.invoke('getConnectionId').then((connectionId: string) => {
-                        console.log('getConnectionId ' + connectionId);
                         UploadService.save(fileId, shapes, connectionId);
                     });
 
                     connection.on('FileBurned', (docJson) => {
                         const fileId = JSON.parse(docJson);
-                        console.log('FileBurned' + fileId);
                         setDownloadPath(`/api/v1/Document/${fileId}/burn`);
                         setIsDownloadInProgress(false);
                     });
@@ -223,6 +223,17 @@ const Editor = (props: IProps): ReactElement => {
         fontSize = 'large';
     }
 
+    const InfoAlert = withStyles(() => ({
+        root: {
+            color: green[500],
+            backgroundColor: green[50],
+
+            '&:hover': {
+                backgroundColor: green[50],
+            },
+        },
+    }))(Snackbar);
+
     return (
         <>
             <ButtonGroup
@@ -272,6 +283,17 @@ const Editor = (props: IProps): ReactElement => {
                     <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                 )}
             </ButtonGroup>
+            <div>
+                <InfoAlert
+                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    open={toastOpen}
+                    onClose={() => {
+                        console.log('asd');
+                    }}
+                    message="I love snacks"
+                    key={'top' + 'center'}
+                />
+            </div>
             <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
                 <table className="center">
                     <tbody>
@@ -286,9 +308,9 @@ const Editor = (props: IProps): ReactElement => {
                                     let height: number;
                                     const pageWidth = props.location.state.pages[i - 1].width;
                                     const pageHeight = props.location.state.pages[i - 1].height;
-                                    if (pageWidth > window.innerWidth) {
-                                        const shrinkRatio = pageWidth / window.innerWidth;
-                                        width = window.innerWidth;
+                                    if (pageWidth > ScreenSize.GetScreenWidth()) {
+                                        const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
+                                        width = ScreenSize.GetScreenWidth();
                                         height = pageHeight / shrinkRatio;
                                     } else {
                                         width = pageWidth;

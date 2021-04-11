@@ -118,7 +118,6 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                 <Transformer
                     ref={trRef}
                     boundBoxFunc={(oldBox, newBox) => {
-                        console.log('traassd');
                         // limit resize
                         if (newBox.width < 5 || newBox.height < 5) {
                             return oldBox;
