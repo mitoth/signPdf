@@ -1,6 +1,9 @@
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -95,7 +98,9 @@ namespace RedactMyPdf.Viewer
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddHostedService<ConversionCompletedHostedTask>();
+
+            // services.AddSingleton<IHostedService, ConversionCompletedHostedTask>();
+            //var completedTasksService = new ConversionCompletedHostedTask(services.);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,6 +142,18 @@ namespace RedactMyPdf.Viewer
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
+            });
+
+            var completedTasks = new ConversionCompletedHostedTask(app.ApplicationServices.GetService<IConnectionFactory>(),
+                app.ApplicationServices.GetService<ILogger<ConversionCompletedHostedTask>>(), app.ApplicationServices.GetService<IMemoryCache>(),
+                app.ApplicationServices.GetService<IHubContext<FileProcessedHub>>(), app.ApplicationServices.GetService<IDocumentRepository>());
+
+            Task.Run(async () =>
+            {
+                logger.LogWarning($"Trying....");
+                await completedTasks.ExecuteAsync(CancellationToken.None);
+                logger.LogWarning($"Done trying");
+
             });
             
             logger.LogWarning($"Started web api on environment {AppDataInfo.Environment()}. {AppDataInfo.GetDbsInfo(Configuration)}");

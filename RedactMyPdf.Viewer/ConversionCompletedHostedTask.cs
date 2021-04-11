@@ -18,7 +18,7 @@ using Constants = RedactMyPdf.Core.MessageQueue.Constants;
 
 namespace RedactMyPdf.Viewer
 {
-    public class ConversionCompletedHostedTask : BackgroundService
+    public class ConversionCompletedHostedTask
     {
         private readonly ILogger<ConversionCompletedHostedTask> logger;
         private readonly IConnectionFactory connectionFactory;
@@ -40,7 +40,7 @@ namespace RedactMyPdf.Viewer
         }
 
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
@@ -64,12 +64,17 @@ namespace RedactMyPdf.Viewer
                     {
                         case Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey:
                             {
+                                logger.LogInformation(" [*] Received Message -> Done converting document to jpg.");
                                 await ProcessCompletedConversionTask(stoppingToken, ea);
                                 break;
                             }
                         case Constants.RoutingKeys.DoneBurnDocumentRoutingKey:
-                            await ProcessCompletedBurnTask(stoppingToken, ea);
-                            break;
+                            {
+                                logger.LogInformation(" [*] Received Message -> Done burning document.");
+                                await ProcessCompletedBurnTask(stoppingToken, ea);
+                                break;
+                            }
+                            
                         default:
                             throw new NotSupportedException($"Error while processing done task information. Routing key {ea.RoutingKey} is not known");
                     }
