@@ -42,6 +42,7 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
+    const [noOfTimeInfoEraseShown, setNoOfTimeInfoEraseShown] = React.useState(0);
 
     function generateRectangle(): Rectangle {
         if (x > ScreenSize.GetScreenWidth() - 50) {
@@ -66,7 +67,10 @@ const Editor = (props: IProps): ReactElement => {
 
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
-        toast.info('Click on the page where you want to add the rectangle!');
+        if (noOfTimeInfoEraseShown < 2) {
+            toast.info('Click on the page where you want to add the rectangle!');
+        }
+        setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
