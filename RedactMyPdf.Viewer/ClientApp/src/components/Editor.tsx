@@ -20,7 +20,8 @@ import green from '@material-ui/core/colors/green';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceType from '../services/DeviceType';
 import ScreenSize from '../services/ScreenSize';
-import Snackbar from '@material-ui/core/Snackbar';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 interface PageState {
     pages: Page[];
@@ -41,7 +42,6 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
-    const [toastOpen, setToastOpen] = React.useState(false);
 
     function generateRectangle(): Rectangle {
         if (x > ScreenSize.GetScreenWidth() - 50) {
@@ -66,8 +66,7 @@ const Editor = (props: IProps): ReactElement => {
 
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
-        // toast('Click on the page where you want to add the rectangle!');
-        setToastOpen(true);
+        toast.info('Click on the page where you want to add the rectangle!');
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
@@ -198,6 +197,10 @@ const Editor = (props: IProps): ReactElement => {
         extendedIcon: {
             marginRight: theme.spacing(1),
         },
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
     }));
 
     const classes = useStyles();
@@ -223,19 +226,11 @@ const Editor = (props: IProps): ReactElement => {
         fontSize = 'large';
     }
 
-    const InfoAlert = withStyles(() => ({
-        root: {
-            color: green[500],
-            backgroundColor: green[50],
-
-            '&:hover': {
-                backgroundColor: green[50],
-            },
-        },
-    }))(Snackbar);
-
     return (
         <>
+            <Backdrop className={classes.backdrop} open={isDownloadInProgress}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <ButtonGroup
                 orientation="vertical"
                 color="primary"
@@ -283,17 +278,6 @@ const Editor = (props: IProps): ReactElement => {
                     <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                 )}
             </ButtonGroup>
-            <div>
-                <InfoAlert
-                    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                    open={toastOpen}
-                    onClose={() => {
-                        console.log('asd');
-                    }}
-                    message="I love snacks"
-                    key={'top' + 'center'}
-                />
-            </div>
             <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
                 <table className="center">
                     <tbody>
