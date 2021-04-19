@@ -117,3 +117,14 @@ table.center {
     height: 10px;
     text-align: center;
 }
+
+.height5percentfixed {
+    height: 5px;
+    text-align: center;
+    position: fixed;
+    right: 0;
+    left: 0;
+    width: max-content;
+    margin-right: auto;
+    margin-left: auto;
+}
