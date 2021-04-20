@@ -28,8 +28,16 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Popover from '@material-ui/core/Popover';
-import Popper from '@material-ui/core/Popper';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import Modal from '@material-ui/core/Modal';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 interface PageState {
     pages: Page[];
@@ -214,7 +222,8 @@ const Editor = (props: IProps): ReactElement => {
             color: '#fff',
         },
         root: {
-            width: '95vw',
+            // width: '95vw',
+            // zIndex: 1,
         },
         button: {
             marginTop: theme.spacing(1),
@@ -225,6 +234,11 @@ const Editor = (props: IProps): ReactElement => {
         },
         resetContainer: {
             padding: theme.spacing(3),
+        },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
         },
     }));
 
@@ -252,7 +266,11 @@ const Editor = (props: IProps): ReactElement => {
     }
 
     function getSteps() {
-        return ['Select campaign settings', 'Create an ad group', 'Create an ad'];
+        return [
+            'Follow these easy steps to add your signature. Start by typing your name',
+            'Choose where on the page to place the signature',
+            'Choose on which pages to add the signature',
+        ];
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
@@ -270,33 +288,70 @@ const Editor = (props: IProps): ReactElement => {
         setActiveStep(0);
     };
 
+    const [value, setValue] = React.useState('female');
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleChange = (event: any) => {
+        setValue(event.target.value);
+    };
+
     function getStepContent(step: number) {
         switch (step) {
             case 0:
-                return `For each ad campaign that you create, you can control how much
-                    you're willing to spend on clicks and conversions, which networks
-                    and geographical locations `;
+                return (
+                    <>
+                        <InputLabel htmlFor="input-with-icon-adornment">Your name</InputLabel>
+                        <Input
+                            id="input-with-icon-adornment"
+                            startAdornment={
+                                <InputAdornment position="start">
+                                    <AccountCircle />
+                                </InputAdornment>
+                            }
+                        />
+                    </>
+                );
             case 1:
-                return 'An ad group contains one or more ads which target a shared set of keywords.';
+                return (
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Position on the page</FormLabel>
+                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
+                            <FormControlLabel value="left" control={<Radio />} label="Bottom left" />
+                            <FormControlLabel value="right" control={<Radio />} label="Bottom right" />
+                            <FormControlLabel
+                                value="later"
+                                control={<Radio />}
+                                label="I'll place it myself with drag'n drop"
+                            />
+                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
+                        </RadioGroup>
+                    </FormControl>
+                );
             case 2:
-                return `Try out different ad text to see what brings in the most customers,
-                    and learn how to enhance your ads using features.`;
+                return (
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">Pages to sign</FormLabel>
+                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
+                            <FormControlLabel value="each" control={<Radio />} label="Each page" />
+                            <FormControlLabel value="last" control={<Radio />} label="Last page" />
+                            {/* <FormControlLabel value="I'll chose later" control={<Radio />} label="Other" /> */}
+                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
+                        </RadioGroup>
+                    </FormControl>
+                );
             default:
                 return 'Unknown step';
         }
     }
 
-    const [anchorEl, setAnchorEl] = React.useState<(EventTarget & HTMLElement) | null>();
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-    const handleClick = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
-        // setAnchorEl(event.currentTarget);
-        setAnchorEl(child1.current);
-        console.log(child1);
+    const handleClick = () => {
+        setOpen(true);
     };
 
+    const [open, setOpen] = React.useState(false);
+
     const handleClose = () => {
-        setAnchorEl(undefined);
+        setOpen(false);
     };
     const child1 = useRef(null);
 
@@ -356,60 +411,62 @@ const Editor = (props: IProps): ReactElement => {
 
             <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
                 <table className="center">
-                    <Popper
-                        id={id}
+                    <Modal
+                        aria-labelledby="transition-modal-title"
+                        aria-describedby="transition-modal-description"
+                        className={classes.modal}
                         open={open}
-                        anchorEl={anchorEl}
-                        // onClose={handleClose}
-                        // anchorOrigin={{
-                        //     vertical: 'bottom',
-                        //     horizontal: 'center',
-                        // }}
-                        // transformOrigin={{
-                        //     vertical: 'top',
-                        //     horizontal: 'center',
-                        // }}
+                        onClose={handleClose}
+                        closeAfterTransition
+                        BackdropComponent={Backdrop}
+                        BackdropProps={{
+                            timeout: 500,
+                        }}
                     >
-                        <div className={classes.root}>
-                            <Stepper activeStep={activeStep} orientation="vertical">
-                                {steps.map((label, index) => (
-                                    <Step key={label}>
-                                        <StepLabel>{label}</StepLabel>
-                                        <StepContent>
-                                            <Typography>{getStepContent(index)}</Typography>
-                                            <div className={classes.actionsContainer}>
-                                                <div>
-                                                    <Button
-                                                        disabled={activeStep === 0}
-                                                        onClick={handleBack}
-                                                        className={classes.button}
-                                                    >
-                                                        Back
-                                                    </Button>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        onClick={handleNext}
-                                                        className={classes.button}
-                                                    >
-                                                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                                    </Button>
+                        <>
+                            <div className={classes.root}>
+                                <Stepper activeStep={activeStep} orientation="vertical">
+                                    {steps.map((label, index) => (
+                                        <Step key={label}>
+                                            <StepLabel>{label}</StepLabel>
+                                            <StepContent>
+                                                {/* <Typography>{getStepContent(index)}</Typography> */}
+                                                {getStepContent(index)}
+                                                <div className={classes.actionsContainer}>
+                                                    <div>
+                                                        <Button
+                                                            disabled={activeStep === 0}
+                                                            onClick={handleBack}
+                                                            className={classes.button}
+                                                        >
+                                                            Back
+                                                        </Button>
+                                                        <Button
+                                                            variant="contained"
+                                                            color="primary"
+                                                            onClick={handleNext}
+                                                            className={classes.button}
+                                                        >
+                                                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </StepContent>
-                                    </Step>
-                                ))}
-                            </Stepper>
-                            {activeStep === steps.length && (
-                                <Paper square elevation={0} className={classes.resetContainer}>
-                                    <Typography>All steps completed - you&apos;re finished</Typography>
-                                    <Button onClick={handleReset} className={classes.button}>
-                                        Reset
-                                    </Button>
-                                </Paper>
-                            )}
-                        </div>
-                    </Popper>
+                                            </StepContent>
+                                        </Step>
+                                    ))}
+                                </Stepper>
+                                {activeStep === steps.length && (
+                                    <Paper square elevation={0} className={classes.resetContainer}>
+                                        <Typography>All steps completed - you&apos;re finished</Typography>
+                                        <Button onClick={handleReset} className={classes.button}>
+                                            Reset
+                                        </Button>
+                                    </Paper>
+                                )}
+                            </div>
+                        </>
+                    </Modal>
+
                     <tbody>
                         <tr className="height5percentfixed" ref={child1}></tr>
                         {numberOfPages &&
