@@ -8,12 +8,12 @@ import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 import Konva from 'konva';
 import { render } from 'react-dom';
 import { Stage, Layer, Rect, Text, Transformer } from 'react-konva';
-import SignatureBox from './../interfaces/SignatureBox';
+import Signature from '../interfaces/Signature';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 import ScreenSize from '../services/ScreenSize';
 
 interface IProps {
-    shapeProps: SignatureBox;
+    shapeProps: Signature;
     isSelected: boolean;
     // onSelect: any;
     // onChange: any;

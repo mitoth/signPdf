@@ -2,7 +2,7 @@ import React, { ReactElement, useRef } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
-import SignatureBox from '../interfaces/SignatureBox';
+import Signature from '../interfaces/Signature';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
 import Button from '@material-ui/core/Button';
@@ -50,10 +50,10 @@ interface IProps {
 
 const Editor = (props: IProps): ReactElement => {
     const initialRectangles: Rectangle[] = [];
-    const initialSignatures: SignatureBox[] = [];
+    const initialSignatures: Signature[] = [];
 
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | null>(null);
-    const [signatures, setSignatures] = React.useState<SignatureBox[]>(initialSignatures);
+    const [signatures, setSignatures] = React.useState<Signature[]>(initialSignatures);
     const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
 
     const [downloadPath, setDownloadPath] = React.useState('');

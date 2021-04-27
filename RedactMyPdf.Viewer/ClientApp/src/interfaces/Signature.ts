@@ -1,8 +1,8 @@
-interface SignatureBox {
+interface Signature {
     x: number;
     y: number;
     text: string;
     id: string;
 }
 
-export default SignatureBox;
+export default Signature;

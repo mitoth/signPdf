@@ -3,11 +3,11 @@ import { Stage, Layer } from 'react-konva';
 import KonvaDrawLayer from './KonvaDrawLayer';
 import { MemoizedPageImage } from './PageImage';
 import Rectangle from './../interfaces/Rectangle';
-import SignatureBox from './../interfaces/SignatureBox';
+import Signature from '../interfaces/Signature';
 
 interface IProps {
     rectangles: Rectangle[];
-    signatures: SignatureBox[];
+    signatures: Signature[];
     pageNumber: number;
     width: number;
     height: number;

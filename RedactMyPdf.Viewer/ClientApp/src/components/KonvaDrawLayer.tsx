@@ -2,13 +2,13 @@ import React, { ReactElement } from 'react';
 import { Layer } from 'react-konva';
 import RectangleShape from './RectangleShape';
 import Rectangle from './../interfaces/Rectangle';
-import SignatureBox from './../interfaces/SignatureBox';
+import Signature from '../interfaces/Signature';
 import { KonvaEventObject } from 'konva/types/Node';
 import SignatureBoxShape from './SignatureBoxShape';
 
 interface IProps {
     rectangles: Rectangle[];
-    signatures: SignatureBox[];
+    signatures: Signature[];
     setRectangles: (rectangles: Rectangle[]) => void;
     setSelectedShapeId: (selectedShapeId: string | null) => void;
     selectedShapeId: string | null;
