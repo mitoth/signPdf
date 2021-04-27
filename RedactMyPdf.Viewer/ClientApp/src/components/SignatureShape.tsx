@@ -20,7 +20,7 @@ interface IProps {
     // onDelete: any;
 }
 
-const SignatureBoxShape = ({ shapeProps, isSelected }: IProps): ReactElement => {
+const SignatureShape = ({ shapeProps, isSelected }: IProps): ReactElement => {
     const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
     console.log('fontSize ' + fontSize);
 
@@ -125,4 +125,4 @@ const SignatureBoxShape = ({ shapeProps, isSelected }: IProps): ReactElement => 
     );
 };
 
-export default SignatureBoxShape;
+export default SignatureShape;

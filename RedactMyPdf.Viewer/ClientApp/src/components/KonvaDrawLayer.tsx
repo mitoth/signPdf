@@ -4,7 +4,7 @@ import RectangleShape from './RectangleShape';
 import Rectangle from './../interfaces/Rectangle';
 import Signature from '../interfaces/Signature';
 import { KonvaEventObject } from 'konva/types/Node';
-import SignatureBoxShape from './SignatureBoxShape';
+import SignatureShape from './SignatureShape';
 
 interface IProps {
     rectangles: Rectangle[];
@@ -60,7 +60,7 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
             {props.signatures.map((signature, i) => {
                 return (
                     <>
-                        <SignatureBoxShape
+                        <SignatureShape
                             key={i}
                             shapeProps={signature}
                             isSelected={signature.id === props.selectedShapeId}
