@@ -7,8 +7,17 @@ import FileUpload from './components/FileUpload';
 import Editor from './components/Editor';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import WebFont from 'webfontloader';
 
 function App(): ReactElement {
+    React.useEffect(() => {
+        WebFont.load({
+            google: {
+                families: ['Great Vibes'],
+            },
+        });
+    }, []);
+
     return (
         <div>
             <BrowserRouter>

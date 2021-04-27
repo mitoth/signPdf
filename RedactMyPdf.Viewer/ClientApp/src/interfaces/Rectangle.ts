@@ -4,7 +4,7 @@ interface Rectangle {
     width: number;
     height: number;
     fill: string;
-    id: number;
+    id: string;
 }
 
 export default Rectangle;

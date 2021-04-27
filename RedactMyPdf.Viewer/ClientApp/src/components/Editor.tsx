@@ -2,6 +2,7 @@ import React, { ReactElement, useRef } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
+import SignatureBox from '../interfaces/SignatureBox';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
 import Button from '@material-ui/core/Button';
@@ -29,7 +30,6 @@ import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
@@ -38,6 +38,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import { Element, scroller, animateScroll as scroll } from 'react-scroll';
 
 interface PageState {
     pages: Page[];
@@ -47,20 +48,23 @@ interface IProps {
     location: Location<PageState>;
 }
 
-let x = 0;
-let y = 0;
-
 const Editor = (props: IProps): ReactElement => {
     const initialRectangles: Rectangle[] = [];
+    const initialSignatures: SignatureBox[] = [];
 
-    const [selectedShapeId, setSelectedShapeId] = React.useState<number | null>(null);
+    const [selectedShapeId, setSelectedShapeId] = React.useState<string | null>(null);
+    const [signatures, setSignatures] = React.useState<SignatureBox[]>(initialSignatures);
     const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
+
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
     const [noOfTimeInfoEraseShown, setNoOfTimeInfoEraseShown] = React.useState(0);
 
     function generateRectangle(): Rectangle {
+        let x = 0;
+        let y = 0;
+
         if (x > ScreenSize.GetScreenWidth() - 50) {
             x = 1;
         }
@@ -72,7 +76,7 @@ const Editor = (props: IProps): ReactElement => {
         y += 15;
 
         return {
-            id: Math.random(),
+            id: Math.random().toString(),
             x: x,
             y: y,
             width: 100,
@@ -266,18 +270,34 @@ const Editor = (props: IProps): ReactElement => {
     }
 
     function getSteps() {
-        return [
-            'Follow these easy steps to add your signature. Start by typing your name',
-            'Choose where on the page to place the signature',
-            'Choose on which pages to add the signature',
-        ];
+        return ['Easy Sign wizard. Type your name first', 'Choose on which pages to add the signature'];
     }
 
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    const handleNext = (isLast: boolean) => {
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        if (!isLast) {
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        } else {
+            setEasySignWizardOpen(false);
+            toast.info('Signature added!');
+            const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
+                props.location.state.pages[0].width,
+                props.location.state.pages[0].height,
+            );
+            // const pageHeight = props.location.state.pages[0].height;
+            setSignatures([
+                {
+                    x: pageWidth / 15, //aproximativ stanga jos
+                    y: pageHeight - pageHeight / 12,
+                    text: 'Mihai Andrei Andreescu',
+                    id: Math.random().toString(),
+                },
+            ]);
+            scroll.scrollToBottom();
+        }
     };
 
     const handleBack = () => {
@@ -300,7 +320,7 @@ const Editor = (props: IProps): ReactElement => {
             case 0:
                 return (
                     <>
-                        <InputLabel htmlFor="input-with-icon-adornment">Your name</InputLabel>
+                        {/* <InputLabel htmlFor="input-with-icon-adornment">Type your name</InputLabel> */}
                         <Input
                             id="input-with-icon-adornment"
                             startAdornment={
@@ -312,6 +332,21 @@ const Editor = (props: IProps): ReactElement => {
                     </>
                 );
             case 1:
+                return (
+                    <FormControl component="fieldset">
+                        <FormLabel component="legend">
+                            Pages to sign. (You can still remove or add signatures later)
+                        </FormLabel>
+                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
+                            <FormControlLabel value="each" control={<Radio />} label="Each page" />
+                            <FormControlLabel value="last" control={<Radio />} label="Last page" />
+                            <FormControlLabel value="later" control={<Radio />} label="Skip... I'll place it myself" />
+                            {/* <FormControlLabel value="I'll chose later" control={<Radio />} label="Other" /> */}
+                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
+                        </RadioGroup>
+                    </FormControl>
+                );
+            case 2:
                 return (
                     <FormControl component="fieldset">
                         <FormLabel component="legend">Position on the page</FormLabel>
@@ -327,31 +362,19 @@ const Editor = (props: IProps): ReactElement => {
                         </RadioGroup>
                     </FormControl>
                 );
-            case 2:
-                return (
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend">Pages to sign</FormLabel>
-                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                            <FormControlLabel value="each" control={<Radio />} label="Each page" />
-                            <FormControlLabel value="last" control={<Radio />} label="Last page" />
-                            {/* <FormControlLabel value="I'll chose later" control={<Radio />} label="Other" /> */}
-                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
-                        </RadioGroup>
-                    </FormControl>
-                );
             default:
                 return 'Unknown step';
         }
     }
 
-    const handleClick = () => {
-        setOpen(true);
+    const signClick = () => {
+        setEasySignWizardOpen(true);
     };
 
-    const [open, setOpen] = React.useState(false);
+    const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(false);
 
     const handleClose = () => {
-        setOpen(false);
+        setEasySignWizardOpen(false);
     };
     const child1 = useRef(null);
 
@@ -378,7 +401,7 @@ const Editor = (props: IProps): ReactElement => {
                     Erase
                 </Button>
                 <Button
-                    onClick={handleClick}
+                    onClick={signClick}
                     variant="contained"
                     color="primary"
                     size={buttonSize}
@@ -415,7 +438,7 @@ const Editor = (props: IProps): ReactElement => {
                         aria-labelledby="transition-modal-title"
                         aria-describedby="transition-modal-description"
                         className={classes.modal}
-                        open={open}
+                        open={easySignWizardOpen}
                         onClose={handleClose}
                         closeAfterTransition
                         BackdropComponent={Backdrop}
@@ -430,7 +453,6 @@ const Editor = (props: IProps): ReactElement => {
                                         <Step key={label}>
                                             <StepLabel>{label}</StepLabel>
                                             <StepContent>
-                                                {/* <Typography>{getStepContent(index)}</Typography> */}
                                                 {getStepContent(index)}
                                                 <div className={classes.actionsContainer}>
                                                     <div>
@@ -444,7 +466,9 @@ const Editor = (props: IProps): ReactElement => {
                                                         <Button
                                                             variant="contained"
                                                             color="primary"
-                                                            onClick={handleNext}
+                                                            onClick={() => {
+                                                                handleNext(activeStep === steps.length - 1);
+                                                            }}
                                                             className={classes.button}
                                                         >
                                                             {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
@@ -475,25 +499,19 @@ const Editor = (props: IProps): ReactElement => {
                                 .fill(0)
                                 .map((_, idx) => 1 + idx)
                                 .map((i) => {
-                                    let width: number;
-                                    let height: number;
-                                    const pageWidth = props.location.state.pages[i - 1].width;
-                                    const pageHeight = props.location.state.pages[i - 1].height;
-                                    if (pageWidth > ScreenSize.GetScreenWidth()) {
-                                        const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
-                                        width = ScreenSize.GetScreenWidth();
-                                        height = pageHeight / shrinkRatio;
-                                    } else {
-                                        width = pageWidth;
-                                        height = pageHeight;
-                                    }
+                                    const [width, height] = ScreenSize.ComputePageSizeRelativeToScreen(
+                                        props.location.state.pages[i - 1].width,
+                                        props.location.state.pages[i - 1].height,
+                                    );
+                                    const scrollAnchorId = 'scrollId' + i;
                                     return (
                                         <React.Fragment key={i}>
                                             <tr className="height5percent">{i}</tr>
                                             {/* <Paper elevation={5}> */}
-                                            <tr>
+                                            <tr onClick={clickOnPageEvent} onTouchStart={touchStartEvent}>
                                                 <PageDrawStage
                                                     rectangles={rectangles}
+                                                    signatures={signatures}
                                                     setRectangles={updateRectangles}
                                                     fileId={fileId}
                                                     pageNumber={i}
@@ -501,9 +519,8 @@ const Editor = (props: IProps): ReactElement => {
                                                     height={height}
                                                     selectedShapeId={selectedShapeId}
                                                     setSelectedShapeId={setSelectedShapeId}
-                                                    clickOnPageEvent={clickOnPageEvent}
-                                                    touchStartEvent={touchStartEvent}
                                                 ></PageDrawStage>
+                                                <Element name={scrollAnchorId} className="element"></Element>
                                             </tr>
                                             {/* </Paper> */}
                                         </React.Fragment>

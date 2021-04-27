@@ -5,9 +5,10 @@ import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 import React, { ReactElement } from 'react';
 import { Rect, Tag, Label, Text, Transformer } from 'react-konva';
+import Rectangle from '../interfaces/Rectangle';
 
 interface IProps {
-    shapeProps: any;
+    shapeProps: Rectangle;
     isSelected: boolean;
     onSelect: any;
     onChange: any;
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }: IProps): ReactElement => {
-    const rectRef = React.useRef<RectKonvaShape>();
+    const rectRef = React.useRef<RectKonvaShape>(null);
     const labelRef = React.useRef<LabelKonvaShape>();
 
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
@@ -50,6 +51,9 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                 <Text
                     text="X"
                     onClick={() => {
+                        onDelete();
+                    }}
+                    onTap={() => {
                         onDelete();
                     }}
                     padding={4}
@@ -96,7 +100,7 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                     // and NOT its width or height
                     // but in the store we have only width and height
                     // to match the data better we will reset scale on transform end
-                    const node: RectKonvaShape | undefined = rectRef.current;
+                    const node: RectKonvaShape | null = rectRef.current;
                     if (!node) return;
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
