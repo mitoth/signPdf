@@ -103,13 +103,13 @@ const Editor = (props: IProps): ReactElement => {
 
     const saveDocumentClick = () => {
         setIsDownloadInProgress(true);
-        const rectangleShapes = rectangles.map((r) => {
+
+        const shapes = rectangles.map((r) => {
             let width: number;
             let height: number;
             let x: number;
             let y: number;
-            //TODO = use real index instead of 0
-            const pageWidth = props.location.state.pages[0].width;
+            const pageWidth = props.location.state.pages[r.pageNumber - 1].width;
             if (pageWidth > ScreenSize.GetScreenWidth()) {
                 const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
                 width = r.rectangle.width * shrinkRatio;
@@ -123,7 +123,7 @@ const Editor = (props: IProps): ReactElement => {
                 y = r.rectangle.y;
             }
 
-            return {
+            const rect = {
                 width: width,
                 height: height,
                 borderHtmlColorCode: '#FF5733',
@@ -131,14 +131,13 @@ const Editor = (props: IProps): ReactElement => {
                 fillHtmlColorCode: '#FF5733',
                 axis: { x: x, y: y },
             };
-        });
 
-        const shapes = [
-            {
-                PageNumber: 1,
-                Shapes: rectangleShapes,
-            },
-        ];
+            const shape = {
+                PageNumber: r.pageNumber,
+                Shapes: [rect],
+            };
+            return shape;
+        });
 
         const connection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
         if (connection) {
