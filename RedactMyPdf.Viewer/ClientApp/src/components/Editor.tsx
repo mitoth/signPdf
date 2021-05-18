@@ -2,6 +2,7 @@ import React, { ReactElement, useRef } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
+import PageRectangle from '../interfaces/PageRectangle';
 import Signature from '../interfaces/Signature';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
@@ -49,12 +50,12 @@ interface IProps {
 }
 
 const Editor = (props: IProps): ReactElement => {
-    const initialRectangles: Rectangle[] = [];
+    const initialRectangles: PageRectangle[] = [];
     const initialSignatures: Signature[] = [];
 
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | null>(null);
     const [signatures, setSignatures] = React.useState<Signature[]>(initialSignatures);
-    const [rectangles, setRectangles] = React.useState<Rectangle[]>(initialRectangles);
+    const [rectangles, setRectangles] = React.useState<PageRectangle[]>(initialRectangles);
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
@@ -111,15 +112,15 @@ const Editor = (props: IProps): ReactElement => {
             const pageWidth = props.location.state.pages[0].width;
             if (pageWidth > ScreenSize.GetScreenWidth()) {
                 const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
-                width = r.width * shrinkRatio;
-                height = r.height * shrinkRatio;
-                x = r.x * shrinkRatio;
-                y = r.y * shrinkRatio;
+                width = r.rectangle.width * shrinkRatio;
+                height = r.rectangle.height * shrinkRatio;
+                x = r.rectangle.x * shrinkRatio;
+                y = r.rectangle.y * shrinkRatio;
             } else {
-                width = r.width;
-                height = r.height;
-                x = r.x;
-                y = r.y;
+                width = r.rectangle.width;
+                height = r.rectangle.height;
+                x = r.rectangle.x;
+                y = r.rectangle.y;
             }
 
             return {
@@ -162,34 +163,48 @@ const Editor = (props: IProps): ReactElement => {
         setDownloadPath('');
     };
 
-    const updateRectangles = (rects: Rectangle[]) => {
-        setRectangles(rects);
+    const updateRectangles = (rects: Rectangle[], pageNumber: number) => {
+        const allRectanglesExceptPage = rectangles.filter((r) => r.pageNumber != pageNumber);
+        const newRectangles = rects.map((r) => {
+            const x: PageRectangle = {
+                pageNumber: pageNumber,
+                rectangle: r,
+            };
+
+            return x;
+        });
+        allRectanglesExceptPage.push(...newRectangles);
+        setRectangles(allRectanglesExceptPage);
     };
 
-    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
         if (addRectanglePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
             const x = e.clientX - rect.left; //x position within the element.
             const y = e.clientY - rect.top; //y position within the element.
-            addRectangleOnPage(x, y);
+            addRectangleOnPage(x, y, pageNumber);
         }
     };
 
-    const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
         if (addRectanglePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
             const x = e.touches[0].clientX - rect.left; //x position within the element.
             const y = e.touches[0].clientY - rect.top; //y position within the element.
-            addRectangleOnPage(x, y);
+            addRectangleOnPage(x, y, pageNumber);
         }
     };
 
-    const addRectangleOnPage = (x: number, y: number) => {
+    const addRectangleOnPage = (x: number, y: number, pageNumber: number) => {
         const rectangle = generateRectangle();
         rectangle.x = x;
         rectangle.y = y;
-        const updatedRectangles: Rectangle[] = [...rectangles];
-        updatedRectangles.push(rectangle);
+        const pageRectanle: PageRectangle = {
+            pageNumber: pageNumber,
+            rectangle: rectangle,
+        };
+        const updatedRectangles: PageRectangle[] = [...rectangles];
+        updatedRectangles.push(pageRectanle);
         setRectangles(updatedRectangles);
         setSelectedShapeId(rectangle.id);
         setAddRectanglePressed(false);
@@ -504,15 +519,27 @@ const Editor = (props: IProps): ReactElement => {
                                         props.location.state.pages[i - 1].height,
                                     );
                                     const scrollAnchorId = 'scrollId' + i;
+                                    const rectanglesForThisPage = rectangles
+                                        .filter((r) => r.pageNumber == i)
+                                        .map((r) => r.rectangle);
                                     return (
                                         <React.Fragment key={i}>
                                             <tr className="height5percent">{i}</tr>
                                             {/* <Paper elevation={5}> */}
-                                            <tr onClick={clickOnPageEvent} onTouchStart={touchStartEvent}>
+                                            <tr
+                                                onClick={(e) => {
+                                                    clickOnPageEvent(e, i);
+                                                }}
+                                                onTouchStart={(e) => {
+                                                    touchStartEvent(e, i);
+                                                }}
+                                            >
                                                 <PageDrawStage
-                                                    rectangles={rectangles}
+                                                    rectangles={rectanglesForThisPage}
                                                     signatures={signatures}
-                                                    setRectangles={updateRectangles}
+                                                    setRectangles={(rects) => {
+                                                        updateRectangles(rects, 1);
+                                                    }}
                                                     fileId={fileId}
                                                     pageNumber={i}
                                                     width={width}
