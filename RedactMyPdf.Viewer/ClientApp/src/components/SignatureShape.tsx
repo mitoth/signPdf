@@ -5,9 +5,7 @@ import React, { ReactElement } from 'react';
 import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 
 // import React, { Component } from "react";
-import Konva from 'konva';
-import { render } from 'react-dom';
-import { Stage, Layer, Rect, Text, Transformer } from 'react-konva';
+import { Text, Transformer } from 'react-konva';
 import Signature from '../interfaces/Signature';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 import ScreenSize from '../services/ScreenSize';
@@ -15,12 +13,12 @@ import ScreenSize from '../services/ScreenSize';
 interface IProps {
     shapeProps: Signature;
     isSelected: boolean;
-    // onSelect: any;
+    onSelect: any;
     // onChange: any;
     // onDelete: any;
 }
 
-const SignatureShape = ({ shapeProps, isSelected }: IProps): ReactElement => {
+const SignatureShape = ({ shapeProps, onSelect, isSelected }: IProps): ReactElement => {
     const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
     console.log('fontSize ' + fontSize);
 
@@ -54,21 +52,6 @@ const SignatureShape = ({ shapeProps, isSelected }: IProps): ReactElement => {
         console.log({ ...properties.newTextObj });
     }, [isSelected]);
 
-    // const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    //     if (e.keyCode === 13) {
-    //         const { newTextObj } = properties;
-
-    //         newTextObj.textEditVisible = false;
-    //         setProperties({ newTextObj });
-    //     }
-    // };
-
-    // const handleTextEdit = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    //     const { newTextObj } = properties;
-    //     newTextObj.textValue = e.target.value;
-    //     setProperties({ newTextObj });
-    // };
-
     const handleTextDblClick = (e: KonvaEventObject<MouseEvent>) => {
         const absPos = e.target.getAbsolutePosition();
         const { newTextObj } = properties;
@@ -80,47 +63,29 @@ const SignatureShape = ({ shapeProps, isSelected }: IProps): ReactElement => {
 
     return (
         <React.Fragment>
-            {/* <div> */}
             <Text
-                // fontSize={20}
-                // align={'left'}
                 draggable
                 ref={textRef}
                 {...shapeProps}
-                // text={properties.newTextObj.textValue}
                 x={shapeProps.x}
                 y={shapeProps.y}
-                // wrap="word"
-                // fontFamily="Great Vibes"
-                // width={properties.newTextObj.width}
-                // align={properties.newTextObj.align}
                 onDblClick={(e) => handleTextDblClick(e)}
                 {...properties.newTextObj}
+                onClick={onSelect}
+                onTap={onSelect}
             />
-
-            <Transformer
-                ref={trRef}
-                boundBoxFunc={(oldBox, newBox) => {
-                    // limit resize
-                    if (newBox.width < 5 || newBox.height < 5) {
-                        return oldBox;
-                    }
-                    return newBox;
-                }}
-            />
-
-            {/* <textarea
-                value={properties.newTextObj.textValue}
-                style={{
-                    display: properties.newTextObj.textEditVisible ? 'block' : 'none',
-                    position: 'absolute',
-                    top: properties.newTextObj.textY + 'px',
-                    left: properties.newTextObj.textX + 'px',
-                }}
-                onChange={(e) => handleTextEdit(e)}
-                onKeyDown={(e) => handleTextareaKeyDown(e)}
-            /> */}
-            {/* </div> */}
+            {isSelected && (
+                <Transformer
+                    ref={trRef}
+                    boundBoxFunc={(oldBox, newBox) => {
+                        // limit resize
+                        if (newBox.width < 5 || newBox.height < 5) {
+                            return oldBox;
+                        }
+                        return newBox;
+                    }}
+                />
+            )}
         </React.Fragment>
     );
 };

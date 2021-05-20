@@ -3,6 +3,7 @@ import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
 import PageRectangle from '../interfaces/PageRectangle';
+import PageSignature from '../interfaces/PageSignature';
 import Signature from '../interfaces/Signature';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
@@ -39,7 +40,7 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
-import { Element, scroller, animateScroll as scroll } from 'react-scroll';
+import { Element, animateScroll as scroll } from 'react-scroll';
 
 interface PageState {
     pages: Page[];
@@ -51,16 +52,18 @@ interface IProps {
 
 const Editor = (props: IProps): ReactElement => {
     const initialRectangles: PageRectangle[] = [];
-    const initialSignatures: Signature[] = [];
+    const initialSignatures: PageSignature[] = [];
 
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | null>(null);
-    const [signatures, setSignatures] = React.useState<Signature[]>(initialSignatures);
+    const [signatures, setSignatures] = React.useState<PageSignature[]>(initialSignatures);
     const [rectangles, setRectangles] = React.useState<PageRectangle[]>(initialRectangles);
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
     const [noOfTimeInfoEraseShown, setNoOfTimeInfoEraseShown] = React.useState(0);
+
+    const [signatureName, setSignatureName] = React.useState<string>('');
 
     function generateRectangle(): Rectangle {
         let x = 0;
@@ -110,12 +113,14 @@ const Editor = (props: IProps): ReactElement => {
             let x: number;
             let y: number;
             const pageWidth = props.location.state.pages[r.pageNumber - 1].width;
+            const pageHeight = props.location.state.pages[r.pageNumber - 1].height;
             if (pageWidth > ScreenSize.GetScreenWidth()) {
-                const shrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
-                width = r.rectangle.width * shrinkRatio;
-                height = r.rectangle.height * shrinkRatio;
-                x = r.rectangle.x * shrinkRatio;
-                y = r.rectangle.y * shrinkRatio;
+                const widthShrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
+                const heightShrinkRatio = pageHeight / ScreenSize.GetScreenHeight();
+                width = r.rectangle.width * widthShrinkRatio;
+                height = r.rectangle.height * heightShrinkRatio;
+                x = r.rectangle.x * widthShrinkRatio;
+                y = r.rectangle.y * heightShrinkRatio;
             } else {
                 width = r.rectangle.width;
                 height = r.rectangle.height;
@@ -290,26 +295,54 @@ const Editor = (props: IProps): ReactElement => {
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
+    const SetSignaturePositionLaterString = 'later';
+    const SetSignatureOnLastPageString = 'last';
+    const SetSignatureOnEachPageString = 'each';
+
     const handleNext = (isLast: boolean) => {
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (!isLast) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else {
             setEasySignWizardOpen(false);
-            toast.info('Signature added!');
             const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
                 props.location.state.pages[0].width,
                 props.location.state.pages[0].height,
             );
-            // const pageHeight = props.location.state.pages[0].height;
-            setSignatures([
-                {
-                    x: pageWidth / 15, //aproximativ stanga jos
-                    y: pageHeight - pageHeight / 12,
-                    text: 'Mihai Andrei Andreescu',
-                    id: Math.random().toString(),
-                },
-            ]);
+
+            const signatures: PageSignature[] = [];
+            const numberOfPages = props.location.state.pages.length;
+            if (signaturePosition === SetSignatureOnLastPageString) {
+                signatures.push({
+                    pageNumber: numberOfPages,
+                    signature: {
+                        x: pageWidth / 15, //aproximativ stanga jos
+                        y: pageHeight - pageHeight / 12,
+                        text: signatureName,
+                        id: Math.random().toString(),
+                    },
+                });
+                toast.info('Signature added on the last page!');
+            }
+            if (signaturePosition === SetSignatureOnEachPageString) {
+                for (let i = 1; i <= numberOfPages; i++) {
+                    signatures.push({
+                        pageNumber: i,
+                        signature: {
+                            x: pageWidth / 15, //aproximativ stanga jos
+                            y: pageHeight - pageHeight / 12,
+                            text: signatureName,
+                            id: Math.random().toString(),
+                        },
+                    });
+                }
+                toast.info('A signature was added on each page!');
+            }
+            if (signaturePosition === SetSignaturePositionLaterString) {
+                toast.info('Signature created! You can place it on the document using the "Sign" button');
+            }
+            setSignatures(signatures);
+            setSelectedShapeId(signatures[signatures.length - 1].signature.id);
             scroll.scrollToBottom();
         }
     };
@@ -322,11 +355,12 @@ const Editor = (props: IProps): ReactElement => {
         setActiveStep(0);
     };
 
-    const [value, setValue] = React.useState('female');
+    const [signaturePosition, setSignaturePosition] = React.useState(SetSignatureOnLastPageString);
+    // const [signatureNameHasError, setSignatureNameHasError] = React.useState<bool>(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChange = (event: any) => {
-        setValue(event.target.value);
+        setSignaturePosition(event.target.value);
     };
 
     function getStepContent(step: number) {
@@ -342,6 +376,11 @@ const Editor = (props: IProps): ReactElement => {
                                     <AccountCircle />
                                 </InputAdornment>
                             }
+                            onChange={(event) => setSignatureName(event.target.value)}
+                            value={signatureName}
+                            error={signatureName.length > 0 ? false : true}
+                            autoFocus={true}
+                            required={true}
                         />
                     </>
                 );
@@ -351,28 +390,27 @@ const Editor = (props: IProps): ReactElement => {
                         <FormLabel component="legend">
                             Pages to sign. (You can still remove or add signatures later)
                         </FormLabel>
-                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                            <FormControlLabel value="each" control={<Radio />} label="Each page" />
-                            <FormControlLabel value="last" control={<Radio />} label="Last page" />
-                            <FormControlLabel value="later" control={<Radio />} label="Skip... I'll place it myself" />
-                            {/* <FormControlLabel value="I'll chose later" control={<Radio />} label="Other" /> */}
-                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
-                        </RadioGroup>
-                    </FormControl>
-                );
-            case 2:
-                return (
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend">Position on the page</FormLabel>
-                        <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChange}>
-                            <FormControlLabel value="left" control={<Radio />} label="Bottom left" />
-                            <FormControlLabel value="right" control={<Radio />} label="Bottom right" />
+                        <RadioGroup
+                            aria-label="gender"
+                            name="gender1"
+                            value={signaturePosition}
+                            onChange={handleChange}
+                        >
                             <FormControlLabel
-                                value="later"
+                                value={SetSignatureOnEachPageString}
                                 control={<Radio />}
-                                label="I'll place it myself with drag'n drop"
+                                label="Each page"
                             />
-                            {/* <FormControlLabel value="disabled" disabled control={<Radio />} label="(Disabled option)" /> */}
+                            <FormControlLabel
+                                value={SetSignatureOnLastPageString}
+                                control={<Radio />}
+                                label="Last page"
+                            />
+                            <FormControlLabel
+                                value={SetSignaturePositionLaterString}
+                                control={<Radio />}
+                                label="Skip... I'll place it myself"
+                            />
                         </RadioGroup>
                     </FormControl>
                 );
@@ -391,6 +429,8 @@ const Editor = (props: IProps): ReactElement => {
         setEasySignWizardOpen(false);
     };
     const child1 = useRef(null);
+
+    const showErrorInStepper = activeStep != 0 || signatureName.length > 0 ? false : true;
 
     return (
         <>
@@ -465,7 +505,7 @@ const Editor = (props: IProps): ReactElement => {
                                 <Stepper activeStep={activeStep} orientation="vertical">
                                     {steps.map((label, index) => (
                                         <Step key={label}>
-                                            <StepLabel>{label}</StepLabel>
+                                            <StepLabel error={showErrorInStepper}>{label}</StepLabel>
                                             <StepContent>
                                                 {getStepContent(index)}
                                                 <div className={classes.actionsContainer}>
@@ -521,6 +561,10 @@ const Editor = (props: IProps): ReactElement => {
                                     const rectanglesForThisPage = rectangles
                                         .filter((r) => r.pageNumber == i)
                                         .map((r) => r.rectangle);
+
+                                    const singaturesForThisPage = signatures
+                                        .filter((s) => s.pageNumber == i)
+                                        .map((s) => s.signature);
                                     return (
                                         <React.Fragment key={i}>
                                             <tr className="height5percent">{i}</tr>
@@ -535,7 +579,7 @@ const Editor = (props: IProps): ReactElement => {
                                             >
                                                 <PageDrawStage
                                                     rectangles={rectanglesForThisPage}
-                                                    signatures={signatures}
+                                                    signatures={singaturesForThisPage}
                                                     setRectangles={(rects) => {
                                                         updateRectangles(rects, 1);
                                                     }}

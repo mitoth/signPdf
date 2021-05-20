@@ -32,7 +32,7 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                 return (
                     <>
                         <RectangleShape
-                            key={i}
+                            key={rect.id}
                             shapeProps={rect}
                             isSelected={rect.id === props.selectedShapeId}
                             onSelect={() => {
@@ -53,7 +53,6 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                                 }
                             }}
                         />
-                        {/* <SignatureBox key={i}></SignatureBox> */}
                     </>
                 );
             })}
@@ -61,11 +60,13 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                 return (
                     <>
                         <SignatureShape
-                            key={i}
+                            key={signature.id}
                             shapeProps={signature}
                             isSelected={signature.id === props.selectedShapeId}
+                            onSelect={() => {
+                                props.setSelectedShapeId(signature.id);
+                            }}
                         />
-                        {/* <SignatureBox key={i}></SignatureBox> */}
                     </>
                 );
             })}
