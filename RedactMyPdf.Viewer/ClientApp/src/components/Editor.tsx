@@ -231,6 +231,7 @@ const Editor = (props: IProps): ReactElement => {
             position: 'fixed',
             top: '1vh',
             right: '1px',
+            backgroundColor: '#ff7961',
         },
         marginBottom: {
             marginBottom: theme.spacing(2),
@@ -446,6 +447,8 @@ const Editor = (props: IProps): ReactElement => {
     };
     const child1 = useRef(null);
 
+    const showDownloadAndRevertButtons = rectangles.length > 0 || signatures.length > 0;
+
     const showErrorInStepper = activeStep != 0 || signatureName.length > 0 ? false : true;
 
     return (
@@ -475,32 +478,46 @@ const Editor = (props: IProps): ReactElement => {
                     variant="contained"
                     color="primary"
                     size={buttonSize}
-                    // className={classes.margin}
+                    className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
                     startIcon={<CreateIcon />}
                 >
                     Sign
                 </Button>
+                {showDownloadAndRevertButtons && (
+                    <Button
+                        onClick={saveDocumentClick}
+                        variant="contained"
+                        color="primary"
+                        size={buttonSize}
+                        // className={classes.margin}
+                        startIcon={<CloudDownloadIcon />}
+                    >
+                        Download
+                    </Button>
+                )}
             </ButtonGroup>
-            <ButtonGroup
-                color="primary"
-                aria-label="contained primary button group"
-                variant="contained"
-                className={classes.fixedTopRight}
-            >
-                <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Revert all changes</span>}>
-                    <IconButton aria-label="Undo all" color="secondary" onClick={cancelChangesClick}>
-                        <UndoIcon fontSize={fontSize} />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Download File</span>}>
+            {showDownloadAndRevertButtons && (
+                <ButtonGroup
+                    color="primary"
+                    aria-label="contained primary button group"
+                    variant="contained"
+                    className={classes.fixedTopRight}
+                >
+                    <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Revert all changes</span>}>
+                        <IconButton aria-label="Undo all" color="secondary" onClick={cancelChangesClick}>
+                            <UndoIcon fontSize={fontSize} />
+                        </IconButton>
+                    </Tooltip>
+                    {/* <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Download File</span>}>
                     <DownloadButton aria-label="download" onClick={saveDocumentClick}>
                         <CloudDownloadIcon fontSize={fontSize} />
                     </DownloadButton>
-                </Tooltip>
-                {downloadPath && (
-                    <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
-                )}
-            </ButtonGroup>
+                </Tooltip> */}
+                    {downloadPath && (
+                        <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
+                    )}
+                </ButtonGroup>
+            )}
 
             <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
                 <table className="center">
