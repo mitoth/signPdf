@@ -32,6 +32,7 @@ import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
@@ -92,7 +93,9 @@ const Editor = (props: IProps): ReactElement => {
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
         if (noOfTimeInfoEraseShown < 2) {
-            toast.info('Click on the page where you want to add the rectangle!');
+            toast.info('Click on the page where you want to add the rectangle!', {
+                toastId: 1,
+            });
         }
         setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
     };
@@ -322,7 +325,9 @@ const Editor = (props: IProps): ReactElement => {
                         id: Math.random().toString(),
                     },
                 });
-                toast.info('Signature added on the last page!');
+                toast.info('Signature added on the last page!', {
+                    toastId: 2,
+                });
             }
             if (signaturePosition === SetSignatureOnEachPageString) {
                 for (let i = 1; i <= numberOfPages; i++) {
@@ -336,10 +341,14 @@ const Editor = (props: IProps): ReactElement => {
                         },
                     });
                 }
-                toast.info('A signature was added on each page!');
+                toast.info('A signature was added on each page!', {
+                    toastId: 2,
+                });
             }
             if (signaturePosition === SetSignaturePositionLaterString) {
-                toast.info('Signature created! You can place it on the document using the "Sign" button');
+                toast.info('Signature created! You can place it on the document using the "Sign" button', {
+                    toastId: 2,
+                });
             }
             setSignatures(signatures);
             setSelectedShapeId(signatures[signatures.length - 1].signature.id);
@@ -368,7 +377,13 @@ const Editor = (props: IProps): ReactElement => {
             case 0:
                 return (
                     <>
-                        {/* <InputLabel htmlFor="input-with-icon-adornment">Type your name</InputLabel> */}
+                        <InputLabel
+                            htmlFor="input-with-icon-adornment"
+                            error={showErrorInStepper}
+                            required={showErrorInStepper}
+                        >
+                            Type your name
+                        </InputLabel>
                         <Input
                             id="input-with-icon-adornment"
                             startAdornment={
@@ -420,6 +435,7 @@ const Editor = (props: IProps): ReactElement => {
     }
 
     const signClick = () => {
+        setActiveStep(0);
         setEasySignWizardOpen(true);
     };
 
@@ -505,7 +521,7 @@ const Editor = (props: IProps): ReactElement => {
                                 <Stepper activeStep={activeStep} orientation="vertical">
                                     {steps.map((label, index) => (
                                         <Step key={label}>
-                                            <StepLabel error={showErrorInStepper}>{label}</StepLabel>
+                                            <StepLabel>{label}</StepLabel>
                                             <StepContent>
                                                 {getStepContent(index)}
                                                 <div className={classes.actionsContainer}>
@@ -518,6 +534,7 @@ const Editor = (props: IProps): ReactElement => {
                                                             Back
                                                         </Button>
                                                         <Button
+                                                            disabled={showErrorInStepper}
                                                             variant="contained"
                                                             color="primary"
                                                             onClick={() => {
