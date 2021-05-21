@@ -615,7 +615,7 @@ const Editor = (props: IProps): ReactElement => {
                                                     rectangles={rectanglesForThisPage}
                                                     signatures={singaturesForThisPage}
                                                     setRectangles={(rects) => {
-                                                        updateRectangles(rects, 1);
+                                                        updateRectangles(rects, i);
                                                     }}
                                                     fileId={fileId}
                                                     pageNumber={i}
