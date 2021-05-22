@@ -4,7 +4,6 @@ import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
 import PageRectangle from '../interfaces/PageRectangle';
 import PageSignature from '../interfaces/PageSignature';
-import Signature from '../interfaces/Signature';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
 import Button from '@material-ui/core/Button';
@@ -12,14 +11,14 @@ import { Location } from 'history';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CreateIcon from '@material-ui/icons/Create';
+import GestureIcon from '@material-ui/icons/Gesture';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
 import IconButton from '@material-ui/core/IconButton';
-import green from '@material-ui/core/colors/green';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeviceType from '../services/DeviceType';
 import ScreenSize from '../services/ScreenSize';
@@ -62,7 +61,11 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
+    const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
+
     const [noOfTimeInfoEraseShown, setNoOfTimeInfoEraseShown] = React.useState(0);
+
+    const [signatureWizardNameInput, setSignatureWizardNameInput] = React.useState<string>('');
 
     const [signatureName, setSignatureName] = React.useState<string>('');
 
@@ -93,8 +96,20 @@ const Editor = (props: IProps): ReactElement => {
     const addRectanglesClick = () => {
         setAddRectanglePressed(true);
         if (noOfTimeInfoEraseShown < 2) {
-            toast.info('Click on the page where you want to add the rectangle!', {
+            toast.success('Click on the page where you want to add the rectangle!', {
                 toastId: 1,
+                position: toast.POSITION.BOTTOM_CENTER,
+            });
+        }
+        setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
+    };
+
+    const addSignatureClick = () => {
+        setAddSignaturePressed(true);
+        if (noOfTimeInfoEraseShown < 2) {
+            toast.info('Click on the page where you want to add the signature!', {
+                toastId: 1,
+                position: toast.POSITION.BOTTOM_CENTER,
             });
         }
         setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
@@ -104,7 +119,10 @@ const Editor = (props: IProps): ReactElement => {
     const numberOfPages: number = parseInt(window.location.pathname.split('/')[3]);
 
     const cancelChangesClick = () => {
-        if (window.confirm('Are you sure you wish to revert all redactions?')) setRectangles([]);
+        if (window.confirm('Are you sure you wish to revert all redactions?')) {
+            setRectangles([]);
+            setSignatures([]);
+        }
     };
 
     const saveDocumentClick = () => {
@@ -191,6 +209,26 @@ const Editor = (props: IProps): ReactElement => {
             const y = e.clientY - rect.top; //y position within the element.
             addRectangleOnPage(x, y, pageNumber);
         }
+        if (addSignaturePressed) {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            const x = e.clientX - rect.left; //x position within the element.
+            const y = e.clientY - rect.top; //y position within the element.
+            const signature = {
+                pageNumber: pageNumber,
+                signature: {
+                    x: x,
+                    y: y,
+                    text: signatureName,
+                    id: Math.random().toString(),
+                },
+            };
+
+            const existingSignature: PageSignature[] = [...signatures];
+            existingSignature.push(signature);
+            setSignatures(existingSignature);
+            setSelectedShapeId(signature.signature.id);
+            setAddRectanglePressed(false);
+        }
     };
 
     const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
@@ -271,14 +309,6 @@ const Editor = (props: IProps): ReactElement => {
 
     const classes = useStyles();
 
-    const DownloadButton = withStyles(() => ({
-        root: {
-            color: green[500],
-            '&:hover': {
-                backgroundColor: green[50],
-            },
-        },
-    }))(IconButton);
     let buttonSize: 'small' | 'medium' | 'large';
     let fontSize: 'inherit' | 'default' | 'small' | 'large';
     if (DeviceType.IsPhone()) {
@@ -322,12 +352,13 @@ const Editor = (props: IProps): ReactElement => {
                     signature: {
                         x: pageWidth / 15, //aproximativ stanga jos
                         y: pageHeight - pageHeight / 12,
-                        text: signatureName,
+                        text: signatureWizardNameInput,
                         id: Math.random().toString(),
                     },
                 });
                 toast.info('Signature added on the last page!', {
                     toastId: 2,
+                    position: toast.POSITION.BOTTOM_CENTER,
                 });
             }
             if (signaturePosition === SetSignatureOnEachPageString) {
@@ -337,22 +368,25 @@ const Editor = (props: IProps): ReactElement => {
                         signature: {
                             x: pageWidth / 15, //aproximativ stanga jos
                             y: pageHeight - pageHeight / 12,
-                            text: signatureName,
+                            text: signatureWizardNameInput,
                             id: Math.random().toString(),
                         },
                     });
                 }
                 toast.info('A signature was added on each page!', {
                     toastId: 2,
+                    position: toast.POSITION.BOTTOM_CENTER,
                 });
             }
             if (signaturePosition === SetSignaturePositionLaterString) {
                 toast.info('Signature created! You can place it on the document using the "Sign" button', {
                     toastId: 2,
+                    position: toast.POSITION.BOTTOM_CENTER,
                 });
             }
             setSignatures(signatures);
             setSelectedShapeId(signatures[signatures.length - 1].signature.id);
+            setSignatureName(signatureWizardNameInput);
             scroll.scrollToBottom();
         }
     };
@@ -366,7 +400,6 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const [signaturePosition, setSignaturePosition] = React.useState(SetSignatureOnLastPageString);
-    // const [signatureNameHasError, setSignatureNameHasError] = React.useState<bool>(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChange = (event: any) => {
@@ -377,7 +410,13 @@ const Editor = (props: IProps): ReactElement => {
         switch (step) {
             case 0:
                 return (
-                    <>
+                    // <>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleNext(false);
+                        }}
+                    >
                         <InputLabel
                             htmlFor="input-with-icon-adornment"
                             error={showErrorInStepper}
@@ -392,17 +431,22 @@ const Editor = (props: IProps): ReactElement => {
                                     <AccountCircle />
                                 </InputAdornment>
                             }
-                            onChange={(event) => setSignatureName(event.target.value)}
-                            value={signatureName}
-                            error={signatureName.length > 0 ? false : true}
+                            onChange={(event) => setSignatureWizardNameInput(event.target.value)}
+                            value={signatureWizardNameInput}
+                            error={signatureWizardNameInput.length > 0 ? false : true}
                             autoFocus={true}
                             required={true}
                         />
-                    </>
+                    </form>
+                    // </>
                 );
             case 1:
                 return (
-                    <FormControl component="fieldset">
+                    <FormControl
+                        component="fieldset"
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        onKeyPress={() => console.log('presat')}
+                    >
                         <FormLabel component="legend">
                             Pages to sign. (You can still remove or add signatures later)
                         </FormLabel>
@@ -435,7 +479,7 @@ const Editor = (props: IProps): ReactElement => {
         }
     }
 
-    const signClick = () => {
+    const CreateSignatureClick = () => {
         setActiveStep(0);
         setEasySignWizardOpen(true);
     };
@@ -449,7 +493,7 @@ const Editor = (props: IProps): ReactElement => {
 
     const showDownloadAndRevertButtons = rectangles.length > 0 || signatures.length > 0;
 
-    const showErrorInStepper = activeStep != 0 || signatureName.length > 0 ? false : true;
+    const showErrorInStepper = activeStep != 0 || signatureWizardNameInput.length > 0 ? false : true;
 
     return (
         <>
@@ -473,16 +517,31 @@ const Editor = (props: IProps): ReactElement => {
                 >
                     Erase
                 </Button>
-                <Button
-                    onClick={signClick}
-                    variant="contained"
-                    color="primary"
-                    size={buttonSize}
-                    className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                    startIcon={<CreateIcon />}
-                >
-                    Sign
-                </Button>
+                {signatureName.length == 0 && (
+                    <Button
+                        onClick={CreateSignatureClick}
+                        variant="contained"
+                        color="primary"
+                        size={buttonSize}
+                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
+                        startIcon={<CreateIcon />}
+                    >
+                        Add Signature
+                    </Button>
+                )}
+                {signatureName.length > 0 && (
+                    <Button
+                        onClick={addSignatureClick}
+                        variant="contained"
+                        color="primary"
+                        size={buttonSize}
+                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
+                        startIcon={<GestureIcon />}
+                        // endIcon={<AddIcon />}
+                    >
+                        Sign
+                    </Button>
+                )}
                 {showDownloadAndRevertButtons && (
                     <Button
                         onClick={saveDocumentClick}
@@ -519,7 +578,12 @@ const Editor = (props: IProps): ReactElement => {
                 </ButtonGroup>
             )}
 
-            <div style={{ backgroundColor: '#f4f6f5', cursor: addRectanglePressed ? 'crosshair' : '' }}>
+            <div
+                style={{
+                    backgroundColor: '#f4f6f5',
+                    cursor: addRectanglePressed || addSignaturePressed ? 'crosshair' : '',
+                }}
+            >
                 <table className="center">
                     <Modal
                         aria-labelledby="transition-modal-title"
@@ -551,6 +615,7 @@ const Editor = (props: IProps): ReactElement => {
                                                             Back
                                                         </Button>
                                                         <Button
+                                                            type="submit"
                                                             disabled={showErrorInStepper}
                                                             variant="contained"
                                                             color="primary"
