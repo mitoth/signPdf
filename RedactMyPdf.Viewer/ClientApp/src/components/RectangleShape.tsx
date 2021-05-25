@@ -108,14 +108,23 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                     // we will reset it back
                     node.scaleX(1);
                     node.scaleY(1);
+                    const newX = node.x();
+                    const newY = node.y();
+                    const newWidth = Math.max(5, node.width() * scaleX);
+                    const newHeigth = Math.max(node.height() * scaleY);
                     onChange({
                         ...shapeProps,
-                        x: node.x(),
-                        y: node.y(),
+                        x: newX,
+                        y: newY,
                         // set minimal value
-                        width: Math.max(5, node.width() * scaleX),
-                        height: Math.max(node.height() * scaleY),
+                        width: newWidth,
+                        height: newHeigth,
                     });
+
+                    if (labelRef.current) {
+                        labelRef.current.attrs.x = newX + newWidth;
+                        labelRef.current.attrs.y = newY - 10;
+                    }
                 }}
             />
             {isSelected && (
@@ -128,6 +137,7 @@ const RectangleShape = ({ shapeProps, isSelected, onSelect, onChange, onDelete }
                         }
                         return newBox;
                     }}
+                    rotateEnabled={false}
                 />
             )}
         </React.Fragment>

@@ -227,7 +227,7 @@ const Editor = (props: IProps): ReactElement => {
             existingSignature.push(signature);
             setSignatures(existingSignature);
             setSelectedShapeId(signature.signature.id);
-            setAddRectanglePressed(false);
+            setAddSignaturePressed(false);
         }
     };
 
