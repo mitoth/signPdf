@@ -73,9 +73,6 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 
     function getX(): number {
         if (textRef.current) {
-            console.log('1 ' + textRef.current.attrs.x);
-            console.log('2 ' + textRef.current.width());
-            console.log('3 ' + textRef.current.attrs.scaleX);
             return (
                 textRef.current.attrs.x +
                 textRef.current.width() * (textRef.current.attrs.scaleX ? textRef.current.attrs.scaleX : 1)
@@ -112,7 +109,6 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                         if (textRef.current) {
                             setLabelPostionX(getX());
                             setLabelPostionY(getY());
-                            console.log('end');
                         }
                     }
                 }}
@@ -120,7 +116,6 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                     if (textRef.current) {
                         setLabelPostionX(getX());
                         setLabelPostionY(getY());
-                        console.log('end2');
                     }
                 }}
             />
