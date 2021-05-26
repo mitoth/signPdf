@@ -3,9 +3,10 @@
 import { KonvaEventObject } from 'konva/types/Node';
 import React, { ReactElement } from 'react';
 import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
+import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
 
 // import React, { Component } from "react";
-import { Text, Transformer } from 'react-konva';
+import { Text, Transformer, Tag, Label } from 'react-konva';
 import Signature from '../interfaces/Signature';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 import ScreenSize from '../services/ScreenSize';
@@ -14,13 +15,15 @@ interface IProps {
     shapeProps: Signature;
     isSelected: boolean;
     onSelect: any;
-    // onChange: any;
-    // onDelete: any;
+    onChange: any;
+    onDelete: any;
 }
 
-const SignatureShape = ({ shapeProps, onSelect, isSelected }: IProps): ReactElement => {
+const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
     const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
     console.log('fontSize ' + fontSize);
+    const [labelPositionX, setLabelPostionX] = React.useState(shapeProps.x);
+    const [labelPositionY, setLabelPostionY] = React.useState(shapeProps.y - 10);
 
     const [properties, setProperties] = React.useState({
         newTextObj: {
@@ -39,17 +42,24 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected }: IProps): ReactElem
     });
 
     const textRef = React.useRef<TextKonvaShape>(null);
+    const labelRef = React.useRef<LabelKonvaShape>();
 
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
 
     React.useEffect(() => {
-        // we need to attach transformer manually
-        const current: any = trRef.current;
-        if (current) {
-            current!.nodes([textRef.current]);
-            current!.getLayer()!.batchDraw();
+        if (isSelected) {
+            // we need to attach transformer manually
+            const current: any = trRef.current;
+            if (current) {
+                current!.nodes([textRef.current]);
+                current!.getLayer()!.batchDraw();
+                setLabelPostionX(getX());
+                setLabelPostionY(getY());
+            }
+            labelRef.current?.show();
+        } else {
+            labelRef.current?.hide();
         }
-        console.log({ ...properties.newTextObj });
     }, [isSelected]);
 
     const handleTextDblClick = (e: KonvaEventObject<MouseEvent>) => {
@@ -61,18 +71,58 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected }: IProps): ReactElem
         setProperties({ newTextObj });
     };
 
+    function getX(): number {
+        if (textRef.current) {
+            console.log('1 ' + textRef.current.attrs.x);
+            console.log('2 ' + textRef.current.width());
+            console.log('3 ' + textRef.current.attrs.scaleX);
+            return (
+                textRef.current.attrs.x +
+                textRef.current.width() * (textRef.current.attrs.scaleX ? textRef.current.attrs.scaleX : 1)
+            );
+        }
+        return 0;
+    }
+
+    function getY(): number {
+        if (textRef.current) {
+            return textRef.current.attrs.y - 10;
+        }
+        return 0;
+    }
+
     return (
         <React.Fragment>
             <Text
                 draggable
                 ref={textRef}
                 {...shapeProps}
-                x={shapeProps.x}
-                y={shapeProps.y}
                 onDblClick={(e) => handleTextDblClick(e)}
                 {...properties.newTextObj}
                 onClick={onSelect}
                 onTap={onSelect}
+                onDragStart={() => {
+                    if (isSelected) {
+                        labelRef.current?.hide();
+                    }
+                }}
+                onDragEnd={() => {
+                    if (isSelected) {
+                        labelRef.current?.show();
+                        if (textRef.current) {
+                            setLabelPostionX(getX());
+                            setLabelPostionY(getY());
+                            console.log('end');
+                        }
+                    }
+                }}
+                onTransform={() => {
+                    if (textRef.current) {
+                        setLabelPostionX(getX());
+                        setLabelPostionY(getY());
+                        console.log('end2');
+                    }
+                }}
             />
             {isSelected && (
                 <Transformer
@@ -84,10 +134,37 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected }: IProps): ReactElem
                         }
                         return newBox;
                     }}
+                    rotateEnabled={false}
                 />
             )}
+
+            <Label
+                x={labelPositionX}
+                y={labelPositionY}
+                ref={labelRef as React.MutableRefObject<LabelKonvaShape>}
+                opacity={0.9}
+            >
+                <Tag pointerDirection="down" pointerHeight={5} pointerWidth={8} fill="red"></Tag>
+                <Text
+                    text="X"
+                    onClick={() => {
+                        onDelete();
+                    }}
+                    onTap={() => {
+                        onDelete();
+                    }}
+                    padding={4}
+                    align="center"
+                    fontFamily="Calibri"
+                    fontStyle="bold"
+                    fontSize={15}
+                    width={20}
+                    height={20}
+                ></Text>
+            </Label>
         </React.Fragment>
     );
 };
 
 export default SignatureShape;
+``;

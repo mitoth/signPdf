@@ -16,6 +16,8 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CreateIcon from '@material-ui/icons/Create';
 import GestureIcon from '@material-ui/icons/Gesture';
+import AddIcon from '@material-ui/icons/Add';
+
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
 import IconButton from '@material-ui/core/IconButton';
@@ -356,10 +358,14 @@ const Editor = (props: IProps): ReactElement => {
                         id: Math.random().toString(),
                     },
                 });
-                toast.info('Signature added on the last page!', {
-                    toastId: 2,
-                    position: toast.POSITION.BOTTOM_CENTER,
-                });
+                toast.info(
+                    'Signature added on the last page! Now you can add it on other places using the "+ Sign" button',
+                    {
+                        toastId: 2,
+                        position: toast.POSITION.BOTTOM_CENTER,
+                        autoClose: 8000,
+                    },
+                );
             }
             if (signaturePosition === SetSignatureOnEachPageString) {
                 for (let i = 1; i <= numberOfPages; i++) {
@@ -373,21 +379,24 @@ const Editor = (props: IProps): ReactElement => {
                         },
                     });
                 }
-                toast.info('A signature was added on each page!', {
-                    toastId: 2,
-                    position: toast.POSITION.BOTTOM_CENTER,
-                });
+                toast.info(
+                    'A signature was added on each page! Now you can add it on other places using the "+ Sign" button',
+                    {
+                        toastId: 2,
+                        position: toast.POSITION.BOTTOM_CENTER,
+                    },
+                );
             }
-            if (signaturePosition === SetSignaturePositionLaterString) {
-                toast.info('Signature created! You can place it on the document using the "Sign" button', {
-                    toastId: 2,
-                    position: toast.POSITION.BOTTOM_CENTER,
-                });
-            }
-            setSignatures(signatures);
-            setSelectedShapeId(signatures[signatures.length - 1].signature.id);
+
             setSignatureName(signatureWizardNameInput);
-            scroll.scrollToBottom();
+
+            if (signaturePosition === SetSignaturePositionLaterString) {
+                addSignatureClick();
+            } else {
+                setSignatures(signatures);
+                setSelectedShapeId(signatures[signatures.length - 1].signature.id);
+                scroll.scrollToBottom();
+            }
         }
     };
 
@@ -469,7 +478,7 @@ const Editor = (props: IProps): ReactElement => {
                             <FormControlLabel
                                 value={SetSignaturePositionLaterString}
                                 control={<Radio />}
-                                label="Skip... I'll place it myself"
+                                label="I'll place it myself"
                             />
                         </RadioGroup>
                     </FormControl>
@@ -526,7 +535,7 @@ const Editor = (props: IProps): ReactElement => {
                         className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
                         startIcon={<CreateIcon />}
                     >
-                        Add Signature
+                        Create Signature
                     </Button>
                 )}
                 {signatureName.length > 0 && (
@@ -536,7 +545,7 @@ const Editor = (props: IProps): ReactElement => {
                         color="primary"
                         size={buttonSize}
                         className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                        startIcon={<GestureIcon />}
+                        startIcon={<AddIcon />}
                         // endIcon={<AddIcon />}
                     >
                         Sign
