@@ -22,8 +22,8 @@ interface IProps {
 const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
     const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
     console.log('fontSize ' + fontSize);
-    const [labelPositionX, setLabelPostionX] = React.useState(shapeProps.x);
-    const [labelPositionY, setLabelPostionY] = React.useState(shapeProps.y - 10);
+    const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
+    const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
 
     const [properties, setProperties] = React.useState({
         newTextObj: {

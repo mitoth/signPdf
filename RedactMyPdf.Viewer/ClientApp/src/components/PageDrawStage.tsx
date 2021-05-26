@@ -12,6 +12,7 @@ interface IProps {
     width: number;
     height: number;
     setRectangles: (rectangles: Rectangle[]) => void;
+    setSignatures: (signatures: Signature[]) => void;
     fileId: string;
     setSelectedShapeId: (selectedShapeId: string | null) => void;
     selectedShapeId: string | null;
@@ -30,6 +31,7 @@ const PageDrawStage = (props: IProps): ReactElement => {
                     rectangles={props.rectangles}
                     signatures={props.signatures}
                     setRectangles={props.setRectangles}
+                    setSignatures={props.setSignatures}
                     selectedShapeId={props.selectedShapeId}
                     setSelectedShapeId={props.setSelectedShapeId}
                 ></KonvaDrawLayer>

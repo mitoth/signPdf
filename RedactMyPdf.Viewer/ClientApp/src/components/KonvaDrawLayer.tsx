@@ -10,6 +10,7 @@ interface IProps {
     rectangles: Rectangle[];
     signatures: Signature[];
     setRectangles: (rectangles: Rectangle[]) => void;
+    setSignatures: (signatures: Signature[]) => void;
     setSelectedShapeId: (selectedShapeId: string | null) => void;
     selectedShapeId: string | null;
 }
@@ -67,7 +68,15 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                                 props.setSelectedShapeId(signature.id);
                             }}
                             onChange={() => console.log('m-am schimbat')}
-                            onDelete={() => console.log('m=o sters')}
+                            onDelete={() => {
+                                if (props.signatures.length == 1) {
+                                    props.setSignatures([]);
+                                } else {
+                                    const signatures = props.signatures.slice();
+                                    signatures.splice(i, 1);
+                                    props.setSignatures(signatures);
+                                }
+                            }}
                         />
                     </>
                 );

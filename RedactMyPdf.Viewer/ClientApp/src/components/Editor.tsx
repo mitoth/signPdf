@@ -43,6 +43,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { Element, animateScroll as scroll } from 'react-scroll';
+import Signature from '../interfaces/Signature';
 
 interface PageState {
     pages: Page[];
@@ -202,6 +203,20 @@ const Editor = (props: IProps): ReactElement => {
         });
         allRectanglesExceptPage.push(...newRectangles);
         setRectangles(allRectanglesExceptPage);
+    };
+
+    const updateSignatures = (signs: Signature[], pageNumber: number) => {
+        const allSignaturesExceptPage = signatures.filter((r) => r.pageNumber != pageNumber);
+        const newSignatures = signs.map((s) => {
+            const x: PageSignature = {
+                pageNumber: pageNumber,
+                signature: s,
+            };
+
+            return x;
+        });
+        allSignaturesExceptPage.push(...newSignatures);
+        setSignatures(allSignaturesExceptPage);
     };
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
@@ -690,6 +705,9 @@ const Editor = (props: IProps): ReactElement => {
                                                     signatures={singaturesForThisPage}
                                                     setRectangles={(rects) => {
                                                         updateRectangles(rects, i);
+                                                    }}
+                                                    setSignatures={(signs) => {
+                                                        updateSignatures(signs, i);
                                                     }}
                                                     fileId={fileId}
                                                     pageNumber={i}
