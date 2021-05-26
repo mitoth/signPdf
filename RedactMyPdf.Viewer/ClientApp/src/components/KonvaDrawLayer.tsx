@@ -67,7 +67,11 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                             onSelect={() => {
                                 props.setSelectedShapeId(signature.id);
                             }}
-                            onChange={() => console.log('m-am schimbat')}
+                            onChange={(newAttrs: Signature) => {
+                                const signs = props.signatures.slice();
+                                signs[i] = newAttrs;
+                                props.setSignatures(signs);
+                            }}
                             onDelete={() => {
                                 if (props.signatures.length == 1) {
                                     props.setSignatures([]);

@@ -21,7 +21,6 @@ interface IProps {
 
 const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
     const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
-    console.log('fontSize ' + fontSize);
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
 
@@ -103,7 +102,7 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                         labelRef.current?.hide();
                     }
                 }}
-                onDragEnd={() => {
+                onDragEnd={(e) => {
                     if (isSelected) {
                         labelRef.current?.show();
                         if (textRef.current) {
@@ -111,6 +110,11 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                             setLabelPostionY(getY());
                         }
                     }
+                    onChange({
+                        ...shapeProps,
+                        x: e.target.x(),
+                        y: e.target.y(),
+                    });
                 }}
                 onTransform={() => {
                     if (textRef.current) {
