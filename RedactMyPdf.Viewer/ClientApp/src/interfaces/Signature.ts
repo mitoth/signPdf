@@ -3,6 +3,8 @@ interface Signature {
     y: number;
     text: string;
     id: string;
+    scaleX?: number;
+    scaleY?: number;
 }
 
 export default Signature;

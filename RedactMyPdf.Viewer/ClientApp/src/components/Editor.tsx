@@ -366,6 +366,7 @@ const Editor = (props: IProps): ReactElement => {
             if (signaturePosition === SetSignatureOnLastPageString) {
                 signatures.push({
                     pageNumber: numberOfPages,
+
                     signature: {
                         x: pageWidth / 15, //aproximativ stanga jos
                         y: pageHeight - pageHeight / 12,

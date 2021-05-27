@@ -27,9 +27,7 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
     const [properties, setProperties] = React.useState({
         newTextObj: {
             textEditVisible: false,
-            textX: 0,
             fill: 'black',
-            textY: 0,
             fontSize: fontSize,
             padding: 10,
             fontFamily: 'Great Vibes',
@@ -61,15 +59,6 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
         }
     }, [isSelected]);
 
-    const handleTextDblClick = (e: KonvaEventObject<MouseEvent>) => {
-        const absPos = e.target.getAbsolutePosition();
-        const { newTextObj } = properties;
-        newTextObj.textEditVisible = true;
-        newTextObj.textX = absPos.x;
-        newTextObj.textY = absPos.y;
-        setProperties({ newTextObj });
-    };
-
     function getX(): number {
         if (textRef.current) {
             return (
@@ -93,34 +82,39 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                 draggable
                 ref={textRef}
                 {...shapeProps}
-                onDblClick={(e) => handleTextDblClick(e)}
                 {...properties.newTextObj}
                 onClick={onSelect}
                 onTap={onSelect}
-                onDragStart={() => {
-                    if (isSelected) {
-                        labelRef.current?.hide();
-                    }
-                }}
                 onDragEnd={(e) => {
-                    if (isSelected) {
-                        labelRef.current?.show();
-                        if (textRef.current) {
-                            setLabelPostionX(getX());
-                            setLabelPostionY(getY());
-                        }
-                    }
                     onChange({
                         ...shapeProps,
                         x: e.target.x(),
                         y: e.target.y(),
                     });
                 }}
+                onDragMove={() => {
+                    if (textRef.current) {
+                        setLabelPostionX(getX());
+                        setLabelPostionY(getY());
+                    }
+                }}
                 onTransform={() => {
                     if (textRef.current) {
                         setLabelPostionX(getX());
                         setLabelPostionY(getY());
                     }
+                }}
+                onTransformEnd={() => {
+                    const node: TextKonvaShape | null = textRef.current;
+                    if (!node) return;
+                    const scaleX = node.scaleX();
+                    const scaleY = node.scaleY();
+
+                    onChange({
+                        ...shapeProps,
+                        scaleX: scaleX,
+                        scaleY: scaleY,
+                    });
                 }}
             />
             {isSelected && (
