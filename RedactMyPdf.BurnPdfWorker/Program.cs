@@ -58,7 +58,7 @@ namespace RedactMyPdf.BurnPdfWorker
                     });
 
                     services.AddScoped<IPdfToJpgConverter, PdfToJpgConverter>();
-                    services.AddSingleton<IDrawService, DrawService>();
+                    services.AddSingleton<IShapesBurner, ShapesBurner>();
                     services.AddSingleton<IBurnDocumentService, BurnDocumentService>();
                     services.AddSingleton<IMongoClientConfiguration>(s =>
                     {

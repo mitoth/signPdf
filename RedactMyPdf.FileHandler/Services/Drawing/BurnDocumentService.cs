@@ -14,13 +14,14 @@ namespace RedactMyPdf.FileHandler.Services.Drawing
         private readonly IDocumentRepository documentRepository;
         private readonly IBurnedDocumentRepository burnedDocumentRepository;
         private readonly IFileRepository fileRepository;
-        private readonly IDrawService drawService;
+        private readonly IShapesBurner shapesBurner;
 
-        public BurnDocumentService(IDocumentRepository documentRepository, IFileRepository fileRepository, IDrawService drawService, IBurnedDocumentRepository burnedDocumentRepository)
+        public BurnDocumentService(IDocumentRepository documentRepository, IFileRepository fileRepository, IShapesBurner shapesBurner, 
+            IBurnedDocumentRepository burnedDocumentRepository)
         {
             this.documentRepository = documentRepository;
             this.fileRepository = fileRepository;
-            this.drawService = drawService;
+            this.shapesBurner = shapesBurner;
             this.burnedDocumentRepository = burnedDocumentRepository;
         }
 
@@ -28,7 +29,7 @@ namespace RedactMyPdf.FileHandler.Services.Drawing
         {
             var document = await documentRepository.GetAsync(documentId, cancellationToken);
             await using var documentStream = await fileRepository.GetAsync(document.FileBinaryId, cancellationToken);
-            await using var burnedFileStream = await drawService.DrawAsync(documentStream, document, shapes, cancellationToken);
+            await using var burnedFileStream = await shapesBurner.BurnAsync(documentStream, document, shapes, cancellationToken);
             var storedFileId = await fileRepository.AddAsync(new RawFile($"burned_{documentId}", burnedFileStream), cancellationToken);
             var burnedDocument = new BurnedDocument(Guid.NewGuid(), documentId, storedFileId, shapes);
             await burnedDocumentRepository.AddAsync(burnedDocument, cancellationToken);

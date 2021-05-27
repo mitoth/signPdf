@@ -6,8 +6,8 @@ using RedactMyPdf.Core.Models.Draw;
 
 namespace RedactMyPdf.FileHandler
 {
-    public interface IDrawService
+    public interface IShapesBurner
     {
-        Task<Stream> DrawAsync(Stream inputDocumentStream,Core.Models.Document doc, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken);
+        Task<Stream> BurnAsync(Stream inputDocumentStream,Core.Models.Document doc, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken);
     }
 }

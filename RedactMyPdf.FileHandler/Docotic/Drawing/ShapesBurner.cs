@@ -7,9 +7,9 @@ using RedactMyPdf.Core.Models.Draw;
 
 namespace RedactMyPdf.FileHandler.Docotic.Drawing
 {
-    public class DrawService : IDrawService
+    public class ShapesBurner : IShapesBurner
     {
-        public Task<Stream> DrawAsync(Stream inputDocumentStream, Document doc, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken)
+        public Task<Stream> BurnAsync(Stream inputDocumentStream, Document doc, IEnumerable<PageShapes> shapes, CancellationToken cancellationToken)
         {
             throw new System.NotImplementedException();
         }
