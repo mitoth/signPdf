@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using RedactMyPdf.FileHandler.Aspose.Conversion;
+using RedactMyPdf.FileHandler.Docotic.Conversion;
 using RedactMyPdf.FileHandler.Tests.Util;
 
 namespace RedactMyPdf.FileHandler.Tests.Conversion

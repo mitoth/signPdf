@@ -14,7 +14,7 @@ using RabbitMQ.Client;
 using RedactMyPdf.Core.MessageQueue;
 using RedactMyPdf.Core.Models;
 using RedactMyPdf.Core.Models.Draw;
-using RedactMyPdf.FileHandler.Aspose.Conversion;
+using RedactMyPdf.FileHandler.Docotic.Conversion;
 using RedactMyPdf.FileHandler.Services.Conversion;
 using RedactMyPdf.Repository.Mongo;
 using RedactMyPdf.Tests.Core;
