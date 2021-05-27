@@ -8,7 +8,7 @@ using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
 using RedactMyPdf.Core.Utils;
 using RedactMyPdf.FileHandler;
-using RedactMyPdf.FileHandler.Aspose.Conversion;
+using RedactMyPdf.FileHandler.Docotic.Conversion;
 using RedactMyPdf.FileHandler.Services.Conversion;
 using RedactMyPdf.Repository.Mongo;
 using RedactMyPdf.Repository.Mongo.Configuration;
