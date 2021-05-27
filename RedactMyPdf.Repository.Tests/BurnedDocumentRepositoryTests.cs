@@ -28,10 +28,10 @@ namespace RedactMyPdf.Repository.Tests
         {
             var shapes = new List<PageShapes>
             {
-                new PageShapes(1, new List<Shape>
+                new PageShapes(1, new List<Rectangle>
                 {
                     new Rectangle(new Axis(2, 2), 2, 2, "some", 2, "other")
-                })
+                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")})
             };
 
             var documentId = Guid.NewGuid();

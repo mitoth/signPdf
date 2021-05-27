@@ -59,7 +59,7 @@ namespace RedactMyPdf.BurnPdfWorker
                     topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
                     var body = ea.Body;
                     var arrayBody = Encoding.UTF8.GetString(body.ToArray());
-                    var message = JsonConvert.DeserializeObject<BurnShapesToPdfMessage>(arrayBody, new JsonSerializerSettings { Converters = new List<JsonConverter> { new ShapeJsonConverter() } });
+                    var message = JsonConvert.DeserializeObject<BurnShapesToPdfMessage>(arrayBody);
                     EnsureArg.IsNotNull(message, nameof(message));
                     EnsureArg.IsNotDefault(message.DocumentId, nameof(message.DocumentId));
                     EnsureArg.IsNotNull(message.Shapes, nameof(message.Shapes));

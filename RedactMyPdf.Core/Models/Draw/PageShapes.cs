@@ -11,17 +11,20 @@ namespace RedactMyPdf.Core.Models.Draw
     public class PageShapes
     {
         public readonly int PageNumber;
-        public readonly IEnumerable<Shape> Shapes;
+        public readonly IEnumerable<Rectangle> Rectangles;
+        public readonly IEnumerable<Signature> Signatures;
 
-        public PageShapes(int pageNumber, IEnumerable<Shape> shapes)
+        public PageShapes(int pageNumber, IEnumerable<Rectangle> rectangles, IEnumerable<Signature> signatures)
         {
             PageNumber = pageNumber;
-            Shapes = shapes;
+            Rectangles = rectangles;
+            Signatures = signatures;
         }
 
         protected bool Equals(PageShapes other)
         {
-            return PageNumber == other.PageNumber && Shapes.SequenceEqual(other.Shapes);
+            return PageNumber == other.PageNumber && Rectangles.SequenceEqual(other.Rectangles) && 
+                   Signatures.SequenceEqual(other.Signatures);
         }
 
         public override bool Equals(object obj)
@@ -34,18 +37,22 @@ namespace RedactMyPdf.Core.Models.Draw
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PageNumber, Shapes);
+            return HashCode.Combine(PageNumber, Rectangles, Signatures);
         }
 
         public override string ToString()
         {
             var stringBuilder = new StringBuilder($"--Page number: {PageNumber}");
 
-            foreach (var shape in Shapes)
+            foreach (var rectangle in Rectangles)
             {
-                stringBuilder.Append($"{shape}");
+                stringBuilder.Append($"{rectangle}");
             }
 
+            foreach (var signature in Signatures)
+            {
+                stringBuilder.Append($"{signature}");
+            }
             return stringBuilder.ToString();
         }
     }

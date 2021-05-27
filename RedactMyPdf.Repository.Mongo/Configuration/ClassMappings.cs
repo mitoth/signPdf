@@ -45,9 +45,10 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
             });
             BsonClassMap.RegisterClassMap<PageShapes>(cm =>
             {
-                cm.MapField(d => d.Shapes);
+                cm.MapField(d => d.Rectangles);
+                cm.MapField(d => d.Signatures);
                 cm.MapField(d => d.PageNumber);
-                cm.MapCreator(d => new PageShapes(d.PageNumber, d.Shapes));
+                cm.MapCreator(d => new PageShapes(d.PageNumber, d.Rectangles, d.Signatures));
             });
             BsonClassMap.RegisterClassMap<Shape>(cm =>
             {
@@ -63,6 +64,14 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
                 cm.MapField(p => p.FillHtmlColorCode);
                 cm.MapCreator(d => new Rectangle(d.Axis, d.Width, d.Height, d.BorderHtmlColorCode, d.BorderLineWidth,
                     d.FillHtmlColorCode));
+            });
+            BsonClassMap.RegisterClassMap<Signature>(cm =>
+            {
+                cm.MapField(p => p.Height);
+                cm.MapField(p => p.Width);
+                cm.MapField(p => p.Font);
+                cm.MapField(p => p.Text);
+                cm.MapCreator(d => new Signature(d.Axis, d.Width, d.Height, d.Text, d.Font));
             });
             BsonClassMap.RegisterClassMap<Axis>(cm =>
             {

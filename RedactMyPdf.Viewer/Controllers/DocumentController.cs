@@ -146,7 +146,7 @@ namespace RedactMyPdf.Viewer.Controllers
         [SwaggerRequestExample(typeof(PageShapes), typeof(ListPageShapesExample), typeof(DefaultContractResolver))]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [Route("{documentId}/burn")]
-        public IActionResult BurnShapesToDocument(Guid documentId, [FromBody] [ModelBinder(BinderType = typeof(ShapeModelBinder))] List<PageShapes> shapesList,
+        public IActionResult BurnShapesToDocument(Guid documentId, [FromBody] List<PageShapes> shapesList,
             [FromQuery] string connectionId, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotDefault(documentId, nameof(documentId));

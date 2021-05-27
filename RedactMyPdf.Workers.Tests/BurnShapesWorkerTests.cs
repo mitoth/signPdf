@@ -89,22 +89,22 @@ namespace RedactMyPdf.Workers.Tests
 
             var shapes = new List<PageShapes>
             {
-                new PageShapes(1, new List<Shape>
+                new PageShapes(1, new List<Rectangle>
                 {
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }),
-                new PageShapes(2, new List<Shape>
+                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                new PageShapes(2, new List<Rectangle>
                 {
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }),
-                new PageShapes(3, new List<Shape>
+                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                new PageShapes(3, new List<Rectangle>
                 {
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }),
-                new PageShapes(4, new List<Shape>
+                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                new PageShapes(4, new List<Rectangle>
                 {
                     new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                })
+                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")})
             };
             var burnShapesMessage = new BurnShapesToPdfMessage(convertedDocument.Id, shapes);
 
