@@ -144,12 +144,12 @@ const Editor = (props: IProps): ReactElement => {
             );
 
             const signature: SignatureDto = {
-                width: s.signature.width + 4, //pentru pading
-                height: s.signature.height + 8, // pentru pading
+                width: s.signature.width,
+                height: s.signature.height,
                 text: s.signature.text,
-                x: s.signature.x - 4, //pentru pading
-                y: s.signature.y - 8, //pentru pading
-                fontSize: s.signature.height,
+                x: s.signature.x,
+                y: s.signature.y,
+                fontSize: s.signature.fontSize,
                 pageWidth: pageWidth,
                 pageHeight: pageHeight,
             };
@@ -343,7 +343,9 @@ const Editor = (props: IProps): ReactElement => {
     const SetSignatureOnEachPageString = 'each';
 
     function CreateSignature(x: number | undefined, y: number | undefined, text: string | undefined): Signature {
-        const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
+        const fontSize: number = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
+
+        const height = fontSize * 1.3;
 
         return {
             x: x,
@@ -353,9 +355,10 @@ const Editor = (props: IProps): ReactElement => {
             fontSize: fontSize,
             textEditVisible: false,
             fill: 'black',
-            // padding: 10,
             fontFamily: 'Great Vibes',
+            height: height,
             align: 'center',
+            verticalAlign: 'middle',
         };
     }
 

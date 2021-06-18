@@ -103,10 +103,21 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                     const scaleX = node.scaleX();
                     const scaleY = node.scaleY();
 
+                    const newX = node.x();
+                    const newY = node.y();
+                    const newWidth = Math.max(5, node.width() * scaleX);
+                    const newHeigth = Math.max(node.height() * scaleY);
+                    // we will reset it back
+                    node.scaleX(1);
+                    node.scaleY(1);
+
                     onChange({
                         ...shapeProps,
-                        scaleX: scaleX,
-                        scaleY: scaleY,
+                        width: newWidth,
+                        height: newHeigth,
+                        fontSize: newHeigth / 1.3,
+                        x: newX,
+                        y: newY,
                     });
                 }}
             />

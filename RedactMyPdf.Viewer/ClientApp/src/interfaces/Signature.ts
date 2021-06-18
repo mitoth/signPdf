@@ -3,8 +3,6 @@ interface Signature {
     y?: number;
     text?: string;
     id?: string;
-    scaleX?: number;
-    scaleY?: number;
     width?: number;
     height?: number;
     textEditVisible?: boolean;
@@ -13,6 +11,7 @@ interface Signature {
     padding?: number;
     fontFamily?: string;
     align?: string;
+    verticalAlign?: string;
 }
 
 export default Signature;
