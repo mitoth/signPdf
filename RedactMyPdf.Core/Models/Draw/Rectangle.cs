@@ -1,15 +1,21 @@
-﻿namespace RedactMyPdf.Core.Models.Draw
-{
-    public class Rectangle : Shape
-    {
-        public readonly float Width;
-        public readonly float Height;
-        public readonly string BorderHtmlColorCode;
-        public readonly float? BorderLineWidth;
-        public readonly string FillHtmlColorCode;
+﻿using System;
 
-        public Rectangle(Axis axis, float width, float height, string borderHtmlColorCode, float? borderLineWidth, string fillHtmlColorCode) : base(axis)
+namespace RedactMyPdf.Core.Models.Draw
+{
+    public class Rectangle
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Width;
+        public float Height;
+        public string BorderHtmlColorCode;
+        public float? BorderLineWidth;
+        public string FillHtmlColorCode;
+
+        public Rectangle(float x, float y, float width, float height, string borderHtmlColorCode, float? borderLineWidth, string fillHtmlColorCode)
         {
+            X = x;
+            Y = y;
             Width = width;
             Height = height;
             BorderHtmlColorCode = borderHtmlColorCode;
@@ -17,9 +23,22 @@
             FillHtmlColorCode = fillHtmlColorCode;
         }
 
-        public override string ToString()
+        protected bool Equals(Rectangle other)
         {
-            return $"{base.ToString()}, {nameof(Width)}: {Width}, {nameof(Height)}: {Height}, {nameof(BorderHtmlColorCode)}: {BorderHtmlColorCode}, {nameof(BorderLineWidth)}: {BorderLineWidth}, {nameof(FillHtmlColorCode)}: {FillHtmlColorCode}";
+            return Width.Equals(other.Width) && Height.Equals(other.Height) && BorderHtmlColorCode == other.BorderHtmlColorCode && Nullable.Equals(BorderLineWidth, other.BorderLineWidth) && FillHtmlColorCode == other.FillHtmlColorCode && X.Equals(other.X) && Y.Equals(other.Y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Rectangle) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Width, Height, BorderHtmlColorCode, BorderLineWidth, FillHtmlColorCode, X, Y);
         }
     }
 }

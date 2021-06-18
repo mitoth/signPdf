@@ -50,34 +50,29 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
                 cm.MapField(d => d.PageNumber);
                 cm.MapCreator(d => new PageShapes(d.PageNumber, d.Rectangles, d.Signatures));
             });
-            BsonClassMap.RegisterClassMap<Shape>(cm =>
-            {
-                cm.MapField(p => p.Axis);
-                cm.SetIsRootClass(true);
-            });
             BsonClassMap.RegisterClassMap<Rectangle>(cm =>
             {
+                cm.MapField(p => p.X);
+                cm.MapField(p => p.Y);
                 cm.MapField(p => p.Height);
                 cm.MapField(p => p.Width);
                 cm.MapField(p => p.BorderHtmlColorCode);
                 cm.MapField(p => p.BorderLineWidth);
                 cm.MapField(p => p.FillHtmlColorCode);
-                cm.MapCreator(d => new Rectangle(d.Axis, d.Width, d.Height, d.BorderHtmlColorCode, d.BorderLineWidth,
+                cm.MapCreator(d => new Rectangle(d.X, d.Y, d.Width, d.Height, d.BorderHtmlColorCode, d.BorderLineWidth,
                     d.FillHtmlColorCode));
             });
             BsonClassMap.RegisterClassMap<Signature>(cm =>
             {
+                cm.MapField(p => p.X);
+                cm.MapField(p => p.Y);
                 cm.MapField(p => p.Height);
                 cm.MapField(p => p.Width);
-                cm.MapField(p => p.Font);
+                cm.MapField(p => p.PageHeight);
+                cm.MapField(p => p.PageWidth);
                 cm.MapField(p => p.Text);
-                cm.MapCreator(d => new Signature(d.Axis, d.Width, d.Height, d.Text, d.Font));
-            });
-            BsonClassMap.RegisterClassMap<Axis>(cm =>
-            {
-                cm.MapField(p => p.Y);
-                cm.MapField(p => p.X);
-                cm.MapCreator(d => new Axis(d.X, d.Y));
+                cm.MapField(p => p.FontSize);
+                cm.MapCreator(d => new Signature(d.X, d.Y, d.Width, d.Height, d.Text, d.FontSize, d.PageWidth, d.PageHeight));
             });
             mappingSet = true;
         }

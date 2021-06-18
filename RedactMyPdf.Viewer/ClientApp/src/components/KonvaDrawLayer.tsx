@@ -11,8 +11,8 @@ interface IProps {
     signatures: Signature[];
     setRectangles: (rectangles: Rectangle[]) => void;
     setSignatures: (signatures: Signature[]) => void;
-    setSelectedShapeId: (selectedShapeId: string | null) => void;
-    selectedShapeId: string | null;
+    setSelectedShapeId: (selectedShapeId: string | undefined) => void;
+    selectedShapeId: string | undefined;
 }
 
 const KonvaDrawLayer = (props: IProps): ReactElement => {
@@ -23,7 +23,7 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
         }
         const clickedOnEmpty = e.target === e.target.getStage();
         if (clickedOnEmpty) {
-            props.setSelectedShapeId(null);
+            props.setSelectedShapeId(undefined);
         }
     };
 
@@ -61,7 +61,7 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                 return (
                     <>
                         <SignatureShape
-                            key={signature.id}
+                            key={i}
                             shapeProps={signature}
                             isSelected={signature.id === props.selectedShapeId}
                             onSelect={() => {

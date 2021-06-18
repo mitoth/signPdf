@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef } from 'react';
+import React, { ReactElement, useRef, useEffect } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
 import Rectangle from '../interfaces/Rectangle';
@@ -15,9 +15,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CreateIcon from '@material-ui/icons/Create';
-import GestureIcon from '@material-ui/icons/Gesture';
 import AddIcon from '@material-ui/icons/Add';
-
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
 import IconButton from '@material-ui/core/IconButton';
@@ -44,6 +42,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import { Element, animateScroll as scroll } from 'react-scroll';
 import Signature from '../interfaces/Signature';
+import SignatureDto from '../dtos/SignatureDto';
 
 interface PageState {
     pages: Page[];
@@ -54,12 +53,9 @@ interface IProps {
 }
 
 const Editor = (props: IProps): ReactElement => {
-    const initialRectangles: PageRectangle[] = [];
-    const initialSignatures: PageSignature[] = [];
-
-    const [selectedShapeId, setSelectedShapeId] = React.useState<string | null>(null);
-    const [signatures, setSignatures] = React.useState<PageSignature[]>(initialSignatures);
-    const [rectangles, setRectangles] = React.useState<PageRectangle[]>(initialRectangles);
+    const [selectedShapeId, setSelectedShapeId] = React.useState<string | undefined>(undefined);
+    const [signatures, setSignatures] = React.useState<PageSignature[]>([]);
+    const [rectangles, setRectangles] = React.useState<PageRectangle[]>([]);
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
@@ -131,39 +127,37 @@ const Editor = (props: IProps): ReactElement => {
     const saveDocumentClick = () => {
         setIsDownloadInProgress(true);
 
-        const shapes = rectangles.map((r) => {
-            let width: number;
-            let height: number;
-            let x: number;
-            let y: number;
-            const pageWidth = props.location.state.pages[r.pageNumber - 1].width;
-            const pageHeight = props.location.state.pages[r.pageNumber - 1].height;
-            if (pageWidth > ScreenSize.GetScreenWidth()) {
-                const widthShrinkRatio = pageWidth / ScreenSize.GetScreenWidth();
-                const heightShrinkRatio = pageHeight / ScreenSize.GetScreenHeight();
-                width = r.rectangle.width * widthShrinkRatio;
-                height = r.rectangle.height * heightShrinkRatio;
-                x = r.rectangle.x * widthShrinkRatio;
-                y = r.rectangle.y * heightShrinkRatio;
-            } else {
-                width = r.rectangle.width;
-                height = r.rectangle.height;
-                x = r.rectangle.x;
-                y = r.rectangle.y;
+        const shapes = signatures.map((s) => {
+            if (
+                !s.signature.width ||
+                !s.signature.height ||
+                !s.signature.x ||
+                !s.signature.y ||
+                !s.signature.text ||
+                !s.signature.fontSize
+            ) {
+                return;
             }
+            const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
+                props.location.state.pages[s.pageNumber - 1].width,
+                props.location.state.pages[s.pageNumber - 1].height,
+            );
 
-            const rect = {
-                width: width,
-                height: height,
-                borderHtmlColorCode: '#FF5733',
-                borderLineWidth: 2,
-                fillHtmlColorCode: '#FF5733',
-                axis: { x: x, y: y },
+            const signature: SignatureDto = {
+                width: s.signature.width + 4, //pentru pading
+                height: s.signature.height + 8, // pentru pading
+                text: s.signature.text,
+                x: s.signature.x - 4, //pentru pading
+                y: s.signature.y - 8, //pentru pading
+                fontSize: s.signature.height,
+                pageWidth: pageWidth,
+                pageHeight: pageHeight,
             };
 
             const shape = {
-                PageNumber: r.pageNumber,
-                Shapes: [rect],
+                PageNumber: s.pageNumber,
+                Rectangles: [],
+                Signatures: [signature],
             };
             return shape;
         });
@@ -206,17 +200,20 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const updateSignatures = (signs: Signature[], pageNumber: number) => {
-        const allSignaturesExceptPage = signatures.filter((r) => r.pageNumber != pageNumber);
-        const newSignatures = signs.map((s) => {
-            const x: PageSignature = {
-                pageNumber: pageNumber,
-                signature: s,
-            };
+        setSignatures((existingSignatures) => {
+            const allSignaturesExceptPage = existingSignatures.filter((r) => r.pageNumber != pageNumber);
+            const newSignatures = signs.map((s) => {
+                const x: PageSignature = {
+                    pageNumber: pageNumber,
+                    signature: s,
+                };
 
-            return x;
+                return x;
+            });
+
+            allSignaturesExceptPage.push(...newSignatures);
+            return allSignaturesExceptPage;
         });
-        allSignaturesExceptPage.push(...newSignatures);
-        setSignatures(allSignaturesExceptPage);
     };
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
@@ -232,12 +229,7 @@ const Editor = (props: IProps): ReactElement => {
             const y = e.clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
-                signature: {
-                    x: x,
-                    y: y,
-                    text: signatureName,
-                    id: Math.random().toString(),
-                },
+                signature: CreateSignature(x, y, signatureName),
             };
 
             const existingSignature: PageSignature[] = [...signatures];
@@ -350,6 +342,23 @@ const Editor = (props: IProps): ReactElement => {
     const SetSignatureOnLastPageString = 'last';
     const SetSignatureOnEachPageString = 'each';
 
+    function CreateSignature(x: number | undefined, y: number | undefined, text: string | undefined): Signature {
+        const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
+
+        return {
+            x: x,
+            y: y,
+            text: text,
+            id: Math.floor(Math.random() * 1000).toString(),
+            fontSize: fontSize,
+            textEditVisible: false,
+            fill: 'black',
+            // padding: 10,
+            fontFamily: 'Great Vibes',
+            align: 'center',
+        };
+    }
+
     const handleNext = (isLast: boolean) => {
         // setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (!isLast) {
@@ -361,18 +370,12 @@ const Editor = (props: IProps): ReactElement => {
                 props.location.state.pages[0].height,
             );
 
-            const signatures: PageSignature[] = [];
+            const newSignatures: PageSignature[] = [];
             const numberOfPages = props.location.state.pages.length;
             if (signaturePosition === SetSignatureOnLastPageString) {
-                signatures.push({
+                newSignatures.push({
                     pageNumber: numberOfPages,
-
-                    signature: {
-                        x: pageWidth / 15, //aproximativ stanga jos
-                        y: pageHeight - pageHeight / 12,
-                        text: signatureWizardNameInput,
-                        id: Math.random().toString(),
-                    },
+                    signature: CreateSignature(pageWidth / 15, pageHeight - pageHeight / 12, signatureWizardNameInput),
                 });
                 toast.info(
                     'Signature added on the last page! Now you can add it on other places using the "+ Sign" button',
@@ -385,14 +388,13 @@ const Editor = (props: IProps): ReactElement => {
             }
             if (signaturePosition === SetSignatureOnEachPageString) {
                 for (let i = 1; i <= numberOfPages; i++) {
-                    signatures.push({
+                    newSignatures.push({
                         pageNumber: i,
-                        signature: {
-                            x: pageWidth / 15, //aproximativ stanga jos
-                            y: pageHeight - pageHeight / 12,
-                            text: signatureWizardNameInput,
-                            id: Math.random().toString(),
-                        },
+                        signature: CreateSignature(
+                            pageWidth / 15,
+                            pageHeight - pageHeight / 12,
+                            signatureWizardNameInput,
+                        ),
                     });
                 }
                 toast.info(
@@ -409,8 +411,8 @@ const Editor = (props: IProps): ReactElement => {
             if (signaturePosition === SetSignaturePositionLaterString) {
                 addSignatureClick();
             } else {
-                setSignatures(signatures);
-                setSelectedShapeId(signatures[signatures.length - 1].signature.id);
+                setSignatures(newSignatures);
+                setSelectedShapeId(newSignatures[newSignatures.length - 1].signature.id);
                 scroll.scrollToBottom();
             }
         }

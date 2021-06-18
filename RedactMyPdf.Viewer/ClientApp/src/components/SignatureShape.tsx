@@ -9,7 +9,6 @@ import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
 import { Text, Transformer, Tag, Label } from 'react-konva';
 import Signature from '../interfaces/Signature';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
-import ScreenSize from '../services/ScreenSize';
 
 interface IProps {
     shapeProps: Signature;
@@ -20,23 +19,8 @@ interface IProps {
 }
 
 const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
-    const fontSize = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
-
-    const [properties, setProperties] = React.useState({
-        newTextObj: {
-            textEditVisible: false,
-            fill: 'black',
-            fontSize: fontSize,
-            padding: 10,
-            fontFamily: 'Great Vibes',
-            // width: 40,
-            fontStyle: 'italic',
-            align: 'center',
-            wrap: 'word',
-        },
-    });
 
     const textRef = React.useRef<TextKonvaShape>(null);
     const labelRef = React.useRef<LabelKonvaShape>();
@@ -58,6 +42,16 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
             labelRef.current?.hide();
         }
     }, [isSelected]);
+
+    React.useEffect(() => {
+        if (!shapeProps.width) {
+            onChange({
+                ...shapeProps,
+                width: textRef.current?.getWidth(),
+                height: textRef.current?.getHeight(),
+            });
+        }
+    }, []);
 
     function getX(): number {
         if (textRef.current) {
@@ -82,7 +76,6 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                 draggable
                 ref={textRef}
                 {...shapeProps}
-                {...properties.newTextObj}
                 onClick={onSelect}
                 onTap={onSelect}
                 onDragEnd={(e) => {
@@ -160,4 +153,3 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 };
 
 export default SignatureShape;
-``;

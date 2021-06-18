@@ -10,9 +10,9 @@ namespace RedactMyPdf.Core.Models.Draw
     /// </summary>
     public class PageShapes
     {
-        public readonly int PageNumber;
-        public readonly IEnumerable<Rectangle> Rectangles;
-        public readonly IEnumerable<Signature> Signatures;
+        public int PageNumber { get; set; }
+        public IEnumerable<Rectangle> Rectangles { get; set; }
+        public IEnumerable<Signature> Signatures { get; set; }
 
         public PageShapes(int pageNumber, IEnumerable<Rectangle> rectangles, IEnumerable<Signature> signatures)
         {

@@ -12,5 +12,8 @@
   <ItemGroup>
     <ProjectReference Include="..\RedactMyPdf.Core\RedactMyPdf.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="_fonts\GreatVibes-Regular.ttf" />
+  </ItemGroup>
 
 </Project>

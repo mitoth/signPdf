@@ -14,8 +14,8 @@ interface IProps {
     setRectangles: (rectangles: Rectangle[]) => void;
     setSignatures: (signatures: Signature[]) => void;
     fileId: string;
-    setSelectedShapeId: (selectedShapeId: string | null) => void;
-    selectedShapeId: string | null;
+    setSelectedShapeId: (selectedShapeId: string | undefined) => void;
+    selectedShapeId: string | undefined;
 }
 
 const PageDrawStage = (props: IProps): ReactElement => {

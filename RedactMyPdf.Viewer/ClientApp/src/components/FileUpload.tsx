@@ -61,7 +61,6 @@ const UploadFiles = (): ReactElement => {
 
                     connection.on('FileProcessed', (docJson) => {
                         const doc = JSON.parse(docJson);
-                        setMessage('gata');
                         setPages(doc.pages);
                         setEditorPath(`/editor/${doc.id}/${doc.pages.length}`);
                     });
@@ -73,10 +72,7 @@ const UploadFiles = (): ReactElement => {
         };
     }, [connection]);
 
-    const displayNone = {
-        display: 'none',
-    };
-
+    //this is causing the memory leak console log error
     const StyledDropzone = withStyles({
         root: {
             color: '#fff',
@@ -107,7 +103,7 @@ const UploadFiles = (): ReactElement => {
             <div className="center-vertical">
                 <h1 className="header-text">
                     <b>
-                        <u>Sign</u> or <u>edit</u> your <u>pdf</u> in a few easy steps.
+                        Electronically <u>Sign</u> your <u>pdf</u> in a few easy steps.
                     </b>
                 </h1>
                 {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}

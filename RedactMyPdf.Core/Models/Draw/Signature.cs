@@ -2,24 +2,40 @@
 
 namespace RedactMyPdf.Core.Models.Draw
 {
-    public class Signature : Shape
+    public class Signature
     {
-        public readonly float Width;
-        public readonly float Height;
-        public readonly string Text;
-        public readonly string Font;
+        public float X { get; set; }
+        public float Y { get; set; }        
+        public float Width { get; set; }
+        public float Height { get; set; }
+        public string Text { get; set; }
+        public double FontSize { get; set; }
+        
+        /// <summary>
+        /// As seen by the user; important because the signature coordinates are relative to this; maybe a dto would be better
+        /// </summary>
+        public float PageWidth { get; set; }
+        
+        /// <summary>
+        /// As seen by the user; important because the signature coordinates are relative to this; maybe a dto would be better
+        /// </summary>
+        public float PageHeight { get; set; }
 
-        public Signature(Axis axis, float width, float height, string text, string font) : base(axis)
+        public Signature(float x, float y, float width, float height, string text, double fontSize, float pageWidth, float pageHeight)
         {
+            X = x;
+            Y = y;
             Width = width;
             Height = height;
             Text = text;
-            Font = font;
+            FontSize = fontSize;
+            PageWidth = pageWidth;
+            PageHeight = pageHeight;
         }
 
         protected bool Equals(Signature other)
         {
-            return Width.Equals(other.Width) && Height.Equals(other.Height) && Text == other.Text && Font == other.Font;
+            return X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height) && Text == other.Text && FontSize.Equals(other.FontSize) && PageWidth.Equals(other.PageWidth) && PageHeight.Equals(other.PageHeight);
         }
 
         public override bool Equals(object obj)
@@ -32,12 +48,7 @@ namespace RedactMyPdf.Core.Models.Draw
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Width, Height, Text, Font);
-        }
-
-        public override string ToString()
-        {
-            return $"{nameof(Width)}: {Width}, {nameof(Height)}: {Height}, {nameof(Text)}: {Text}, {nameof(Font)}: {Font}";
+            return HashCode.Combine(X, Y, Width, Height, Text, FontSize, PageWidth, PageHeight);
         }
     }
 }

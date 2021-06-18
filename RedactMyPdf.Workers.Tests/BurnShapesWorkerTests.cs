@@ -91,20 +91,20 @@ namespace RedactMyPdf.Workers.Tests
             {
                 new PageShapes(1, new List<Rectangle>
                 {
-                    new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                    new Rectangle(100, 100, 200, 200, "#FF5733", 2, "#FF5733")
+                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 30, 1000, 1000)}),
                 new PageShapes(2, new List<Rectangle>
                 {
-                    new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                    new Rectangle(100, 100, 200, 200, "#FF5733", 2, "#FF5733")
+                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 30, 1000, 1000)}),
                 new PageShapes(3, new List<Rectangle>
                 {
-                    new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")}),
+                    new Rectangle(100, 100, 200, 200, "#FF5733", 2, "#FF5733")
+                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 30, 1000, 1000)}),
                 new PageShapes(4, new List<Rectangle>
                 {
-                    new Rectangle(new Axis(100, 100), 200, 200, "#FF5733", 2, "#FF5733")
-                }, new List<Signature>(){new Signature(new Axis(2,3), 4, 5, "Mihai Toth", "colibri")})
+                    new Rectangle(100, 100, 200, 200, "#FF5733", 2, "#FF5733")
+                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 30, 1000, 1000)})
             };
             var burnShapesMessage = new BurnShapesToPdfMessage(convertedDocument.Id, shapes);
 
