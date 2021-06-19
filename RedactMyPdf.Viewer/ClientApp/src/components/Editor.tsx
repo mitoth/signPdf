@@ -121,6 +121,7 @@ const Editor = (props: IProps): ReactElement => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
             setRectangles([]);
             setSignatures([]);
+            setSignatureName('');
         }
     };
 
