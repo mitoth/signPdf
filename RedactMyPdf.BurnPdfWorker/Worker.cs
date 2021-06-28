@@ -38,7 +38,30 @@ namespace RedactMyPdf.BurnPdfWorker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            logger.LogInformation("Setting up messaging queue");
+            int maxNumberOFRetries = 5;
+            var connectionIsSuccessful = false;
+            var numberOfRetries = 0;
+            // IConnection connection;
+            while (!connectionIsSuccessful && numberOfRetries < maxNumberOFRetries)
+            {
+                try
+                {
+                    logger.LogInformation($"Setting up messaging queue. c {connectionFactory}");
+                    await StartWorker(stoppingToken);
+                    connectionIsSuccessful = true;
+                    numberOfRetries++;
+                }
+                catch (Exception e)
+                {
+                    numberOfRetries++;
+                    logger.LogError(e, $"Error while connection to rabbit. Retries {numberOfRetries}. Wait and then try again");
+                    await Task.Delay(5000, stoppingToken);
+                }
+            }
+        }
+
+        private async Task StartWorker(CancellationToken stoppingToken)
+        {
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
             channel.ExchangeDeclare(ExchangeName, ExchangeType.Direct);
@@ -66,11 +89,13 @@ namespace RedactMyPdf.BurnPdfWorker
                     logger.LogDebug($"Received burn message for file with id {message.DocumentId}");
                     await burnDocumentService.BurnShapes(message.DocumentId,
                         message.Shapes.ToList(), stoppingToken);
-                    logger.LogDebug($"Burned shapes to document with id [{message.DocumentId}]. Shapes burned: [{message.Shapes}]");
+                    logger.LogDebug(
+                        $"Burned shapes to document with id [{message.DocumentId}]. Shapes burned: [{message.Shapes}]");
 
                     var convertDoneMessage = JsonConvert.SerializeObject(message.DocumentId);
                     var byteArray = Encoding.ASCII.GetBytes(convertDoneMessage);
-                    topicChannel.BasicPublish(TopicExchangeName, Constants.RoutingKeys.DoneBurnDocumentRoutingKey, null, byteArray);
+                    topicChannel.BasicPublish(TopicExchangeName, Constants.RoutingKeys.DoneBurnDocumentRoutingKey, null,
+                        byteArray);
                 }
                 catch (Exception e)
                 {

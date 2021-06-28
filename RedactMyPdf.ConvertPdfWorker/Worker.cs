@@ -35,6 +35,30 @@ namespace RedactMyPdf.ConvertPdfWorker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            int maxNumberOFRetries = 5;
+            var connectionIsSuccessful = false;
+            var numberOfRetries = 0;
+            // IConnection connection;
+            while (!connectionIsSuccessful && numberOfRetries < maxNumberOFRetries)
+            {
+                try
+                {
+                    logger.LogInformation($"Setting up messaging queue. c {connectionFactory}");
+                    await StartWorker(stoppingToken);
+                    connectionIsSuccessful = true;
+                    numberOfRetries++;
+                }
+                catch (Exception e)
+                {
+                    numberOfRetries++;
+                    logger.LogError(e, $"Error while connection to rabbit. Retries {numberOfRetries}. Wait and then try again");
+                    await Task.Delay(5000, stoppingToken);
+                }
+            }
+        }
+
+        private async Task StartWorker(CancellationToken stoppingToken)
+        {
             logger.LogInformation("Setting up messaging queue");
 
             //setup direct exchange and queue - used for receiving convert tasks
@@ -45,7 +69,7 @@ namespace RedactMyPdf.ConvertPdfWorker
             directChannel.QueueBind(QueueName, DirectExchangeName, RoutingKey);
             directChannel.BasicQos(0, 10, false);
             logger.LogInformation("Done. Incoming message queuing setup. Waiting for messages to process");
-            
+
 
             var consumer = new EventingBasicConsumer(directChannel);
             consumer.Received += async (model, ea) =>
@@ -71,7 +95,8 @@ namespace RedactMyPdf.ConvertPdfWorker
                     using var topicConnection = connectionFactory.CreateConnection();
                     using var topicChannel = topicConnection.CreateModel();
                     topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
-                    topicChannel.BasicPublish(TopicExchangeName, Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey, null, byteArray);
+                    topicChannel.BasicPublish(TopicExchangeName, Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey, null,
+                        byteArray);
                 }
                 catch (Exception e)
                 {
@@ -80,7 +105,6 @@ namespace RedactMyPdf.ConvertPdfWorker
             };
 
             directChannel.BasicConsume(QueueName, false, consumer);
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);

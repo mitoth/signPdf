@@ -538,7 +538,7 @@ const Editor = (props: IProps): ReactElement => {
                 variant="contained"
                 className={classes.fixedBottomRight}
             >
-                <Button
+                {/* <Button
                     onClick={addRectanglesClick}
                     variant="contained"
                     color="primary"
@@ -547,7 +547,7 @@ const Editor = (props: IProps): ReactElement => {
                     startIcon={<CheckBoxOutlineBlankIcon />}
                 >
                     Erase
-                </Button>
+                </Button> */}
                 {signatureName.length == 0 && (
                     <Button
                         onClick={CreateSignatureClick}

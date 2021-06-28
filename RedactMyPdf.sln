@@ -23,7 +23,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.Workers.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.ConvertPdfWorker", "RedactMyPdf.ConvertPdfWorker\RedactMyPdf.ConvertPdfWorker.csproj", "{11DB3404-1D37-442E-9081-334D80AAAE68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedactMyPdf.BurnPdfWorker", "RedactMyPdf.BurnPdfWorker\RedactMyPdf.BurnPdfWorker.csproj", "{F75E6252-E4ED-46D5-A154-87B4A3D779DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RedactMyPdf.BurnPdfWorker", "RedactMyPdf.BurnPdfWorker\RedactMyPdf.BurnPdfWorker.csproj", "{F75E6252-E4ED-46D5-A154-87B4A3D779DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C56C12DC-1FB2-4E6F-85E2-C8D2E13791E5}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

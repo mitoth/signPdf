@@ -42,57 +42,75 @@ namespace RedactMyPdf.Viewer
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            try
+            int maxNumberOFRetries = 5;
+            var connectionIsSuccessful = false;
+            var numberOfRetries = 0;
+            // IConnection connection;
+            while (!connectionIsSuccessful && numberOfRetries < maxNumberOFRetries)
             {
-                logger.LogInformation(" [*] Setting up the waiting for completed conversion tasks.");
-                using var topicConnection = connectionFactory.CreateConnection();
-                using var topicChannel = topicConnection.CreateModel();
-                topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
-                var queueName = topicChannel.QueueDeclare().QueueName;
-                topicChannel.QueueBind(queue: queueName,
-                    exchange: TopicExchangeName,
-                    routingKey: Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey);
-                topicChannel.QueueBind(queue: queueName,
-                    exchange: TopicExchangeName,
-                    routingKey: Constants.RoutingKeys.DoneBurnDocumentRoutingKey);
-                logger.LogInformation(" [*] Waiting for completed conversion tasks.");
-
-                var consumer = new EventingBasicConsumer(topicChannel);
-                consumer.Received += async (model, ea) =>
+                try
                 {
-                    switch (ea.RoutingKey.ToLower())
-                    {
-                        case Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey:
-                            {
-                                logger.LogInformation(" [*] Received Message -> Done converting document to jpg.");
-                                await ProcessCompletedConversionTask(stoppingToken, ea);
-                                break;
-                            }
-                        case Constants.RoutingKeys.DoneBurnDocumentRoutingKey:
-                            {
-                                logger.LogInformation(" [*] Received Message -> Done burning document.");
-                                await ProcessCompletedBurnTask(stoppingToken, ea);
-                                break;
-                            }
-                            
-                        default:
-                            throw new NotSupportedException($"Error while processing done task information. Routing key {ea.RoutingKey} is not known");
-                    }
-
-                };
-                topicChannel.BasicConsume(queue: queueName,
-                    autoAck: true,
-                    consumer: consumer);
-
-                //keep it alive - not the best solution - maybe something like https://stackoverflow.com/questions/35058443/c-sharp-keep-event-handling-thread-alive-in-cpu-friendly-way
-                while (!stoppingToken.IsCancellationRequested)
+                    logger.LogInformation($"Setting up messaging queue. c {connectionFactory}");
+                    await StartWorker(stoppingToken);
+                    connectionIsSuccessful = true;
+                    numberOfRetries++;
+                }
+                catch (Exception e)
                 {
-                    await Task.Delay(1000, stoppingToken);
+                    numberOfRetries++;
+                    logger.LogError(e, $"Error while connection to rabbit. Retries {numberOfRetries}. Wait and then try again");
+                    await Task.Delay(5000, stoppingToken);
                 }
             }
-            catch (Exception e)
+            
+            
+        }
+
+        private async Task StartWorker(CancellationToken stoppingToken)
+        {
+            logger.LogInformation(" [*] Setting up the waiting for completed conversion tasks.");
+            using var topicConnection = connectionFactory.CreateConnection();
+            using var topicChannel = topicConnection.CreateModel();
+            topicChannel.ExchangeDeclare(exchange: TopicExchangeName, type: ExchangeType.Topic);
+            var queueName = topicChannel.QueueDeclare().QueueName;
+            topicChannel.QueueBind(queue: queueName,
+                exchange: TopicExchangeName,
+                routingKey: Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey);
+            topicChannel.QueueBind(queue: queueName,
+                exchange: TopicExchangeName,
+                routingKey: Constants.RoutingKeys.DoneBurnDocumentRoutingKey);
+            logger.LogInformation(" [*] Waiting for completed conversion tasks.");
+
+            var consumer = new EventingBasicConsumer(topicChannel);
+            consumer.Received += async (model, ea) =>
             {
-                logger.LogError(e, $"Cannot start the completed events listener");
+                switch (ea.RoutingKey.ToLower())
+                {
+                    case Constants.RoutingKeys.DoneConvertDocumentToJpgRoutingKey:
+                    {
+                        logger.LogInformation(" [*] Received Message -> Done converting document to jpg.");
+                        await ProcessCompletedConversionTask(stoppingToken, ea);
+                        break;
+                    }
+                    case Constants.RoutingKeys.DoneBurnDocumentRoutingKey:
+                    {
+                        logger.LogInformation(" [*] Received Message -> Done burning document.");
+                        await ProcessCompletedBurnTask(stoppingToken, ea);
+                        break;
+                    }
+
+                    default:
+                        throw new NotSupportedException(
+                            $"Error while processing done task information. Routing key {ea.RoutingKey} is not known");
+                }
+            };
+            topicChannel.BasicConsume(queue: queueName,
+                autoAck: true,
+                consumer: consumer);
+            
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
             }
         }
 

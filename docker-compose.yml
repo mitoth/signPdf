@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+    mongodb:
+        image: "mongo:4.4"
+        container_name: mongodb
+        ports:
+            - "27017:27017"           
+    rabbitmq:
+        container_name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+            - "4369:4369"
+            - "5671:5671"
+            - "5672:5672"
+            - "25672:25672"
+            - "15671:15671"
+            - "15672:15672"
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:15672"]
+            interval: 30s
+            timeout: 10s
+            retries: 5                
+    burnpdf:
+        container_name: burnpdf
+        build:
+            context: ./
+            dockerfile: "RedactMyPdf.BurnPdfWorker\\Dockerfile"        
+        environment:
+            - DOTNET_ENVIRONMENT=Docker
+        restart: on-failure
+        depends_on:
+            - mongodb
+            - rabbitmq
+    convertpdf:
+        container_name: convertpdf
+        build:
+            context: ./
+            dockerfile: "RedactMyPdf.ConvertPdfWorker\\Dockerfile"        
+        environment:
+            - DOTNET_ENVIRONMENT=Docker
+        restart: on-failure
+        depends_on:
+            - mongodb
+            - rabbitmq
+    webapi:
+        container_name: webapi
+        build:
+            context: ./
+            dockerfile: "RedactMyPdf.Viewer\\Dockerfile"        
+        environment:
+            - DOTNET_ENVIRONMENT=Docker
+        restart: on-failure
+        ports:
+            - "5000:80"
+        depends_on:
+            - mongodb
+            - rabbitmq
