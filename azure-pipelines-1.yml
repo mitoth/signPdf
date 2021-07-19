@@ -22,7 +22,7 @@ variables:
 
 stages:
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build and push ConvertPdf Docker Image
   jobs:
   - job: Build
     displayName: Build
