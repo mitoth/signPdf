@@ -37,5 +37,3 @@ stages:
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
         buildContext: $(buildContextPath)
-        tags: |
-          $(tag)
