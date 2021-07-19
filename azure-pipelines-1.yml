@@ -1,0 +1,41 @@
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '719bbaee-1415-4c13-a35f-45824a1feba7'
+  imageRepository: 'convertpdf'
+  containerRegistry: 'smpcr.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/RedactMyPdf.ConvertPdfWorker/Dockerfile'
+  buildContextPath: '$(Build.SourcesDirectory)'
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: Build and push ConvertPdf Docker Image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        buildContext: $(buildContextPath)
+        tags: |
+          $(tag)
