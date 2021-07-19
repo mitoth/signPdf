@@ -4,7 +4,7 @@ services:
         image: "mongo:4.4"
         container_name: mongodb
         ports:
-            - "27017:27017"           
+            - "27017:27017"
     rabbitmq:
         container_name: rabbitmq
         image: rabbitmq:3-management
@@ -19,9 +19,10 @@ services:
             test: ["CMD", "curl", "-f", "http://localhost:15672"]
             interval: 30s
             timeout: 10s
-            retries: 5                
+            retries: 5
     burnpdf:
         container_name: burnpdf
+        image: smpcr.azurecr.io/burnpdf
         build:
             context: ./
             dockerfile: "RedactMyPdf.BurnPdfWorker\\Dockerfile"        
@@ -33,6 +34,7 @@ services:
             - rabbitmq
     convertpdf:
         container_name: convertpdf
+        image: smpcr.azurecr.io/convertpdf
         build:
             context: ./
             dockerfile: "RedactMyPdf.ConvertPdfWorker\\Dockerfile"        
@@ -44,6 +46,7 @@ services:
             - rabbitmq
     webapi:
         container_name: webapi
+        image: smpcr.azurecr.io/webapi
         build:
             context: ./
             dockerfile: "RedactMyPdf.Viewer\\Dockerfile"        
@@ -51,7 +54,7 @@ services:
             - DOTNET_ENVIRONMENT=Docker
         restart: on-failure
         ports:
-            - "5000:80"
+            - "80:80"
         depends_on:
             - mongodb
             - rabbitmq
