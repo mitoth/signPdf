@@ -102,9 +102,7 @@ const UploadFiles = (): ReactElement => {
         <>
             <div className="center-vertical">
                 <h1 className="header-text">
-                    <b>
-                        Electronically <u>Sign</u> your <u>pdf</u> in a few easy steps.
-                    </b>
+                    <b>Electronically Sign your pdf.</b>
                 </h1>
                 {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}
                 {/* <div className="margin-bottom2"></div> */}
