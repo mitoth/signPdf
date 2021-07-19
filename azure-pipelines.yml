@@ -14,7 +14,7 @@ variables:
   imageRepository: 'burnpdf'
   containerRegistry: 'smpcr.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/RedactMyPdf.BurnPdfWorker/Dockerfile'
-  buildContextPath: '$(Build.SourcesDirectory)/RedactMyPdf.BurnPdfWorker'
+  buildContextPath: '$(Build.SourcesDirectory)'
   tag: '$(Build.BuildId)'
 
   # Agent VM image name
