@@ -248,6 +248,21 @@ const Editor = (props: IProps): ReactElement => {
             const y = e.touches[0].clientY - rect.top; //y position within the element.
             addRectangleOnPage(x, y, pageNumber);
         }
+        if (addSignaturePressed) {
+            const rect = (e.target as HTMLElement).getBoundingClientRect();
+            const x = e.touches[0].clientX - rect.left; //x position within the element.
+            const y = e.touches[0].clientY - rect.top; //y position within the element.
+            const signature = {
+                pageNumber: pageNumber,
+                signature: CreateSignature(x, y, signatureName),
+            };
+
+            const existingSignature: PageSignature[] = [...signatures];
+            existingSignature.push(signature);
+            setSignatures(existingSignature);
+            setSelectedShapeId(signature.signature.id);
+            setAddSignaturePressed(false);
+        }
     };
 
     const addRectangleOnPage = (x: number, y: number, pageNumber: number) => {
