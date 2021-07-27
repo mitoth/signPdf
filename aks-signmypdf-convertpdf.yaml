@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-convertpdf-convertpdf
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: signmypdf-convertpdf
+  template:
+    metadata:
+      labels:
+        app: signmypdf-convertpdf
+    spec:
+      containers:
+        - name: signmypdf-convertpdf
+          image: signmypdfacr.azurecr.io/signmypdf.workers.convertpdf:1
+          env:
+            - name: DOTNET_ENVIRONMENT
+              value: Docker
+      imagePullSecrets:
+        - name: acr-secret

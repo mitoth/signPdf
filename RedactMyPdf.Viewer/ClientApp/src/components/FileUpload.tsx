@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 const UploadFiles = (): ReactElement => {
     const uploadText = 'Drag and drop a PDF here or click';
     const [currentFile, setCurrentFile] = useState<File>();
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState('nada');
     const [editorPath, setEditorPath] = useState<string>();
     const [signalRConnectionId, setSignalRConnectionId] = useState<string>();
     const [pages, setPages] = useState([]);
@@ -83,6 +83,7 @@ const UploadFiles = (): ReactElement => {
             height: '65vh',
             marginBottom: '0.5vh',
             marginTop: '2vh',
+            border: 'none',
         },
         active: {
             backgroundColor: '#a2cf6e',
@@ -102,7 +103,7 @@ const UploadFiles = (): ReactElement => {
         <>
             <div className="center-vertical">
                 <h1 className="header-text">
-                    <b>Electronically Sign your pdf.</b>
+                    <b>Electronically Sign your pdf 4 |{message}|.</b>
                 </h1>
                 {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}
                 {/* <div className="margin-bottom2"></div> */}
@@ -116,6 +117,7 @@ const UploadFiles = (): ReactElement => {
                     dropzoneProps={dropzoneProps}
                 />
                 <div className="margin-top1vh">{currentFile && !message && <LinearProgress color="secondary" />}</div>
+                <div className="margin-top3vh">{message && <p>{message}</p>}</div>
             </div>
         </>
     );

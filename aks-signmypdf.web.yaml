@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-signmypdf-web
+  labels:
+    version: dev
+    product: signmypdf-web
+spec:
+  selector:
+    app: signmypdf-web
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+    - port: 443
+      targetPort: 443
+      protocol: TCP
+      name: https
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-signmypdf-web
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: signmypdf-web
+  template:
+    metadata:
+      labels:
+        app: signmypdf-web
+    spec:
+      containers:
+        - name: signmypdf-web
+          image: signmypdfacr.azurecr.io/signmypdf.webapi:5
+          env:
+            - name: DOTNET_ENVIRONMENT
+              value: Docker
+            - name: ASPNETCORE_URLS
+              value: http://+:80
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources:
+            limits:
+              cpu: "0.15"
+      imagePullSecrets:
+        - name: acr-secret

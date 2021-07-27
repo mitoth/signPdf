@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-signmypdf-burnpdf
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: signmypdf-burnpdf
+  template:
+    metadata:
+      labels:
+        app: signmypdf-burnpdf
+    spec:
+      containers:
+        - name: signmypdf-burnpdf
+          image: signmypdfacr.azurecr.io/signmypdf.workers.burnpdf:1
+          env:
+            - name: DOTNET_ENVIRONMENT
+              value: Docker
+      imagePullSecrets:
+        - name: acr-secret

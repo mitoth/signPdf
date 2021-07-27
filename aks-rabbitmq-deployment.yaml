@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    version: prod
+    product: rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - port: 5672
+      targetPort: 5672
+      protocol: TCP
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - image: rabbitmq:3-management
+          imagePullPolicy: ""
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -f
+                - http://localhost:15672
+            failureThreshold: 5
+            periodSeconds: 30
+            timeoutSeconds: 10
+          name: rabbitmq
+          ports:
+            - containerPort: 4369
+            - containerPort: 5671
+            - containerPort: 5672
+            - containerPort: 25672
+            - containerPort: 15671
+            - containerPort: 15672
+          resources: {}
+      restartPolicy: Always

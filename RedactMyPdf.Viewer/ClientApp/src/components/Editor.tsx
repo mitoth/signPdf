@@ -336,10 +336,7 @@ const Editor = (props: IProps): ReactElement => {
 
     let buttonSize: 'small' | 'medium' | 'large';
     let fontSize: 'inherit' | 'default' | 'small' | 'large';
-    if (DeviceType.IsPhone()) {
-        buttonSize = 'small';
-        fontSize = 'small';
-    } else if (DeviceType.IsTablet()) {
+    if (DeviceType.IsTablet() || DeviceType.IsPhone()) {
         buttonSize = 'medium';
         fontSize = 'default';
     } else {

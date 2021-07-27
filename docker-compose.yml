@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3"
 services:
     mongodb:
         image: "mongo:4.4"
@@ -22,7 +22,7 @@ services:
             retries: 5
     burnpdf:
         container_name: burnpdf
-        image: smpcr.azurecr.io/burnpdf
+        image: signmypdfacr.azurecr.io/signmypdf.workers.burnpdf:4
         build:
             context: ./
             dockerfile: "RedactMyPdf.BurnPdfWorker\\Dockerfile"        
@@ -34,7 +34,7 @@ services:
             - rabbitmq
     convertpdf:
         container_name: convertpdf
-        image: smpcr.azurecr.io/convertpdf
+        image: signmypdfacr.azurecr.io/signmypdf.workers.convertpdf:4
         build:
             context: ./
             dockerfile: "RedactMyPdf.ConvertPdfWorker\\Dockerfile"        
@@ -46,7 +46,7 @@ services:
             - rabbitmq
     webapi:
         container_name: webapi
-        image: smpcr.azurecr.io/webapi
+        image: signmypdfacr.azurecr.io/signmypdf.webapi:5
         build:
             context: ./
             dockerfile: "RedactMyPdf.Viewer\\Dockerfile"        
