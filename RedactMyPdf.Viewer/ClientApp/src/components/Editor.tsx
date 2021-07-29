@@ -490,9 +490,7 @@ const Editor = (props: IProps): ReactElement => {
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         onKeyPress={() => console.log('presat')}
                     >
-                        <FormLabel component="legend">
-                            Pages to sign. (You can still remove or add signatures later)
-                        </FormLabel>
+                        <FormLabel component="legend">You can still remove or add signatures later</FormLabel>
                         <RadioGroup
                             aria-label="gender"
                             name="gender1"
