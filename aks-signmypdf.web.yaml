@@ -40,7 +40,7 @@ spec:
     spec:
       containers:
         - name: signmypdf-web
-          image: signmypdfacr.azurecr.io/signmypdf.webapi:5
+          image: signmypdfacr.azurecr.io/signmypdf.webapi:#{Build.BuildId}#
           env:
             - name: DOTNET_ENVIRONMENT
               value: Docker
