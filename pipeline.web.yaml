@@ -16,7 +16,7 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '86a9c183-a3b0-48e6-931a-4358122f8d06'
+  dockerRegistryServiceConnection: 'd71d5758-acf0-47c0-9416-42eac94b8179'
   imageRepository: 'signmypdf.webapi'
   containerRegistry: 'signmypdfacr.azurecr.io'
   dockerfilePath: 'RedactMyPdf.Viewer/Dockerfile'
@@ -42,7 +42,7 @@ stages:
         command: build
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
-        buildContext: $(Build.SourcesDirectory)/GloboTicket
+        buildContext: $(Build.SourcesDirectory)
         tags: |
           $(tag)
     - script: |
@@ -68,7 +68,7 @@ stages:
         repository: $(imageRepository)
         dockerfile: $(dockerfilePath)
         containerRegistry: $(dockerRegistryServiceConnection)
-        buildContext: $(Build.SourcesDirectory)/GloboTicket
+        buildContext: $(Build.SourcesDirectory)
         tags: |
           $(tag)
     
@@ -82,7 +82,7 @@ stages:
     steps:
     - task: replacetokens@3
       inputs:
-        rootDirectory: '$(Build.SourcesDirectory)/GloboTicket'
+        rootDirectory: '$(Build.SourcesDirectory)'
         targetFiles: '$(deploymentFile)'
         encoding: 'auto'
         writeBOM: true
@@ -96,12 +96,12 @@ stages:
     - task: Kubernetes@1
       inputs:
         connectionType: 'Kubernetes Service Connection'
-        kubernetesServiceEndpoint: 'globoticket-aks'
+        kubernetesServiceEndpoint: 'SignMyPdfCluster-default'
         namespace: 'default'
         command: 'apply'
         useConfigurationFile: true
-        configuration: '$(Build.SourcesDirectory)/GloboTicket/$(deploymentFile)'
+        configuration: '$(Build.SourcesDirectory)/$(deploymentFile)'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
-        azureSubscriptionEndpointForSecrets: 'MVPSponsorship (e57087a4-a053-48c9-8857-995316398cdc)'
-        azureContainerRegistry: 'globoticket.azurecr.io'
+        azureSubscriptionEndpointForSecrets: 'RedactSubscription1 (eb0e825f-d954-42ae-864e-d83fedb59a7e)'
+        azureContainerRegistry: 'signmypdfacr.azurecr.io'
