@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 const UploadFiles = (): ReactElement => {
     const uploadText = 'Drag and drop a PDF here or click';
     const [currentFile, setCurrentFile] = useState<File>();
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState('');
     const [editorPath, setEditorPath] = useState<string>();
     const [signalRConnectionId, setSignalRConnectionId] = useState<string>();
     const [pages, setPages] = useState([]);
