@@ -103,5 +103,5 @@ stages:
         configuration: '$(Build.SourcesDirectory)/$(deploymentFile)'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
-        azureSubscriptionEndpointForSecrets: 'RedactSubscription1 (eb0e825f-d954-42ae-864e-d83fedb59a7e)'
+       # azureSubscriptionEndpointForSecrets: 'RedactSubscription1 (eb0e825f-d954-42ae-864e-d83fedb59a7e)'
         azureContainerRegistry: 'signmypdfacr.azurecr.io'
