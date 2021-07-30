@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import DeviceType from '../services/DeviceType';
 
 const UploadFiles = (): ReactElement => {
-    let uploadText = 'Drag and drop a PDF here or click';
+    let uploadText = 'Tap to select your PDF';
     const [currentFile, setCurrentFile] = useState<File>();
     const [message, setMessage] = useState('');
     const [editorPath, setEditorPath] = useState<string>();
