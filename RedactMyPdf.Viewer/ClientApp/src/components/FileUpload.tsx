@@ -5,9 +5,10 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { DropzoneArea } from 'material-ui-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { withStyles } from '@material-ui/core/styles';
+import DeviceType from '../services/DeviceType';
 
 const UploadFiles = (): ReactElement => {
-    const uploadText = 'Drag and drop a PDF here or click';
+    let uploadText = 'Drag and drop a PDF here or click';
     const [currentFile, setCurrentFile] = useState<File>();
     const [message, setMessage] = useState('');
     const [editorPath, setEditorPath] = useState<string>();
@@ -21,6 +22,10 @@ const UploadFiles = (): ReactElement => {
         const currentFile = files[0];
 
         if (!currentFile) return;
+
+        if (DeviceType.IsPhone()) {
+            uploadText = 'Tap to select your PDF';
+        }
 
         setCurrentFile(currentFile);
         setDropzoneText("Processsing your file. We'll be quick");
