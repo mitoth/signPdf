@@ -133,3 +133,30 @@ table.center {
     margin-right: auto;
     margin-left: auto;
 }
+
+.MuiDropzoneArea-root {
+    color: #fff !important;
+    background-color: #757ce8 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 65vh !important;
+    margin-bottom: 0.5vh !important;
+    margin-top: 2vh !important;
+    border: none !important;
+}
+
+.MuiDropzoneArea-active {
+    background-color: #a2cf6e !important;
+}
+
+.MuiDropzoneArea-text {
+    font-size: 3vh !important;
+}
+
+.MuiDropzoneArea-icon {
+    color: #fff !important;
+    background-color: #757ce8 !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
