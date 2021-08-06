@@ -34,7 +34,7 @@ const UploadFiles = (): ReactElement => {
 
         window.setTimeout(() => {
             setDropzoneText('Sorry. It takes a bit longer than expected...');
-        }, 5000);
+        }, 10000);
 
         setCurrentFile(currentFile);
         setDropzoneText("Processsing your file. We'll be quick");
