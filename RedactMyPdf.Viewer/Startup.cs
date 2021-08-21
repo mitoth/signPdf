@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
 using RedactMyPdf.Core.Utils;
@@ -132,6 +133,7 @@ namespace RedactMyPdf.Viewer
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<FileProcessedHub>("/hubs/files");
+                endpoints.MapMetrics();
             });
 
             app.UseSpa(spa =>
