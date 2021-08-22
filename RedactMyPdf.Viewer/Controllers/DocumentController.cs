@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Prometheus;
 using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
 using RedactMyPdf.Core.MessageQueue;
@@ -44,6 +45,8 @@ namespace RedactMyPdf.Viewer.Controllers
         private const string BurnQueueName = Constants.Queue.BurnDocumentQueueName;
         private const string BurnRoutingKey = Constants.RoutingKeys.BurnDocumentRoutingKey;
 
+        private Counter counter = Metrics.CreateCounter("my_counter", "upload counter");
+        
         public DocumentController(ILogger<DocumentController> logger, IFileRepository fileRepository, IDocumentRepository documentRepository, IBurnedDocumentRepository burnedDocumentRepository, 
             IConnectionFactory connectionFactory, IMemoryCache cache)
         {
@@ -71,6 +74,8 @@ namespace RedactMyPdf.Viewer.Controllers
         {
             EnsureArg.IsNotNull(file);
 
+            counter.Inc();
+            
             //upload part
             if (!IsPdfFileExtension(file.FileName))
             {

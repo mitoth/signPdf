@@ -118,6 +118,7 @@ namespace RedactMyPdf.Viewer
                 app.UseHsts();
             }
 
+            app.UseMetricServer();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -133,7 +134,6 @@ namespace RedactMyPdf.Viewer
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<FileProcessedHub>("/hubs/files");
-                endpoints.MapMetrics();
             });
 
             app.UseSpa(spa =>
