@@ -45,7 +45,10 @@ namespace RedactMyPdf.Viewer.Controllers
         private const string BurnQueueName = Constants.Queue.BurnDocumentQueueName;
         private const string BurnRoutingKey = Constants.RoutingKeys.BurnDocumentRoutingKey;
 
-        private Counter counter = Metrics.CreateCounter("my_counter", "upload counter");
+        private readonly Counter uploadCounter = Metrics.CreateCounter("sapi_upload_documents", "upload counter");
+        private readonly Counter getPageCounter = Metrics.CreateCounter("sapi_get_page", "get page counter");
+        private readonly Counter burnShapesCounter = Metrics.CreateCounter("sapi_burn_shapes", "burn shapes counter");
+        private readonly Counter downloadBurnedFileCounter = Metrics.CreateCounter("sapi_download_burned_files", "download burned files counter");
         
         public DocumentController(ILogger<DocumentController> logger, IFileRepository fileRepository, IDocumentRepository documentRepository, IBurnedDocumentRepository burnedDocumentRepository, 
             IConnectionFactory connectionFactory, IMemoryCache cache)
@@ -72,10 +75,8 @@ namespace RedactMyPdf.Viewer.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UploadAndConvertPdfFile(IFormFile file, [FromQuery] string connectionId, CancellationToken cancellationToken)
         {
+            uploadCounter.Inc();
             EnsureArg.IsNotNull(file);
-
-            counter.Inc();
-            
             //upload part
             if (!IsPdfFileExtension(file.FileName))
             {
@@ -113,6 +114,7 @@ namespace RedactMyPdf.Viewer.Controllers
         [Produces("image/jpg")]
         public async Task<IActionResult> GetPage(Guid documentId, int pageNumber, CancellationToken cancellationToken)
         {
+            getPageCounter.Inc();
             EnsureArg.IsNotDefault(documentId, nameof(documentId));
             EnsureArg.IsGte(pageNumber, 1, nameof(pageNumber));
             logger.LogDebug($"Get page number [{pageNumber}] from document with id {documentId}");
@@ -154,6 +156,7 @@ namespace RedactMyPdf.Viewer.Controllers
         public IActionResult BurnShapesToDocument(Guid documentId, [FromBody] List<PageShapes> shapesList,
             [FromQuery] string connectionId, CancellationToken cancellationToken)
         {
+            burnShapesCounter.Inc();
             EnsureArg.IsNotDefault(documentId, nameof(documentId));
             cache.Set(documentId, connectionId);
             SendBurnMessage(documentId, shapesList);
@@ -167,6 +170,7 @@ namespace RedactMyPdf.Viewer.Controllers
         [Produces("application/pdf")]
         public async Task<IActionResult> GetBurnedFile(Guid documentId, CancellationToken cancellationToken)
         {
+            downloadBurnedFileCounter.Inc();
             EnsureArg.IsNotDefault(documentId, nameof(documentId));
             var burnedDocument = await GetBurnedDocument(documentId, cancellationToken);
             return await GetBurnedFile(documentId, cancellationToken, burnedDocument);
