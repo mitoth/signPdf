@@ -47,7 +47,7 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
         if (!shapeProps.width) {
             onChange({
                 ...shapeProps,
-                width: textRef.current?.getWidth(),
+                width: textRef.current?.getWidth() + 2,
                 height: textRef.current?.getHeight(),
             });
         }
