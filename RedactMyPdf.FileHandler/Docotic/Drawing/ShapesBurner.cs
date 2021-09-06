@@ -48,23 +48,22 @@ namespace RedactMyPdf.FileHandler.Docotic.Drawing
                         foreach (var signature in pageShapes.Signatures)
                         {
                             //the ratio between what the user sees and the actual pdf width
-                            var widthRatio = pdfPage.Width / signature.PageWidth;
-                            var heightRatio = pdfPage.Height /signature.PageHeight;
+                            var widthRatio = Math.Floor(pdfPage.Width) / Math.Floor(signature.PageWidth);
+                            var heightRatio = Math.Floor(pdfPage.Height) / Math.Floor(signature.PageHeight);
                             
-                            var signatureWidth = signature.Width * widthRatio;
-                            var signatureHeight = signature.Height * heightRatio;
+                            var signatureWidth = Math.Floor(signature.Width) * widthRatio;
+                            var signatureHeight = Math.Floor(signature.Height) * heightRatio;
                             var signatureX = signature.X * widthRatio;
                             var signatureY = signature.Y * heightRatio;
                             
-                            canvas.FontSize = signature.FontSize * heightRatio;
-                            // canvas.FontSize = 60;
+                            canvas.FontSize = Math.Floor(signature.FontSize * heightRatio);
                             
                             canvas.DrawString(signature.Text, 
                                 new PdfRectangle(
-                                    signatureX,
-                                    signatureY,
-                                    signatureWidth,
-                                    signatureHeight), 
+                                    Math.Round(signatureX),
+                                    Math.Floor(signatureY),
+                                    Math.Floor(signatureWidth),
+                                    Math.Floor(signatureHeight)), 
                                 PdfTextAlign.Center,
                                 PdfVerticalAlign.Center);  
                         }
