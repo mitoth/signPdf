@@ -70,6 +70,8 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
         return 0;
     }
 
+    const enabledAnchors: string[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+
     return (
         <React.Fragment>
             <Text
@@ -132,6 +134,7 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                         return newBox;
                     }}
                     rotateEnabled={false}
+                    enabledAnchors={enabledAnchors}
                 />
             )}
 
