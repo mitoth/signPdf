@@ -29,6 +29,7 @@
     "react-scripts": "4.0.1",
     "react-scroll": "^1.8.2",
     "react-toastify": "^7.0.3",
+    "react-touch-events": "^3.0.0",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.3",
     "typescript": "^4.1.3",

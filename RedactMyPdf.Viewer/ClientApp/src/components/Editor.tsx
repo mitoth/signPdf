@@ -43,6 +43,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import { Element, animateScroll as scroll } from 'react-scroll';
 import Signature from '../interfaces/Signature';
 import SignatureDto from '../dtos/SignatureDto';
+import ReactTouchEvents from 'react-touch-events';
 
 interface PageState {
     pages: Page[];
@@ -244,14 +245,14 @@ const Editor = (props: IProps): ReactElement => {
     const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
         if (addRectanglePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.touches[0].clientX - rect.left; //x position within the element.
-            const y = e.touches[0].clientY - rect.top; //y position within the element.
+            const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
+            const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
             addRectangleOnPage(x, y, pageNumber);
         }
         if (addSignaturePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.touches[0].clientX - rect.left; //x position within the element.
-            const y = e.touches[0].clientY - rect.top; //y position within the element.
+            const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
+            const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
                 signature: CreateSignature(x, y, signatureName),
@@ -709,32 +710,50 @@ const Editor = (props: IProps): ReactElement => {
                                         <React.Fragment key={i}>
                                             <tr className="height5percent">{i}</tr>
                                             {/* <Paper elevation={5}> */}
-                                            <tr
-                                                onClick={(e) => {
-                                                    clickOnPageEvent(e, i);
-                                                }}
-                                                onTouchStart={(e) => {
-                                                    touchStartEvent(e, i);
+                                            <ReactTouchEvents
+                                                onTap={(
+                                                    e:
+                                                        | React.MouseEvent<HTMLDivElement, MouseEvent>
+                                                        | React.TouchEvent<HTMLDivElement>,
+                                                ) => {
+                                                    console.log('asd ', e);
+                                                    if (e.type == 'touchend') {
+                                                        touchStartEvent(e as React.TouchEvent<HTMLDivElement>, i);
+                                                    } else {
+                                                        clickOnPageEvent(
+                                                            e as React.MouseEvent<HTMLDivElement, MouseEvent>,
+                                                            i,
+                                                        );
+                                                    }
                                                 }}
                                             >
-                                                <PageDrawStage
-                                                    rectangles={rectanglesForThisPage}
-                                                    signatures={singaturesForThisPage}
-                                                    setRectangles={(rects) => {
-                                                        updateRectangles(rects, i);
-                                                    }}
-                                                    setSignatures={(signs) => {
-                                                        updateSignatures(signs, i);
-                                                    }}
-                                                    fileId={fileId}
-                                                    pageNumber={i}
-                                                    width={width}
-                                                    height={height}
-                                                    selectedShapeId={selectedShapeId}
-                                                    setSelectedShapeId={setSelectedShapeId}
-                                                ></PageDrawStage>
-                                                <Element name={scrollAnchorId} className="element"></Element>
-                                            </tr>
+                                                <tr
+                                                // onClick={(e) => {
+                                                //     clickOnPageEvent(e, i);
+                                                // }}
+                                                // onTouchStart={(e) => {
+                                                // touchStartEvent(e, i);
+                                                // }}
+                                                >
+                                                    <PageDrawStage
+                                                        rectangles={rectanglesForThisPage}
+                                                        signatures={singaturesForThisPage}
+                                                        setRectangles={(rects) => {
+                                                            updateRectangles(rects, i);
+                                                        }}
+                                                        setSignatures={(signs) => {
+                                                            updateSignatures(signs, i);
+                                                        }}
+                                                        fileId={fileId}
+                                                        pageNumber={i}
+                                                        width={width}
+                                                        height={height}
+                                                        selectedShapeId={selectedShapeId}
+                                                        setSelectedShapeId={setSelectedShapeId}
+                                                    ></PageDrawStage>
+                                                    <Element name={scrollAnchorId} className="element"></Element>
+                                                </tr>
+                                            </ReactTouchEvents>
                                             {/* </Paper> */}
                                         </React.Fragment>
                                     );
