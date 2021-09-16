@@ -26,7 +26,7 @@ function App(): ReactElement {
                     <Route exact path="/editor/:slug/:slug2" component={Editor} />
                 </Switch>
             </BrowserRouter>
-            <ToastContainer position="top-center" />
+            <ToastContainer position="top-center" limit={2} />
         </div>
     );
 }

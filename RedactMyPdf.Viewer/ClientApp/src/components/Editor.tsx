@@ -1,8 +1,6 @@
-import React, { ReactElement, useRef, useEffect } from 'react';
+import React, { ReactElement, useRef, ReactText } from 'react';
 import PageDrawStage from './PageDrawStage';
 import UploadService from '../services/FileUploadService';
-import Rectangle from '../interfaces/Rectangle';
-import PageRectangle from '../interfaces/PageRectangle';
 import PageSignature from '../interfaces/PageSignature';
 import Page from '../interfaces/Page';
 import FileDownload from './FileDownload';
@@ -13,7 +11,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
@@ -56,63 +53,33 @@ interface IProps {
 const Editor = (props: IProps): ReactElement => {
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | undefined>(undefined);
     const [signatures, setSignatures] = React.useState<PageSignature[]>([]);
-    const [rectangles, setRectangles] = React.useState<PageRectangle[]>([]);
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
-    const [addRectanglePressed, setAddRectanglePressed] = React.useState(false);
     const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
-
-    const [noOfTimeInfoEraseShown, setNoOfTimeInfoEraseShown] = React.useState(0);
 
     const [signatureWizardNameInput, setSignatureWizardNameInput] = React.useState<string>('');
 
     const [signatureName, setSignatureName] = React.useState<string>('');
-
-    function generateRectangle(): Rectangle {
-        let x = 0;
-        let y = 0;
-
-        if (x > ScreenSize.GetScreenWidth() - 50) {
-            x = 1;
-        }
-        if (y > ScreenSize.GetScreenWidth() - 50) {
-            y = 1;
-        }
-
-        x += 15;
-        y += 15;
-
-        return {
-            id: Math.random().toString(),
-            x: x,
-            y: y,
-            width: 100,
-            height: 100,
-            fill: 'red',
-        };
-    }
-
-    const addRectanglesClick = () => {
-        setAddRectanglePressed(true);
-        if (noOfTimeInfoEraseShown < 2) {
-            toast.success('Click on the page where you want to add the rectangle!', {
-                toastId: 1,
-                position: toast.POSITION.BOTTOM_CENTER,
-            });
-        }
-        setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
-    };
+    const toastId = React.useRef<ReactText | string>();
+    const shapeSelected = React.useRef<boolean>(false);
 
     const addSignatureClick = () => {
         setAddSignaturePressed(true);
-        if (noOfTimeInfoEraseShown < 2) {
-            toast.info('Click on the page where you want to add the signature!', {
-                toastId: 1,
-                position: toast.POSITION.BOTTOM_CENTER,
+        let addText = 'Click where you want to add the signature!';
+        if (DeviceType.IsTouchDevice()) {
+            addText = 'Tap to add the signature!';
+        }
+        if (!toastId.current) {
+            toastId.current = toast.info(addText, {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: false,
+            });
+        } else {
+            toast.update(toastId.current, {
+                type: toast.TYPE.SUCCESS,
             });
         }
-        setNoOfTimeInfoEraseShown(noOfTimeInfoEraseShown + 1);
     };
 
     const fileId: string = window.location.pathname.split('/')[2];
@@ -120,7 +87,6 @@ const Editor = (props: IProps): ReactElement => {
 
     const cancelChangesClick = () => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
-            setRectangles([]);
             setSignatures([]);
             setSignatureName('');
         }
@@ -158,7 +124,6 @@ const Editor = (props: IProps): ReactElement => {
 
             const shape = {
                 PageNumber: s.pageNumber,
-                Rectangles: [],
                 Signatures: [signature],
             };
             return shape;
@@ -187,20 +152,6 @@ const Editor = (props: IProps): ReactElement => {
         setDownloadPath('');
     };
 
-    const updateRectangles = (rects: Rectangle[], pageNumber: number) => {
-        const allRectanglesExceptPage = rectangles.filter((r) => r.pageNumber != pageNumber);
-        const newRectangles = rects.map((r) => {
-            const x: PageRectangle = {
-                pageNumber: pageNumber,
-                rectangle: r,
-            };
-
-            return x;
-        });
-        allRectanglesExceptPage.push(...newRectangles);
-        setRectangles(allRectanglesExceptPage);
-    };
-
     const updateSignatures = (signs: Signature[], pageNumber: number) => {
         setSignatures((existingSignatures) => {
             const allSignaturesExceptPage = existingSignatures.filter((r) => r.pageNumber != pageNumber);
@@ -219,12 +170,6 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
-        if (addRectanglePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.clientX - rect.left; //x position within the element.
-            const y = e.clientY - rect.top; //y position within the element.
-            addRectangleOnPage(x, y, pageNumber);
-        }
         if (addSignaturePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
             const x = e.clientX - rect.left; //x position within the element.
@@ -233,22 +178,24 @@ const Editor = (props: IProps): ReactElement => {
                 pageNumber: pageNumber,
                 signature: CreateSignature(x, y, signatureName),
             };
+            toast.dismiss(toastId.current);
+            toastId.current = undefined;
 
             const existingSignature: PageSignature[] = [...signatures];
             existingSignature.push(signature);
             setSignatures(existingSignature);
             setSelectedShapeId(signature.signature.id);
             setAddSignaturePressed(false);
+        } else {
+            console.log('click1');
+            if (!shapeSelected.current) {
+                setSelectedShapeId(undefined);
+            }
+            shapeSelected.current = false;
         }
     };
 
     const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
-        if (addRectanglePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
-            const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
-            addRectangleOnPage(x, y, pageNumber);
-        }
         if (addSignaturePressed) {
             const rect = (e.target as HTMLElement).getBoundingClientRect();
             const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
@@ -260,25 +207,18 @@ const Editor = (props: IProps): ReactElement => {
 
             const existingSignature: PageSignature[] = [...signatures];
             existingSignature.push(signature);
+            toast.dismiss(toastId.current);
+            toastId.current = undefined;
             setSignatures(existingSignature);
             setSelectedShapeId(signature.signature.id);
             setAddSignaturePressed(false);
+        } else {
+            console.log('click1');
+            if (!shapeSelected.current) {
+                setSelectedShapeId(undefined);
+            }
+            shapeSelected.current = false;
         }
-    };
-
-    const addRectangleOnPage = (x: number, y: number, pageNumber: number) => {
-        const rectangle = generateRectangle();
-        rectangle.x = x;
-        rectangle.y = y;
-        const pageRectanle: PageRectangle = {
-            pageNumber: pageNumber,
-            rectangle: rectangle,
-        };
-        const updatedRectangles: PageRectangle[] = [...rectangles];
-        updatedRectangles.push(pageRectanle);
-        setRectangles(updatedRectangles);
-        setSelectedShapeId(rectangle.id);
-        setAddRectanglePressed(false);
     };
 
     const useStyles = makeStyles((theme) => ({
@@ -377,7 +317,6 @@ const Editor = (props: IProps): ReactElement => {
     }
 
     const handleNext = (isLast: boolean) => {
-        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
         if (!isLast) {
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         } else {
@@ -454,7 +393,6 @@ const Editor = (props: IProps): ReactElement => {
         switch (step) {
             case 0:
                 return (
-                    // <>
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
@@ -482,7 +420,6 @@ const Editor = (props: IProps): ReactElement => {
                             required={true}
                         />
                     </form>
-                    // </>
                 );
             case 1:
                 return (
@@ -533,7 +470,7 @@ const Editor = (props: IProps): ReactElement => {
     };
     const child1 = useRef(null);
 
-    const showDownloadAndRevertButtons = rectangles.length > 0 || signatures.length > 0;
+    const showDownloadAndRevertButtons = signatures.length > 0;
 
     const showErrorInStepper = activeStep != 0 || signatureWizardNameInput.length > 0 ? false : true;
 
@@ -549,16 +486,6 @@ const Editor = (props: IProps): ReactElement => {
                 variant="contained"
                 className={classes.fixedBottomRight}
             >
-                {/* <Button
-                    onClick={addRectanglesClick}
-                    variant="contained"
-                    color="primary"
-                    size={buttonSize}
-                    className={classes.marginBottom}
-                    startIcon={<CheckBoxOutlineBlankIcon />}
-                >
-                    Erase
-                </Button> */}
                 {signatureName.length == 0 && (
                     <Button
                         onClick={CreateSignatureClick}
@@ -579,7 +506,6 @@ const Editor = (props: IProps): ReactElement => {
                         size={buttonSize}
                         className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
                         startIcon={<AddIcon />}
-                        // endIcon={<AddIcon />}
                     >
                         Sign
                     </Button>
@@ -590,7 +516,6 @@ const Editor = (props: IProps): ReactElement => {
                         variant="contained"
                         color="primary"
                         size={buttonSize}
-                        // className={classes.margin}
                         startIcon={<CloudDownloadIcon />}
                     >
                         Download
@@ -609,11 +534,6 @@ const Editor = (props: IProps): ReactElement => {
                             <UndoIcon fontSize={fontSize} />
                         </IconButton>
                     </Tooltip>
-                    {/* <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Download File</span>}>
-                    <DownloadButton aria-label="download" onClick={saveDocumentClick}>
-                        <CloudDownloadIcon fontSize={fontSize} />
-                    </DownloadButton>
-                </Tooltip> */}
                     {downloadPath && (
                         <FileDownload downloadPath={downloadPath} onDownloadComplete={handleDownloadComplete} />
                     )}
@@ -623,7 +543,7 @@ const Editor = (props: IProps): ReactElement => {
             <div
                 style={{
                     backgroundColor: '#f4f6f5',
-                    cursor: addRectanglePressed || addSignaturePressed ? 'crosshair' : '',
+                    cursor: addSignaturePressed ? 'crosshair' : '',
                 }}
             >
                 <table className="center">
@@ -699,9 +619,6 @@ const Editor = (props: IProps): ReactElement => {
                                         props.location.state.pages[i - 1].height,
                                     );
                                     const scrollAnchorId = 'scrollId' + i;
-                                    const rectanglesForThisPage = rectangles
-                                        .filter((r) => r.pageNumber == i)
-                                        .map((r) => r.rectangle);
 
                                     const singaturesForThisPage = signatures
                                         .filter((s) => s.pageNumber == i)
@@ -709,7 +626,6 @@ const Editor = (props: IProps): ReactElement => {
                                     return (
                                         <React.Fragment key={i}>
                                             <tr className="height5percent">{i}</tr>
-                                            {/* <Paper elevation={5}> */}
                                             <ReactTouchEvents
                                                 onTap={(
                                                     e:
@@ -727,20 +643,9 @@ const Editor = (props: IProps): ReactElement => {
                                                     }
                                                 }}
                                             >
-                                                <tr
-                                                // onClick={(e) => {
-                                                //     clickOnPageEvent(e, i);
-                                                // }}
-                                                // onTouchStart={(e) => {
-                                                // touchStartEvent(e, i);
-                                                // }}
-                                                >
+                                                <tr>
                                                     <PageDrawStage
-                                                        rectangles={rectanglesForThisPage}
                                                         signatures={singaturesForThisPage}
-                                                        setRectangles={(rects) => {
-                                                            updateRectangles(rects, i);
-                                                        }}
                                                         setSignatures={(signs) => {
                                                             updateSignatures(signs, i);
                                                         }}
@@ -749,12 +654,14 @@ const Editor = (props: IProps): ReactElement => {
                                                         width={width}
                                                         height={height}
                                                         selectedShapeId={selectedShapeId}
-                                                        setSelectedShapeId={setSelectedShapeId}
+                                                        setSelectedShapeId={(id) => {
+                                                            shapeSelected.current = true;
+                                                            setSelectedShapeId(id);
+                                                        }}
                                                     ></PageDrawStage>
                                                     <Element name={scrollAnchorId} className="element"></Element>
                                                 </tr>
                                             </ReactTouchEvents>
-                                            {/* </Paper> */}
                                         </React.Fragment>
                                     );
                                 })}
