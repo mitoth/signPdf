@@ -1,11 +1,8 @@
 import React, { ReactElement } from 'react';
 import { Stage, Layer } from 'react-konva';
 import KonvaDrawLayer from './KonvaDrawLayer';
-import { MemoizedPageImage } from './PageImage';
 import Signature from '../interfaces/Signature';
-import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Image } from 'react-konva';
 import useImage from 'use-image';
@@ -60,11 +57,12 @@ const PageDrawStage = (props: IProps): ReactElement => {
                     sx={{
                         width: props.width,
                         height: props.height,
-                        bgcolor: '#e7e4ef',
+                        bgcolor: '#FFFFFF',
+                        color: '#757ce8',
                     }}
                 >
                     <div id="mata" style={divStyle}>
-                        <CircularProgress color="secondary" />
+                        <CircularProgress color="inherit" />
                     </div>
                 </Box>
             </>
