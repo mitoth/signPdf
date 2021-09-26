@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
-
+import Footer from './components/Footer';
 import FileUpload from './components/FileUpload';
 import Editor from './components/Editor';
 import { ToastContainer } from 'react-toastify';
@@ -27,6 +27,7 @@ function App(): ReactElement {
                 </Switch>
             </BrowserRouter>
             <ToastContainer position="top-center" limit={2} />
+            <Footer></Footer>
         </div>
     );
 }

@@ -160,3 +160,15 @@ table.center {
     align-items: center !important;
     justify-content: center !important;
 }
+
+.footer {
+    bottom: 0px;
+    text-align: center;
+    justify-content: center;
+    background-color: #ffffff;
+    color: white;
+    height: 7vh;
+    display: flex;
+    position: relative;
+    width: 100vw;
+}
