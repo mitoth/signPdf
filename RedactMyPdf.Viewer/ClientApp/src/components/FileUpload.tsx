@@ -5,6 +5,7 @@ import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { DropzoneArea } from 'material-ui-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeviceType from '../services/DeviceType';
+import Footer from './Footer';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -122,6 +123,7 @@ const UploadFiles = (): ReactElement => {
                     {currentFile && uploadInProgress && <LinearProgress color="secondary" />}
                 </div>
             </div>
+            <Footer></Footer>
         </>
     );
 };

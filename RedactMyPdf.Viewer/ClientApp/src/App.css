@@ -169,6 +169,6 @@ table.center {
     color: white;
     height: 7vh;
     display: flex;
-    position: relative;
+    position: fixed;
     width: 100vw;
 }
