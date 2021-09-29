@@ -9,7 +9,8 @@ import Footer from './Footer';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
-    const [editorPath, setEditorPath] = useState<string>();
+    const [fileId, setFileId] = useState<string>();
+    const [numberOfPages, setNumberOfPages] = useState<number>();
     const [signalRConnectionId, setSignalRConnectionId] = useState<string>();
     const [pages, setPages] = useState([]);
     const [connection, setConnection] = useState<HubConnection>();
@@ -93,7 +94,8 @@ const UploadFiles = (): ReactElement => {
                         const doc = JSON.parse(docJson);
                         setUploadSuccessful(true);
                         setPages(doc.pages);
-                        setEditorPath(`/editor/${doc.id}/${doc.pages.length}`);
+                        setFileId(doc.id);
+                        setNumberOfPages(doc.pages.length);
                     });
                 })
                 .catch((e) => console.log('Connection failed: ', e));
@@ -109,7 +111,16 @@ const UploadFiles = (): ReactElement => {
                 <h1 className="header-text">
                     <b>Electronically Sign your pdf.</b>
                 </h1>
-                {editorPath !== undefined && <Redirect push to={{ pathname: editorPath, state: { pages: pages } }} />}
+                {numberOfPages !== undefined && fileId !== undefined && (
+                    <Redirect
+                        push
+                        to={{
+                            pathname: '/editor',
+                            state: { pages: pages, fileId: fileId, numberOfPages: numberOfPages },
+                        }}
+                    />
+                )}
+
                 <DropzoneArea
                     acceptedFiles={['application/pdf']}
                     showAlerts={false}

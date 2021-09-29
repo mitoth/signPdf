@@ -44,6 +44,8 @@ import ReactTouchEvents from 'react-touch-events';
 
 interface PageState {
     pages: Page[];
+    fileId: string;
+    numberOfPages: number;
 }
 
 interface IProps {
@@ -82,8 +84,8 @@ const Editor = (props: IProps): ReactElement => {
         }
     };
 
-    const fileId: string = window.location.pathname.split('/')[2];
-    const numberOfPages: number = parseInt(window.location.pathname.split('/')[3]);
+    const fileId: string = props.location.state.fileId;
+    const numberOfPages: number = props.location.state.numberOfPages;
 
     const cancelChangesClick = () => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {

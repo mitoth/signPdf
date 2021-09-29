@@ -22,7 +22,7 @@ function App(): ReactElement {
             <BrowserRouter>
                 <Switch>
                     <Route exact path="/" component={FileUpload} />
-                    <Route exact path="/editor/:slug/:slug2" component={Editor} />
+                    <Route exact path="/editor" component={Editor} />
                 </Switch>
             </BrowserRouter>
             <ToastContainer position="top-center" limit={2} />
