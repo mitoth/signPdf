@@ -41,6 +41,7 @@ import { Element, animateScroll as scroll } from 'react-scroll';
 import Signature from '../interfaces/Signature';
 import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
+import { Redirect } from 'react-router-dom';
 
 interface PageState {
     pages: Page[];
@@ -83,6 +84,17 @@ const Editor = (props: IProps): ReactElement => {
             });
         }
     };
+
+    if (!props.location.state) {
+        return (
+            <Redirect
+                push
+                to={{
+                    pathname: '/',
+                }}
+            />
+        );
+    }
 
     const fileId: string = props.location.state.fileId;
     const numberOfPages: number = props.location.state.numberOfPages;
