@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: signmypdf-convertpdf
-          image: signmypdfacr.azurecr.io/signmypdf.workers.convertpdf:1
+          image: signmypdfacr.azurecr.io/signmypdf.workers.convertpdf:#{Build.BuildId}#
           env:
             - name: DOTNET_ENVIRONMENT
               value: Docker
