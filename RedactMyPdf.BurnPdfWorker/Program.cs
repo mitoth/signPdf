@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RedactMyPdf.Core.Abstractions.Repositories;
@@ -40,43 +41,11 @@ namespace RedactMyPdf.BurnPdfWorker
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    var config = hostContext.Configuration;
-                    services.AddSingleton<IConnectionFactory>(s =>
-                    {
-                        var host = config["RabbitMq:HostName"];
-                        var username = config["RabbitMq:Username"];
-                        var password = config["RabbitMq:Password"];
-
-                        return new ConnectionFactory
-                        {
-                            HostName = host,
-                            UserName = username,
-                            Password = password
-                        };
-                    });
-
-                    services.AddScoped<IPdfToJpgConverter, PdfToJpgConverter>();
-                    services.AddSingleton<IShapesBurner, ShapesBurner>();
-                    services.AddSingleton<IBurnDocumentService, BurnDocumentService>();
-                    services.AddSingleton<IMongoClientConfiguration>(s =>
-                    {
-                        var host = config["MongoSettings:Host"];
-                        var port = config.GetValue<int>("MongoSettings:Port");
-                        var databaseName = config["MongoSettings:Name"];
-                        var username = config["MongoSettings:Username"];
-                        var password = config["MongoSettings:Password"];
-                        var mongoClientSettings = CommonSettingsFactory.GetMongoConnectionString(host, port, username, password);
-                        return new MongoClientConfiguration(mongoClientSettings, databaseName);
-                    });
-                    services.AddSingleton<IFileRepository, FileRepository>();
-                    services.AddSingleton<IDocumentRepository, DocumentRepository>();
-                    services.AddSingleton<IBurnedDocumentRepository, BurnedDocumentRepository>();
-
-                    services.AddHostedService<Worker>();
-                })
-                .UseSerilog();
+                    webBuilder.UseSerilog((context, config) => config.ReadFrom.Configuration(context.Configuration));
+                    webBuilder.UseStartup<Startup>();
+                });
 
         public static IConfiguration LoadConfiguration()
         {
