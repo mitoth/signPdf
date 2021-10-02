@@ -8,8 +8,8 @@ trigger:
     - master
   paths:
     include:
-    - RedactMyPdf.Viewer/*
-    - aks-signmypdf.web.yaml
+    - RedactMyPdf.BurnPdfWorker/*
+    - aks-signmypdf.workers.burnpdf.yaml
 
 resources:
 - repo: self
