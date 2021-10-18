@@ -8,16 +8,12 @@ metadata:
 spec:
   selector:
     app: signmypdf-web
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
       protocol: TCP
       name: http
-    - port: 443
-      targetPort: 443
-      protocol: TCP
-      name: https
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,7 +45,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-            - containerPort: 443
           resources:
             limits:
               cpu: "0.15"
