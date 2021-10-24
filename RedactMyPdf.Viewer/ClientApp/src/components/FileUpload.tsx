@@ -37,11 +37,11 @@ const UploadFiles = (): ReactElement => {
                 setDropzoneText('Sorry. Could not upload the file!. Please try again later');
                 setUploadInProgress(false);
             }
-        }, 20000);
+        }, 40000);
 
         window.setTimeout(() => {
             setDropzoneText('Sorry. It takes a bit longer than expected...');
-        }, 10000);
+        }, 20000);
 
         setCurrentFile(currentFile);
         setDropzoneText("Processsing your file. We'll be quick");
