@@ -7,6 +7,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
 import Cookies from 'universal-cookie';
+import CookieConsent from 'react-cookie-consent';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -146,6 +147,29 @@ const UploadFiles = (): ReactElement => {
                 </div>
             </div>
             <Footer></Footer>
+            <CookieConsent
+                location="bottom"
+                buttonText="I agree"
+                cookieName="e-signpdfconsent"
+                style={{ background: '#757ce8' }}
+                buttonStyle={{ color: '#000', background: '#fff' }}
+                overlay={true}
+                expires={150}
+            >
+                This website uses cookies to enhance the user experience. Please agree with the{' '}
+                <u>
+                    <a style={{ color: '#fff' }} href="https://www.websitepolicies.com/policies/view/4Mp9sn1Q">
+                        Cookie Policy
+                    </a>
+                </u>{' '}
+                and our{' '}
+                <u>
+                    <a style={{ color: '#fff' }} href="https://www.websitepolicies.com/policies/view/U7jca8sa">
+                        Terms & Conditions
+                    </a>
+                </u>{' '}
+                before using the website
+            </CookieConsent>{' '}
         </>
     );
 };
