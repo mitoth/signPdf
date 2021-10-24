@@ -8,6 +8,8 @@ import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
 import Cookies from 'universal-cookie';
 import CookieConsent from 'react-cookie-consent';
+import Stack from '@mui/material/Stack';
+import Chip from '@mui/material/Chip';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -20,6 +22,7 @@ const UploadFiles = (): ReactElement => {
     const [dropzoneProps, setDropzoneProps] = useState<any>({ disabled: false });
     const [uploadSuccessful, setUploadSuccessful] = useState<boolean>(false);
     const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
+    const [openContactPage, setOpenContactPage] = useState<boolean>(false);
 
     const upload = (files: File[]) => {
         const currentFile = files[0];
@@ -132,6 +135,14 @@ const UploadFiles = (): ReactElement => {
                         }}
                     />
                 )}
+                {openContactPage && (
+                    <Redirect
+                        push
+                        to={{
+                            pathname: '/contact',
+                        }}
+                    />
+                )}
 
                 <DropzoneArea
                     acceptedFiles={['application/pdf']}
@@ -146,14 +157,13 @@ const UploadFiles = (): ReactElement => {
                     {currentFile && uploadInProgress && <LinearProgress color="secondary" />}
                 </div>
             </div>
-            <Footer></Footer>
+            <Footer onContactPageClick={() => setOpenContactPage(true)}></Footer>
             <CookieConsent
                 location="bottom"
                 buttonText="Accept"
                 cookieName="e-signpdfconsent"
                 style={{ background: '#71A9F7' }}
                 buttonStyle={{ color: '#fff', background: '#6B5CA5', borderStyle: 'solid' }}
-                // buttonClasses="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root css-1iqxqhj"
                 overlay={true}
                 debug={true}
                 expires={150}

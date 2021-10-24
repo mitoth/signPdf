@@ -1,12 +1,15 @@
 import React, { ReactElement } from 'react';
-import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Chip from '@mui/material/Chip';
 
-const Footer = (): ReactElement => (
+interface IProps {
+    onContactPageClick: () => void;
+}
+
+const Footer = (props: IProps): ReactElement => (
     <footer className="footer">
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Chip label="Contact" component="a" href="" clickable />
+            <Chip label="Contact" component="a" href="" clickable onClick={props.onContactPageClick} />
             <Chip
                 label="Terms & Conditions"
                 component="a"
