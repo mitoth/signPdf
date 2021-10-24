@@ -165,7 +165,6 @@ const UploadFiles = (): ReactElement => {
                 style={{ background: '#71A9F7' }}
                 buttonStyle={{ color: '#fff', background: '#6B5CA5', borderStyle: 'solid' }}
                 overlay={true}
-                debug={true}
                 expires={150}
             >
                 This website uses cookies to enhance the user experience. Please agree with the{' '}
