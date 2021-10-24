@@ -6,6 +6,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
+import Cookies from 'universal-cookie';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -60,6 +61,16 @@ const UploadFiles = (): ReactElement => {
     useEffect(() => {
         console.log('gol');
         const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
+
+        const cookies = new Cookies();
+        const cookieName = 'e-signpdfconsent';
+        const cookie = cookies.get(cookieName);
+        if (cookie) {
+            console.log('este ', cookie); // Pacman
+        } else {
+            cookies.set(cookieName, 'Pacman', { path: '/' });
+            console.log(cookies.get(cookieName)); // Pacman
+        }
 
         setConnection(newConnection);
         return () => {
