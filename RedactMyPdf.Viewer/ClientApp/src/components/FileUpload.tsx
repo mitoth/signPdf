@@ -151,7 +151,7 @@ const UploadFiles = (): ReactElement => {
                 location="bottom"
                 buttonText="I agree"
                 cookieName="e-signpdfconsent"
-                style={{ background: '#757ce8' }}
+                style={{ background: '#db8a74' }}
                 buttonStyle={{ color: '#000', background: '#fff' }}
                 overlay={true}
                 expires={150}
