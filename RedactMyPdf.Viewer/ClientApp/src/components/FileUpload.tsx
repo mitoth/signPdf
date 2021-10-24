@@ -149,11 +149,13 @@ const UploadFiles = (): ReactElement => {
             <Footer></Footer>
             <CookieConsent
                 location="bottom"
-                buttonText="I agree"
+                buttonText="Accept"
                 cookieName="e-signpdfconsent"
-                style={{ background: '#db8a74' }}
-                buttonStyle={{ color: '#000', background: '#fff' }}
+                style={{ background: '#71A9F7' }}
+                buttonStyle={{ color: '#fff', background: '#6B5CA5', borderStyle: 'solid' }}
+                // buttonClasses="MuiButton-root MuiButton-outlined MuiButton-outlinedError MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root css-1iqxqhj"
                 overlay={true}
+                debug={true}
                 expires={150}
             >
                 This website uses cookies to enhance the user experience. Please agree with the{' '}
