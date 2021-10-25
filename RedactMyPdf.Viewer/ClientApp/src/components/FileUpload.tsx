@@ -6,10 +6,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
-import Cookies from 'universal-cookie';
 import CookieConsent from 'react-cookie-consent';
-import Stack from '@mui/material/Stack';
-import Chip from '@mui/material/Chip';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -66,16 +63,6 @@ const UploadFiles = (): ReactElement => {
         console.log('gol');
         const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
 
-        const cookies = new Cookies();
-        const cookieName = 'e-signpdfconsent';
-        const cookie = cookies.get(cookieName);
-        if (cookie) {
-            console.log('este ', cookie); // Pacman
-        } else {
-            cookies.set(cookieName, 'Pacman', { path: '/' });
-            console.log(cookies.get(cookieName)); // Pacman
-        }
-
         setConnection(newConnection);
         return () => {
             setConnection(undefined);
@@ -124,7 +111,7 @@ const UploadFiles = (): ReactElement => {
         <>
             <div className="center-vertical">
                 <h1 className="header-text">
-                    <b>Electronically Sign your pdf.</b>
+                    <b>Electronically Sign Your PDF.</b>
                 </h1>
                 {numberOfPages !== undefined && fileId !== undefined && (
                     <Redirect
