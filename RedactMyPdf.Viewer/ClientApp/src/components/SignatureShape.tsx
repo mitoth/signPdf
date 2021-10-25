@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { KonvaEventObject } from 'konva/types/Node';
 import React, { ReactElement } from 'react';
 import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
