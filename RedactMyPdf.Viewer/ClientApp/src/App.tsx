@@ -12,7 +12,7 @@ import ReactGa from 'react-ga';
 function App(): ReactElement {
     React.useEffect(() => {
         ReactGa.initialize('G-ZFZ48VJ9CJ');
-        ReactGa.pageview('/');
+        ReactGa.pageview(window.location.pathname);
         WebFont.load({
             google: {
                 families: ['Great Vibes'],

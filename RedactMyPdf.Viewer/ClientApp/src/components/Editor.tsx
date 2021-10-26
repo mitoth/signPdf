@@ -396,7 +396,7 @@ const Editor = (props: IProps): ReactElement => {
         setActiveStep(0);
     };
 
-    const [signaturePosition, setSignaturePosition] = React.useState(SetSignatureOnLastPageString);
+    const [signaturePosition, setSignaturePosition] = React.useState(SetSignaturePositionLaterString);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleChange = (event: any) => {
