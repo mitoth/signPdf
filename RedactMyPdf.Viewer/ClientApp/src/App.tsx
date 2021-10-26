@@ -7,9 +7,12 @@ import ContactPage from './components/ContactPage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WebFont from 'webfontloader';
+import ReactGa from 'react-ga';
 
 function App(): ReactElement {
     React.useEffect(() => {
+        ReactGa.initialize('G-ZFZ48VJ9CJ');
+        ReactGa.pageview('/');
         WebFont.load({
             google: {
                 families: ['Great Vibes'],
