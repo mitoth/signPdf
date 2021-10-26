@@ -42,6 +42,7 @@ import Signature from '../interfaces/Signature';
 import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
 import { Redirect } from 'react-router-dom';
+import ReactGa from 'react-ga';
 
 interface PageState {
     pages: Page[];
@@ -107,6 +108,10 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const saveDocumentClick = () => {
+        ReactGa.event({
+            category: 'Button',
+            action: 'Click on download button',
+        });
         setIsDownloadInProgress(true);
 
         const shapes = signatures.map((s) => {
