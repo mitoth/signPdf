@@ -11,7 +11,7 @@ import ReactGa from 'react-ga';
 
 function App(): ReactElement {
     React.useEffect(() => {
-        ReactGa.initialize('G-ZFZ48VJ9CJ');
+        ReactGa.initialize('UA-211222575-1');
         ReactGa.pageview(window.location.pathname);
         WebFont.load({
             google: {
