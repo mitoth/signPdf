@@ -12,7 +12,6 @@ const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
     const [fileId, setFileId] = useState<string>();
     const [numberOfPages, setNumberOfPages] = useState<number>();
-    const [signalRConnectionId, setSignalRConnectionId] = useState<string>();
     const [pages, setPages] = useState([]);
     const [connection, setConnection] = useState<HubConnection>();
     const [dropzoneText, setDropzoneText] = useState<string>('');
@@ -44,68 +43,61 @@ const UploadFiles = (): ReactElement => {
         setDropzoneText("Processsing your file. We'll be quick");
         setDropzoneProps({ disabled: true });
 
-        if (!signalRConnectionId) {
-            setDropzoneText('Could not upload the file! No connection. Please try again later');
-            setCurrentFile(undefined);
-            return;
+        if (connection) {
+            connection.stop();
         }
 
-        UploadService.upload(currentFile, signalRConnectionId, () => {
-            console.log('in progress');
-        }).catch(() => {
-            setCurrentFile(undefined);
-            setUploadSuccessful(false);
-            setUploadInProgress(false);
-        });
+        const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
+        newConnection
+            .start()
+            .then(() => {
+                newConnection.invoke('getConnectionId').then((connectionId) => {
+                    console.log('set connection ' + connectionId);
+                    UploadService.upload(currentFile, connectionId, () => {
+                        console.log('in progress');
+                    }).catch(() => {
+                        setCurrentFile(undefined);
+                        setUploadSuccessful(false);
+                        setUploadInProgress(false);
+                    });
+                });
+
+                newConnection.on('FileProcessed', (docJson) => {
+                    const doc = JSON.parse(docJson);
+                    setUploadSuccessful(true);
+                    setPages(doc.pages);
+                    setFileId(doc.id);
+                    setNumberOfPages(doc.pages.length);
+                });
+            })
+            .catch((e) => {
+                setDropzoneText('Sorry. Could not upload the file!. Please try again later');
+                console.log('Connection failed: ', e);
+            });
+        setConnection(newConnection);
     };
 
     useEffect(() => {
-        console.log('gol');
-        const newConnection = new HubConnectionBuilder().withUrl('/hubs/files').withAutomaticReconnect().build();
-
-        setConnection(newConnection);
-        return () => {
-            setConnection(undefined);
-        };
+        setDropZoneText();
     }, []);
 
-    useEffect(() => {
-        console.log('checks');
+    const setDropZoneText = () => {
         if (DeviceType.IsPhone()) {
-            console.log('phone');
             setDropzoneText('Tap to select your PDF');
         }
         if (DeviceType.IsTablet()) {
-            console.log('tablet');
             setDropzoneText('Tap to select your PDF');
         }
         if (DeviceType.IsLargeEnoughSoYouDontCare()) {
-            console.log('large');
             setDropzoneText('Click or tap to select your PDF');
         }
+    };
 
+    const disconnectSignalR = (connection: HubConnection | undefined) => {
         if (connection) {
-            connection
-                .start()
-                .then(() => {
-                    connection.invoke('getConnectionId').then((connectionId) => {
-                        setSignalRConnectionId(connectionId);
-                    });
-
-                    connection.on('FileProcessed', (docJson) => {
-                        const doc = JSON.parse(docJson);
-                        setUploadSuccessful(true);
-                        setPages(doc.pages);
-                        setFileId(doc.id);
-                        setNumberOfPages(doc.pages.length);
-                    });
-                })
-                .catch((e) => console.log('Connection failed: ', e));
+            connection.stop();
         }
-        return () => {
-            connection?.stop();
-        };
-    }, [connection]);
+    };
 
     return (
         <>
@@ -113,6 +105,7 @@ const UploadFiles = (): ReactElement => {
                 <h1 className="header-text">
                     <b>Electronically Sign Your PDF.</b>
                 </h1>
+                {numberOfPages !== undefined && fileId !== undefined && disconnectSignalR(connection)}
                 {numberOfPages !== undefined && fileId !== undefined && (
                     <Redirect
                         push
