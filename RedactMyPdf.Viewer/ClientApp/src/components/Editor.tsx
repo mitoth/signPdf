@@ -1,5 +1,6 @@
 import React, { ReactElement, useRef, ReactText } from 'react';
 import PageDrawStage from './PageDrawStage';
+import FreeDrawStage from './FreeDrawStage';
 import UploadService from '../services/FileUploadService';
 import PageSignature from '../interfaces/PageSignature';
 import Page from '../interfaces/Page';
@@ -27,17 +28,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import { Element, animateScroll as scroll } from 'react-scroll';
 import Signature from '../interfaces/Signature';
 import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
@@ -61,8 +52,6 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
-
-    const [signatureWizardNameInput, setSignatureWizardNameInput] = React.useState<string>('');
 
     const [signatureName, setSignatureName] = React.useState<string>('');
     const toastId = React.useRef<ReactText | string>();
@@ -311,10 +300,6 @@ const Editor = (props: IProps): ReactElement => {
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
-    const SetSignaturePositionLaterString = 'later';
-    const SetSignatureOnLastPageString = 'last';
-    const SetSignatureOnEachPageString = 'each';
-
     function CreateSignature(x: number | undefined, y: number | undefined, text: string | undefined): Signature {
         const fontSize: number = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
 
@@ -335,147 +320,13 @@ const Editor = (props: IProps): ReactElement => {
         };
     }
 
-    const handleNext = (isLast: boolean) => {
-        if (!isLast) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        } else {
-            setEasySignWizardOpen(false);
-            const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
-                props.location.state.pages[0].width,
-                props.location.state.pages[0].height,
-            );
-
-            const newSignatures: PageSignature[] = [];
-            const numberOfPages = props.location.state.pages.length;
-            if (signaturePosition === SetSignatureOnLastPageString) {
-                newSignatures.push({
-                    pageNumber: numberOfPages,
-                    signature: CreateSignature(pageWidth / 15, pageHeight - pageHeight / 12, signatureWizardNameInput),
-                });
-                toast.info(
-                    'Signature added on the last page! Now you can add it on other places using the "+ Sign" button',
-                    {
-                        toastId: 2,
-                        position: toast.POSITION.BOTTOM_CENTER,
-                        autoClose: 8000,
-                    },
-                );
-            }
-            if (signaturePosition === SetSignatureOnEachPageString) {
-                for (let i = 1; i <= numberOfPages; i++) {
-                    newSignatures.push({
-                        pageNumber: i,
-                        signature: CreateSignature(
-                            pageWidth / 15,
-                            pageHeight - pageHeight / 12,
-                            signatureWizardNameInput,
-                        ),
-                    });
-                }
-                toast.info(
-                    'A signature was added on each page! Now you can add it on other places using the "+ Sign" button',
-                    {
-                        toastId: 2,
-                        position: toast.POSITION.BOTTOM_CENTER,
-                    },
-                );
-            }
-
-            setSignatureName(signatureWizardNameInput);
-
-            if (signaturePosition === SetSignaturePositionLaterString) {
-                addSignatureClick();
-            } else {
-                setSignatures(newSignatures);
-                setSelectedShapeId(newSignatures[newSignatures.length - 1].signature.id);
-                scroll.scrollToBottom();
-            }
-        }
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    const handleNext = () => {
+        setEasySignWizardOpen(false);
     };
 
     const handleReset = () => {
         setActiveStep(0);
     };
-
-    const [signaturePosition, setSignaturePosition] = React.useState(SetSignaturePositionLaterString);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleChange = (event: any) => {
-        setSignaturePosition(event.target.value);
-    };
-
-    function getStepContent(step: number) {
-        switch (step) {
-            case 0:
-                return (
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleNext(false);
-                        }}
-                    >
-                        <InputLabel
-                            htmlFor="input-with-icon-adornment"
-                            error={showErrorInStepper}
-                            required={showErrorInStepper}
-                        >
-                            Type your name
-                        </InputLabel>
-                        <Input
-                            id="input-with-icon-adornment"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <AccountCircle />
-                                </InputAdornment>
-                            }
-                            onChange={(event) => setSignatureWizardNameInput(event.target.value)}
-                            value={signatureWizardNameInput}
-                            error={signatureWizardNameInput.length > 0 ? false : true}
-                            autoFocus={true}
-                            required={true}
-                        />
-                    </form>
-                );
-            case 1:
-                return (
-                    <FormControl
-                        component="fieldset"
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        onKeyPress={() => console.log('presat')}
-                    >
-                        <FormLabel component="legend">You can still remove or add signatures later</FormLabel>
-                        <RadioGroup
-                            aria-label="gender"
-                            name="gender1"
-                            value={signaturePosition}
-                            onChange={handleChange}
-                        >
-                            <FormControlLabel
-                                value={SetSignatureOnEachPageString}
-                                control={<Radio />}
-                                label="Each page"
-                            />
-                            <FormControlLabel
-                                value={SetSignatureOnLastPageString}
-                                control={<Radio />}
-                                label="Last page"
-                            />
-                            <FormControlLabel
-                                value={SetSignaturePositionLaterString}
-                                control={<Radio />}
-                                label="I'll place it myself"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                );
-            default:
-                return 'Unknown step';
-        }
-    }
 
     const CreateSignatureClick = () => {
         setActiveStep(0);
@@ -490,8 +341,6 @@ const Editor = (props: IProps): ReactElement => {
     const child1 = useRef(null);
 
     const showDownloadAndRevertButtons = signatures.length > 0;
-
-    const showErrorInStepper = activeStep != 0 || signatureWizardNameInput.length > 0 ? false : true;
 
     return (
         <>
@@ -579,39 +428,29 @@ const Editor = (props: IProps): ReactElement => {
                         }}
                     >
                         <>
-                            <div className={classes.root}>
+                            <div className={classes.root} id="id1">
                                 <Stepper activeStep={activeStep} orientation="vertical">
-                                    {steps.map((label, index) => (
-                                        <Step key={label}>
-                                            <StepLabel>{label}</StepLabel>
-                                            <StepContent>
-                                                {getStepContent(index)}
-                                                <div className={classes.actionsContainer}>
-                                                    <div>
-                                                        <Button
-                                                            disabled={activeStep === 0}
-                                                            onClick={handleBack}
-                                                            className={classes.button}
-                                                        >
-                                                            Back
-                                                        </Button>
-                                                        <Button
-                                                            type="submit"
-                                                            disabled={showErrorInStepper}
-                                                            variant="contained"
-                                                            color="primary"
-                                                            onClick={() => {
-                                                                handleNext(activeStep === steps.length - 1);
-                                                            }}
-                                                            className={classes.button}
-                                                        >
-                                                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                                        </Button>
-                                                    </div>
+                                    <Step key="1">
+                                        <StepLabel>Please draw your signature in the box bellow</StepLabel>
+                                        <StepContent>
+                                            <FreeDrawStage></FreeDrawStage>
+                                            <div className={classes.actionsContainer}>
+                                                <div>
+                                                    <Button
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => {
+                                                            handleNext();
+                                                        }}
+                                                        className={classes.button}
+                                                    >
+                                                        Add signature on page
+                                                    </Button>
                                                 </div>
-                                            </StepContent>
-                                        </Step>
-                                    ))}
+                                            </div>
+                                        </StepContent>
+                                    </Step>
                                 </Stepper>
                                 {activeStep === steps.length && (
                                     <Paper square elevation={0} className={classes.resetContainer}>
@@ -637,7 +476,6 @@ const Editor = (props: IProps): ReactElement => {
                                         props.location.state.pages[i - 1].width,
                                         props.location.state.pages[i - 1].height,
                                     );
-                                    const scrollAnchorId = 'scrollId' + i;
 
                                     const singaturesForThisPage = signatures
                                         .filter((s) => s.pageNumber == i)
@@ -678,7 +516,6 @@ const Editor = (props: IProps): ReactElement => {
                                                             setSelectedShapeId(id);
                                                         }}
                                                     ></PageDrawStage>
-                                                    <Element name={scrollAnchorId} className="element"></Element>
                                                 </tr>
                                             </ReactTouchEvents>
                                         </React.Fragment>
