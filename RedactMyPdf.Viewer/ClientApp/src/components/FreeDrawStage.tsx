@@ -15,6 +15,7 @@ const FreeDrawStage = (): ReactElement => {
     const [lines, setLines] = React.useState<any>([]);
     const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
     const isDrawing = React.useRef(false);
+    const stageRef = React.useRef(null);
 
     const handleMouseDown = (e: any) => {
         isDrawing.current = true;
@@ -70,6 +71,7 @@ const FreeDrawStage = (): ReactElement => {
                     onTouchStart={handleMouseDown}
                     onTouchMove={handleMouseMove}
                     onTouchEnd={handleMouseUp}
+                    ref={stageRef}
                 >
                     <Layer>
                         {lines.map((line: { points: number[]; tool: string }, i: React.Key | null | undefined) => (
@@ -87,7 +89,15 @@ const FreeDrawStage = (): ReactElement => {
                 </Stage>
             </div>
             <Stack direction="row" alignItems="start" spacing={1}>
-                <IconButton aria-label="delete" size="medium" onClick={() => setLines([])}>
+                <IconButton
+                    aria-label="delete"
+                    size="medium"
+                    onClick={() => {
+                        const uri = (stageRef?.current as any).toDataURL();
+                        console.log(uri);
+                        setLines([]);
+                    }}
+                >
                     <DeleteIcon fontSize="inherit" color="error" />
                 </IconButton>
             </Stack>
