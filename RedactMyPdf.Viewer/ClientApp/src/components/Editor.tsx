@@ -433,7 +433,11 @@ const Editor = (props: IProps): ReactElement => {
                                     <Step key="1">
                                         <StepLabel>Please draw your signature in the box bellow</StepLabel>
                                         <StepContent>
-                                            <FreeDrawStage></FreeDrawStage>
+                                            <FreeDrawStage
+                                                setDrawLines={(lines) => {
+                                                    console.log('liniii ', lines);
+                                                }}
+                                            ></FreeDrawStage>
                                             <div className={classes.actionsContainer}>
                                                 <div>
                                                     <Button

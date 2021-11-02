@@ -1,18 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, useEffect } from 'react';
-import { Stage, Layer, Line, Text } from 'react-konva';
+import { Stage, Layer, Line } from 'react-konva';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
+import DrawLine from '../interfaces/DrawLine';
 
 interface IProps {
-    width: number;
-    height: number;
+    setDrawLines: (lines: DrawLine[]) => void;
 }
 
-const FreeDrawStage = (): ReactElement => {
-    const [tool, setTool] = React.useState('pen');
-    const [lines, setLines] = React.useState<any>([]);
+const FreeDrawStage = (props: IProps): ReactElement => {
+    const [lines, setLines] = React.useState<DrawLine[]>([]);
     const [dimensions, setDimensions] = React.useState({ width: 0, height: 0 });
     const isDrawing = React.useRef(false);
     const stageRef = React.useRef(null);
@@ -20,7 +19,7 @@ const FreeDrawStage = (): ReactElement => {
     const handleMouseDown = (e: any) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+        setLines([...lines, { points: [pos.x, pos.y] }]);
     };
 
     const handleMouseMove = (e: any) => {
@@ -41,10 +40,7 @@ const FreeDrawStage = (): ReactElement => {
 
     const handleMouseUp = () => {
         isDrawing.current = false;
-    };
-
-    const getWidth = () => {
-        return 300;
+        props.setDrawLines(lines);
     };
 
     useEffect(() => {
@@ -74,7 +70,7 @@ const FreeDrawStage = (): ReactElement => {
                     ref={stageRef}
                 >
                     <Layer>
-                        {lines.map((line: { points: number[]; tool: string }, i: React.Key | null | undefined) => (
+                        {lines.map((line: { points: number[] }, i: React.Key | null | undefined) => (
                             <Line
                                 key={i}
                                 points={line.points}
@@ -82,7 +78,7 @@ const FreeDrawStage = (): ReactElement => {
                                 strokeWidth={5}
                                 tension={0.5}
                                 lineCap="round"
-                                globalCompositeOperation={line.tool === 'eraser' ? 'destination-out' : 'source-over'}
+                                globalCompositeOperation="source-over"
                             />
                         ))}
                     </Layer>
