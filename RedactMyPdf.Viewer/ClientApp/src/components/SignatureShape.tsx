@@ -3,11 +3,15 @@
 import React, { ReactElement } from 'react';
 import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
+import { Group as GroupKonvaShape } from 'konva/types/Group';
+import { Group, Layer, Line, Rect } from 'react-konva';
 
 // import React, { Component } from "react";
 import { Text, Transformer, Tag, Label } from 'react-konva';
 import Signature from '../interfaces/Signature';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
+import FreeDrawStage from './FreeDrawStage';
+import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 
 interface IProps {
     shapeProps: Signature;
@@ -20,8 +24,10 @@ interface IProps {
 const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
+    const [scaleX, setScaleX] = React.useState<number>(1);
+    const [scaleY, setScaleY] = React.useState<number>(1);
 
-    const textRef = React.useRef<TextKonvaShape>(null);
+    const textRef = React.useRef<GroupKonvaShape>(null);
     const labelRef = React.useRef<LabelKonvaShape>();
 
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
@@ -44,10 +50,13 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 
     React.useEffect(() => {
         if (!shapeProps.width) {
+            const w: number = textRef.current?.getClientRect().width as number;
+            const h: number = textRef.current?.getClientRect().height as number;
+
             onChange({
                 ...shapeProps,
-                width: textRef.current?.getWidth() + 10,
-                height: textRef.current?.getHeight(),
+                width: w,
+                height: h,
             });
         }
     }, []);
@@ -73,13 +82,21 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 
     return (
         <React.Fragment>
-            <Text
+            {console.log('1 ', shapeProps.width, '2   ', shapeProps.height)}
+
+            <Group
+                x={shapeProps.x}
+                y={shapeProps.y}
+                width={shapeProps.width}
+                height={shapeProps.height}
+                listening
+                drawBorder
                 draggable
                 ref={textRef}
-                {...shapeProps}
                 onClick={onSelect}
                 onTap={onSelect}
                 onDragEnd={(e) => {
+                    console.log('end');
                     onChange({
                         ...shapeProps,
                         x: e.target.x(),
@@ -87,6 +104,7 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                     });
                 }}
                 onDragMove={() => {
+                    console.log('move');
                     if (textRef.current) {
                         setLabelPostionX(getX());
                         setLabelPostionY(getY());
@@ -99,15 +117,18 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                     }
                 }}
                 onTransformEnd={() => {
-                    const node: TextKonvaShape | null = textRef.current;
+                    const node: GroupKonvaShape | null = textRef.current;
                     if (!node) return;
-                    const scaleX = node.scaleX();
-                    const scaleY = node.scaleY();
+                    const sX = node.scaleX();
+                    const sY = node.scaleY();
 
                     const newX = node.x();
                     const newY = node.y();
-                    const newWidth = Math.max(5, node.width() * scaleX);
-                    const newHeigth = Math.max(node.height() * scaleY);
+                    const newWidth = Math.max(5, node.width() * sX);
+                    const newHeigth = Math.max(node.height() * sY);
+
+                    setScaleX(scaleX * sX);
+                    setScaleY(scaleY * sY);
                     // we will reset it back
                     node.scaleX(1);
                     node.scaleY(1);
@@ -116,12 +137,29 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                         ...shapeProps,
                         width: newWidth,
                         height: newHeigth,
-                        fontSize: newHeigth / 1.3,
                         x: newX,
                         y: newY,
                     });
                 }}
-            />
+            >
+                {console.log('asd32f2fe ', shapeProps.width, 'a   ', shapeProps.height)}
+                <Rect width={shapeProps.width} height={shapeProps.height}></Rect>
+                {shapeProps.lines &&
+                    shapeProps.lines.map((line: { points: number[] }, i: React.Key | null | undefined) => (
+                        <Line
+                            key={i}
+                            points={line.points}
+                            stroke="#000000"
+                            strokeWidth={5}
+                            tension={0.5}
+                            lineCap="round"
+                            globalCompositeOperation="source-over"
+                            scaleX={scaleX}
+                            scaleY={scaleY}
+                        />
+                    ))}
+            </Group>
+
             {isSelected && (
                 <Transformer
                     ref={trRef}
@@ -131,6 +169,9 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
                             return oldBox;
                         }
                         return newBox;
+                    }}
+                    onClick={() => {
+                        console.log('clicul');
                     }}
                     rotateEnabled={false}
                     enabledAnchors={enabledAnchors}

@@ -8,6 +8,8 @@ import DrawLine from '../interfaces/DrawLine';
 
 interface IProps {
     setDrawLines: (lines: DrawLine[]) => void;
+    setStageHeight: (height: number) => void;
+    setStageWidth: (width: number) => void;
 }
 
 const FreeDrawStage = (props: IProps): ReactElement => {
@@ -41,6 +43,18 @@ const FreeDrawStage = (props: IProps): ReactElement => {
     const handleMouseUp = () => {
         isDrawing.current = false;
         props.setDrawLines(lines);
+        const x = document.getElementById('drawStage');
+        let w: number;
+        let h: number;
+        if (x) {
+            w = (x as any).offsetWidth;
+            h = (x as any).offsetHeight;
+        } else {
+            w = 200;
+            h = 100;
+        }
+        props.setStageHeight(h);
+        props.setStageWidth(w);
     };
 
     useEffect(() => {
@@ -50,14 +64,20 @@ const FreeDrawStage = (props: IProps): ReactElement => {
                 width: (x as any).offsetWidth * 0.8,
                 height: (x as any).offsetHeight * 0.5,
             });
+        } else {
+            setDimensions({
+                width: 200,
+                height: 100,
+            });
         }
 
-        console.log('asd  ' + x);
+        console.log('width ' + (x as any).offsetWidth * 0.8);
+        console.log('height ' + (x as any).offsetHeight * 0.8);
     }, []);
 
     return (
         <div>
-            <div className="drawStageBorder">
+            <div className="drawStageBorder" id="drawStage">
                 <Stage
                     width={dimensions.width}
                     height={dimensions.height}

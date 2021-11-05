@@ -34,6 +34,7 @@ import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
 import { Redirect } from 'react-router-dom';
 import ReactGa from 'react-ga';
+import DrawLine from '../interfaces/DrawLine';
 
 interface PageState {
     pages: Page[];
@@ -52,8 +53,10 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
+    const [drawLines, setDrawLines] = React.useState<DrawLine[]>([]);
+    const [signatureHeight, setSignatureHight] = React.useState<number>();
+    const [signatureWidth, setSignatureWidth] = React.useState<number>();
 
-    const [signatureName, setSignatureName] = React.useState<string>('');
     const toastId = React.useRef<ReactText | string>();
     const shapeSelected = React.useRef<boolean>(false);
 
@@ -92,7 +95,6 @@ const Editor = (props: IProps): ReactElement => {
     const cancelChangesClick = () => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
             setSignatures([]);
-            setSignatureName('');
         }
     };
 
@@ -104,14 +106,7 @@ const Editor = (props: IProps): ReactElement => {
         setIsDownloadInProgress(true);
 
         const shapes = signatures.map((s) => {
-            if (
-                !s.signature.width ||
-                !s.signature.height ||
-                !s.signature.x ||
-                !s.signature.y ||
-                !s.signature.text ||
-                !s.signature.fontSize
-            ) {
+            if (!s.signature.width || !s.signature.height || !s.signature.x || !s.signature.y) {
                 return;
             }
             const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
@@ -122,10 +117,10 @@ const Editor = (props: IProps): ReactElement => {
             const signature: SignatureDto = {
                 width: s.signature.width,
                 height: s.signature.height,
-                text: s.signature.text,
+                text: 'swef',
                 x: s.signature.x,
                 y: s.signature.y,
-                fontSize: s.signature.fontSize,
+                fontSize: 20,
                 pageWidth: pageWidth,
                 pageHeight: pageHeight,
             };
@@ -184,8 +179,10 @@ const Editor = (props: IProps): ReactElement => {
             const y = e.clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
-                signature: CreateSignature(x, y, signatureName),
+                signature: CreateSignature(x, y),
             };
+            signature.signature.lines = drawLines;
+            console.log('linile ', drawLines);
             toast.dismiss(toastId.current);
             toastId.current = undefined;
 
@@ -195,7 +192,6 @@ const Editor = (props: IProps): ReactElement => {
             setSelectedShapeId(signature.signature.id);
             setAddSignaturePressed(false);
         } else {
-            console.log('click1');
             if (!shapeSelected.current) {
                 setSelectedShapeId(undefined);
             }
@@ -210,7 +206,7 @@ const Editor = (props: IProps): ReactElement => {
             const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
-                signature: CreateSignature(x, y, signatureName),
+                signature: CreateSignature(x, y),
             };
 
             const existingSignature: PageSignature[] = [...signatures];
@@ -221,7 +217,6 @@ const Editor = (props: IProps): ReactElement => {
             setSelectedShapeId(signature.signature.id);
             setAddSignaturePressed(false);
         } else {
-            console.log('click1');
             if (!shapeSelected.current) {
                 setSelectedShapeId(undefined);
             }
@@ -300,28 +295,19 @@ const Editor = (props: IProps): ReactElement => {
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
-    function CreateSignature(x: number | undefined, y: number | undefined, text: string | undefined): Signature {
-        const fontSize: number = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
-
-        const height = fontSize * 1.3;
-
+    function CreateSignature(x: number | undefined, y: number | undefined): Signature {
         return {
             x: x,
             y: y,
-            text: text,
             id: Math.floor(Math.random() * 1000).toString(),
-            fontSize: fontSize,
-            textEditVisible: false,
-            fill: 'black',
-            fontFamily: 'Great Vibes',
-            height: height,
-            align: 'center',
-            verticalAlign: 'middle',
+            height: signatureHeight,
+            width: signatureWidth,
         };
     }
 
     const handleNext = () => {
         setEasySignWizardOpen(false);
+        setAddSignaturePressed(true);
     };
 
     const handleReset = () => {
@@ -354,30 +340,26 @@ const Editor = (props: IProps): ReactElement => {
                 variant="contained"
                 className={classes.fixedBottomRight}
             >
-                {signatureName.length == 0 && (
-                    <Button
-                        onClick={CreateSignatureClick}
-                        variant="contained"
-                        color="primary"
-                        size={buttonSize}
-                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                        startIcon={<CreateIcon />}
-                    >
-                        Create Signature
-                    </Button>
-                )}
-                {signatureName.length > 0 && (
-                    <Button
-                        onClick={addSignatureClick}
-                        variant="contained"
-                        color="primary"
-                        size={buttonSize}
-                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                        startIcon={<AddIcon />}
-                    >
-                        Sign
-                    </Button>
-                )}
+                <Button
+                    onClick={CreateSignatureClick}
+                    variant="contained"
+                    color="primary"
+                    size={buttonSize}
+                    className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
+                    startIcon={<CreateIcon />}
+                >
+                    Create Signature
+                </Button>
+                <Button
+                    onClick={addSignatureClick}
+                    variant="contained"
+                    color="primary"
+                    size={buttonSize}
+                    className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
+                    startIcon={<AddIcon />}
+                >
+                    Sign
+                </Button>
                 {showDownloadAndRevertButtons && (
                     <Button
                         onClick={saveDocumentClick}
@@ -436,6 +418,15 @@ const Editor = (props: IProps): ReactElement => {
                                             <FreeDrawStage
                                                 setDrawLines={(lines) => {
                                                     console.log('liniii ', lines);
+                                                    setDrawLines(lines);
+                                                }}
+                                                setStageHeight={(height) => {
+                                                    console.log('heitu ', height);
+                                                    setSignatureHight(height);
+                                                }}
+                                                setStageWidth={(width) => {
+                                                    console.log('witu ', width);
+                                                    setSignatureWidth(width);
                                                 }}
                                             ></FreeDrawStage>
                                             <div className={classes.actionsContainer}>

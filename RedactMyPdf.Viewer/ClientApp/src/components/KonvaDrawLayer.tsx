@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Layer } from 'react-konva';
+import { Group, Layer, Stage } from 'react-konva';
 import Signature from '../interfaces/Signature';
 import { KonvaEventObject } from 'konva/types/Node';
 import SignatureShape from './SignatureShape';
