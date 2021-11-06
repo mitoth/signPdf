@@ -9,6 +9,7 @@ trigger:
   paths:
     include:
     - RedactMyPdf.ConvertPdfWorker/*
+    - RedactMyPdf.FileHandler/*
     - aks-signmypdf.workers.convertpdf.yaml
 
 resources:
