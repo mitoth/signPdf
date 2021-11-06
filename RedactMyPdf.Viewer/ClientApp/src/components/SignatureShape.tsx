@@ -1,27 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { ReactElement } from 'react';
-import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
+import { Image as ImageKonvaShape } from 'konva/types/shapes/Image';
+import { Group } from 'react-konva';
 
 // import React, { Component } from "react";
-import { Text, Transformer, Tag, Label } from 'react-konva';
-import Signature from '../interfaces/Signature';
+import { Text, Transformer, Tag, Label, Image as KonvaImage } from 'react-konva';
+import SignaturePosition from '../interfaces/SignaturePosition';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 
 interface IProps {
-    shapeProps: Signature;
+    shapeProps: SignaturePosition;
     isSelected: boolean;
+    imageBase64: string;
     onSelect: any;
     onChange: any;
     onDelete: any;
 }
 
-const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
+const SignatureShape = ({
+    shapeProps,
+    onSelect,
+    isSelected,
+    onChange,
+    onDelete,
+    imageBase64,
+}: IProps): ReactElement => {
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
 
-    const textRef = React.useRef<TextKonvaShape>(null);
+    const textRef = React.useRef<ImageKonvaShape>(null);
     const labelRef = React.useRef<LabelKonvaShape>();
 
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
@@ -44,10 +53,13 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 
     React.useEffect(() => {
         if (!shapeProps.width) {
+            const w: number = textRef.current?.getClientRect().width as number;
+            const h: number = textRef.current?.getClientRect().height as number;
+
             onChange({
                 ...shapeProps,
-                width: textRef.current?.getWidth() + 10,
-                height: textRef.current?.getHeight(),
+                width: w,
+                height: h,
             });
         }
     }, []);
@@ -71,57 +83,75 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
 
     const enabledAnchors: string[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
+    const getImage = (s: string) => {
+        const myImage: HTMLImageElement = new Image();
+        myImage.src = s;
+
+        return myImage;
+    };
+
     return (
         <React.Fragment>
-            <Text
-                draggable
-                ref={textRef}
-                {...shapeProps}
-                onClick={onSelect}
-                onTap={onSelect}
-                onDragEnd={(e) => {
-                    onChange({
-                        ...shapeProps,
-                        x: e.target.x(),
-                        y: e.target.y(),
-                    });
-                }}
-                onDragMove={() => {
-                    if (textRef.current) {
-                        setLabelPostionX(getX());
-                        setLabelPostionY(getY());
-                    }
-                }}
-                onTransform={() => {
-                    if (textRef.current) {
-                        setLabelPostionX(getX());
-                        setLabelPostionY(getY());
-                    }
-                }}
-                onTransformEnd={() => {
-                    const node: TextKonvaShape | null = textRef.current;
-                    if (!node) return;
-                    const scaleX = node.scaleX();
-                    const scaleY = node.scaleY();
+            <Group>
+                {imageBase64 && (
+                    <KonvaImage
+                        image={getImage(imageBase64)}
+                        x={shapeProps.x}
+                        y={shapeProps.y}
+                        width={shapeProps.width}
+                        height={shapeProps.height}
+                        listening
+                        drawBorder
+                        draggable
+                        ref={textRef}
+                        onClick={onSelect}
+                        onTap={onSelect}
+                        onDragEnd={(e) => {
+                            onChange({
+                                ...shapeProps,
+                                x: e.target.x(),
+                                y: e.target.y(),
+                            });
+                        }}
+                        onDragMove={() => {
+                            if (textRef.current) {
+                                setLabelPostionX(getX());
+                                setLabelPostionY(getY());
+                            }
+                        }}
+                        onTransform={() => {
+                            if (textRef.current) {
+                                setLabelPostionX(getX());
+                                setLabelPostionY(getY());
+                            }
+                        }}
+                        onTransformEnd={() => {
+                            const node: ImageKonvaShape | null = textRef.current;
+                            if (!node) return;
+                            const sX = node.scaleX();
+                            const sY = node.scaleY();
 
-                    const newX = node.x();
-                    const newY = node.y();
-                    const newWidth = Math.max(5, node.width() * scaleX);
-                    const newHeigth = Math.max(node.height() * scaleY);
-                    // we will reset it back
-                    node.scaleX(1);
-                    node.scaleY(1);
+                            const newX = node.x();
+                            const newY = node.y();
+                            const newWidth = Math.max(5, node.width() * sX);
+                            const newHeigth = Math.max(node.height() * sY);
 
-                    onChange({
-                        ...shapeProps,
-                        width: newWidth,
-                        height: newHeigth,
-                        fontSize: newHeigth / 1.3,
-                        x: newX,
-                        y: newY,
-                    });
-                }}
-            />
+                            // we will reset it back
+                            node.scaleX(1);
+                            node.scaleY(1);
+
+                            onChange({
+                                ...shapeProps,
+                                width: newWidth,
+                                height: newHeigth,
+                                x: newX,
+                                y: newY,
+                            });
+                        }}
+                    ></KonvaImage>
+                )}
+            </Group>
+
             {isSelected && (
                 <Transformer
                     ref={trRef}

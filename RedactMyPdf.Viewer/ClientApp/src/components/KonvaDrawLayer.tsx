@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Layer } from 'react-konva';
-import Signature from '../interfaces/Signature';
+import Signature from '../interfaces/SignaturePosition';
+
 import { KonvaEventObject } from 'konva/types/Node';
 import SignatureShape from './SignatureShape';
 
@@ -9,6 +10,7 @@ interface IProps {
     setSignatures: (signatures: Signature[]) => void;
     setSelectedShapeId: (selectedShapeId: string | undefined) => void;
     selectedShapeId: string | undefined;
+    imageBase64: string;
 }
 
 const KonvaDrawLayer = (props: IProps): ReactElement => {
@@ -33,7 +35,6 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                             shapeProps={signature}
                             isSelected={signature.id === props.selectedShapeId}
                             onSelect={() => {
-                                console.log('click2');
                                 props.setSelectedShapeId(signature.id);
                             }}
                             onChange={(newAttrs: Signature) => {
@@ -50,6 +51,7 @@ const KonvaDrawLayer = (props: IProps): ReactElement => {
                                     props.setSignatures(signatures);
                                 }
                             }}
+                            imageBase64={props.imageBase64}
                         />
                     </>
                 );

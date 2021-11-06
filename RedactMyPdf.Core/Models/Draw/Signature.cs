@@ -8,9 +8,8 @@ namespace RedactMyPdf.Core.Models.Draw
         public float Y { get; set; }        
         public float Width { get; set; }
         public float Height { get; set; }
-        public string Text { get; set; }
-        public double FontSize { get; set; }
-        
+        public string ImageAsBase64 { get; set; }
+
         /// <summary>
         /// As seen by the user; important because the signature coordinates are relative to this; maybe a dto would be better
         /// </summary>
@@ -21,21 +20,20 @@ namespace RedactMyPdf.Core.Models.Draw
         /// </summary>
         public float PageHeight { get; set; }
 
-        public Signature(float x, float y, float width, float height, string text, double fontSize, float pageWidth, float pageHeight)
+        public Signature(float x, float y, float width, float height, string imageAsBase64, float pageWidth, float pageHeight)
         {
             X = x;
             Y = y;
             Width = width;
             Height = height;
-            Text = text;
-            FontSize = fontSize;
+            ImageAsBase64 = imageAsBase64;
             PageWidth = pageWidth;
             PageHeight = pageHeight;
         }
 
         protected bool Equals(Signature other)
         {
-            return X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height) && Text == other.Text && FontSize.Equals(other.FontSize) && PageWidth.Equals(other.PageWidth) && PageHeight.Equals(other.PageHeight);
+            return X.Equals(other.X) && Y.Equals(other.Y) && Width.Equals(other.Width) && Height.Equals(other.Height) && ImageAsBase64 == other.ImageAsBase64 && PageWidth.Equals(other.PageWidth) && PageHeight.Equals(other.PageHeight);
         }
 
         public override bool Equals(object obj)
@@ -48,7 +46,7 @@ namespace RedactMyPdf.Core.Models.Draw
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(X, Y, Width, Height, Text, FontSize, PageWidth, PageHeight);
+            return HashCode.Combine(X, Y, Width, Height, ImageAsBase64, PageWidth, PageHeight);
         }
     }
 }

@@ -107,6 +107,10 @@ td {
     right: '1px';
 }
 
+.drawStageBorder {
+    border: 1px solid RoyalBlue;
+}
+
 /* Darker background on mouse-over */
 .btn:hover {
     background-color: RoyalBlue;

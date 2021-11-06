@@ -1,5 +1,6 @@
 import React, { ReactElement, useRef, ReactText } from 'react';
 import PageDrawStage from './PageDrawStage';
+import FreeDrawStage from './FreeDrawStage';
 import UploadService from '../services/FileUploadService';
 import PageSignature from '../interfaces/PageSignature';
 import Page from '../interfaces/Page';
@@ -15,8 +16,10 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+
 import DeviceType from '../services/DeviceType';
 import ScreenSize from '../services/ScreenSize';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -27,22 +30,14 @@ import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import { Element, animateScroll as scroll } from 'react-scroll';
-import Signature from '../interfaces/Signature';
+import SignaturePosition from '../interfaces/SignaturePosition';
 import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
 import { Redirect } from 'react-router-dom';
 import ReactGa from 'react-ga';
+import DrawLine from '../interfaces/DrawLine';
+import { Element, animateScroll as scroll } from 'react-scroll';
 
 interface PageState {
     pages: Page[];
@@ -56,34 +51,47 @@ interface IProps {
 
 const Editor = (props: IProps): ReactElement => {
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | undefined>(undefined);
-    const [signatures, setSignatures] = React.useState<PageSignature[]>([]);
+    const [signaturesPositions, setSignaturesPositions] = React.useState<PageSignature[]>([]);
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
+    const [imageBase64, setImageBase64] = React.useState<string>('');
+    const [signatureHeight, setSignatureHight] = React.useState<number>();
+    const [signatureWidth, setSignatureWidth] = React.useState<number>();
+    const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(true);
+    const [showInfoAddMsg, setShowInfoAddMsg] = React.useState<boolean>(true);
 
-    const [signatureWizardNameInput, setSignatureWizardNameInput] = React.useState<string>('');
-
-    const [signatureName, setSignatureName] = React.useState<string>('');
     const toastId = React.useRef<ReactText | string>();
     const shapeSelected = React.useRef<boolean>(false);
 
     const addSignatureClick = () => {
+        showInfoAddSignatureMsg();
         setAddSignaturePressed(true);
-        let addText = 'Click where you want to add the signature!';
+        // showAddSignatureToast();
+    };
+
+    const showAddSignatureToast = () => {
+        if (!showInfoAddMsg) {
+            return;
+        }
+        let addText: JSX.Element = (
+            <div>
+                <Typography variant="h6"> Click where you want to add the signature!</Typography>
+            </div>
+        );
         if (DeviceType.IsTouchDevice()) {
-            addText = 'Tap to add the signature!';
+            // addText = 'Tap to add the signature! <br>You can scroll before tapping';
+            addText = (
+                <div>
+                    <Typography variant="h6" align="center">
+                        {' '}
+                        Tap where you want to add the signature!
+                    </Typography>
+                </div>
+            );
         }
-        if (!toastId.current) {
-            toastId.current = toast.info(addText, {
-                position: toast.POSITION.TOP_CENTER,
-                autoClose: false,
-            });
-        } else {
-            toast.update(toastId.current, {
-                type: toast.TYPE.SUCCESS,
-            });
-        }
+        showToast(addText);
     };
 
     if (!props.location.state) {
@@ -100,10 +108,37 @@ const Editor = (props: IProps): ReactElement => {
     const fileId: string = props.location.state.fileId;
     const numberOfPages: number = props.location.state.numberOfPages;
 
+    const showToast = (message: JSX.Element) => {
+        if (!toastId.current) {
+            toastId.current = toast.info(message, {
+                position: 'bottom-center',
+                // autoClose: 50000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                autoClose: false,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
+        } else {
+            toast.update(toastId.current, {
+                position: 'bottom-center',
+                // autoClose: 50000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
+        }
+    };
+
     const cancelChangesClick = () => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
-            setSignatures([]);
-            setSignatureName('');
+            setSignaturesPositions([]);
         }
     };
 
@@ -114,15 +149,8 @@ const Editor = (props: IProps): ReactElement => {
         });
         setIsDownloadInProgress(true);
 
-        const shapes = signatures.map((s) => {
-            if (
-                !s.signature.width ||
-                !s.signature.height ||
-                !s.signature.x ||
-                !s.signature.y ||
-                !s.signature.text ||
-                !s.signature.fontSize
-            ) {
+        const shapes = signaturesPositions.map((s) => {
+            if (!s.signature.width || !s.signature.height || !s.signature.x || !s.signature.y) {
                 return;
             }
             const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
@@ -133,10 +161,9 @@ const Editor = (props: IProps): ReactElement => {
             const signature: SignatureDto = {
                 width: s.signature.width,
                 height: s.signature.height,
-                text: s.signature.text,
+                imageAsBase64: imageBase64,
                 x: s.signature.x,
                 y: s.signature.y,
-                fontSize: s.signature.fontSize,
                 pageWidth: pageWidth,
                 pageHeight: pageHeight,
             };
@@ -171,8 +198,8 @@ const Editor = (props: IProps): ReactElement => {
         setDownloadPath('');
     };
 
-    const updateSignatures = (signs: Signature[], pageNumber: number) => {
-        setSignatures((existingSignatures) => {
+    const updateSignatures = (signs: SignaturePosition[], pageNumber: number) => {
+        setSignaturesPositions((existingSignatures) => {
             const allSignaturesExceptPage = existingSignatures.filter((r) => r.pageNumber != pageNumber);
             const newSignatures = signs.map((s) => {
                 const x: PageSignature = {
@@ -188,51 +215,86 @@ const Editor = (props: IProps): ReactElement => {
         });
     };
 
-    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
-        if (addSignaturePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.clientX - rect.left; //x position within the element.
-            const y = e.clientY - rect.top; //y position within the element.
-            const signature = {
-                pageNumber: pageNumber,
-                signature: CreateSignature(x, y, signatureName),
-            };
-            toast.dismiss(toastId.current);
-            toastId.current = undefined;
+    const showInfoAddSignatureMsg = () => {
+        if (!showInfoAddMsg) {
+            return;
+        }
+        setShowInfoAddMsg(false);
+        let infoMessage: JSX.Element = (
+            <div>
+                <Typography variant="h6"> Scroll and then Click to add the signature!</Typography>
+            </div>
+        );
+        if (DeviceType.IsTouchDevice()) {
+            // addText = 'Tap to add the signature! <br>You can scroll before tapping';
+            infoMessage = (
+                <div>
+                    <Typography variant="h6" align="center">
+                        {' '}
+                        Scroll and then Tap to add the signature!
+                    </Typography>
+                </div>
+            );
+        }
 
-            const existingSignature: PageSignature[] = [...signatures];
-            existingSignature.push(signature);
-            setSignatures(existingSignature);
-            setSelectedShapeId(signature.signature.id);
-            setAddSignaturePressed(false);
+        if (!toastId.current) {
+            toastId.current = toast.success(infoMessage, {
+                position: 'bottom-center',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
         } else {
-            console.log('click1');
-            if (!shapeSelected.current) {
-                setSelectedShapeId(undefined);
-            }
-            shapeSelected.current = false;
+            toast.update(toastId.current, {
+                position: 'bottom-center',
+                autoClose: 50000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
         }
     };
 
+    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        const x = e.clientX - rect.left; //x position within the element.
+        const y = e.clientY - rect.top; //y position within the element.
+
+        clickTouchEvent(x, y, pageNumber);
+    };
+
     const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
+        const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
+
+        clickTouchEvent(x, y, pageNumber);
+    };
+
+    const clickTouchEvent = (x: number, y: number, pageNumber: number) => {
         if (addSignaturePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
-            const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
-                signature: CreateSignature(x, y, signatureName),
+                signature: CreateSignature(x, y),
             };
 
-            const existingSignature: PageSignature[] = [...signatures];
+            const existingSignature: PageSignature[] = [...signaturesPositions];
             existingSignature.push(signature);
+
             toast.dismiss(toastId.current);
             toastId.current = undefined;
-            setSignatures(existingSignature);
+            setSignaturesPositions(existingSignature);
             setSelectedShapeId(signature.signature.id);
             setAddSignaturePressed(false);
         } else {
-            console.log('click1');
             if (!shapeSelected.current) {
                 setSelectedShapeId(undefined);
             }
@@ -254,7 +316,6 @@ const Editor = (props: IProps): ReactElement => {
             position: 'fixed',
             top: '1vh',
             right: '1px',
-            backgroundColor: '#ff7961',
         },
         marginBottom: {
             marginBottom: theme.spacing(2),
@@ -311,213 +372,69 @@ const Editor = (props: IProps): ReactElement => {
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();
 
-    const SetSignaturePositionLaterString = 'later';
-    const SetSignatureOnLastPageString = 'last';
-    const SetSignatureOnEachPageString = 'each';
-
-    function CreateSignature(x: number | undefined, y: number | undefined, text: string | undefined): Signature {
+    function CreateSignature(x: number | undefined, y: number | undefined): SignaturePosition {
         const fontSize: number = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
 
         const height = fontSize * 1.3;
-
+        if (!signatureWidth || !signatureHeight) {
+            return {
+                x: x,
+                y: y,
+                id: Math.floor(Math.random() * 1000).toString(),
+                height: 1,
+                width: 1,
+            };
+        }
+        const width = height * (signatureWidth / signatureHeight);
         return {
             x: x,
             y: y,
-            text: text,
             id: Math.floor(Math.random() * 1000).toString(),
-            fontSize: fontSize,
-            textEditVisible: false,
-            fill: 'black',
-            fontFamily: 'Great Vibes',
             height: height,
-            align: 'center',
-            verticalAlign: 'middle',
+            width: width,
         };
     }
 
-    const handleNext = (isLast: boolean) => {
-        if (!isLast) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        } else {
-            setEasySignWizardOpen(false);
-            const [pageWidth, pageHeight] = ScreenSize.ComputePageSizeRelativeToScreen(
-                props.location.state.pages[0].width,
-                props.location.state.pages[0].height,
-            );
-
-            const newSignatures: PageSignature[] = [];
-            const numberOfPages = props.location.state.pages.length;
-            if (signaturePosition === SetSignatureOnLastPageString) {
-                newSignatures.push({
-                    pageNumber: numberOfPages,
-                    signature: CreateSignature(pageWidth / 15, pageHeight - pageHeight / 12, signatureWizardNameInput),
-                });
-                toast.info(
-                    'Signature added on the last page! Now you can add it on other places using the "+ Sign" button',
-                    {
-                        toastId: 2,
-                        position: toast.POSITION.BOTTOM_CENTER,
-                        autoClose: 8000,
-                    },
-                );
-            }
-            if (signaturePosition === SetSignatureOnEachPageString) {
-                for (let i = 1; i <= numberOfPages; i++) {
-                    newSignatures.push({
-                        pageNumber: i,
-                        signature: CreateSignature(
-                            pageWidth / 15,
-                            pageHeight - pageHeight / 12,
-                            signatureWizardNameInput,
-                        ),
-                    });
-                }
-                toast.info(
-                    'A signature was added on each page! Now you can add it on other places using the "+ Sign" button',
-                    {
-                        toastId: 2,
-                        position: toast.POSITION.BOTTOM_CENTER,
-                    },
-                );
-            }
-
-            setSignatureName(signatureWizardNameInput);
-
-            if (signaturePosition === SetSignaturePositionLaterString) {
-                addSignatureClick();
-            } else {
-                setSignatures(newSignatures);
-                setSelectedShapeId(newSignatures[newSignatures.length - 1].signature.id);
-                scroll.scrollToBottom();
-            }
+    const ConfirmSignatureAndAddToPage = () => {
+        if (!imageBase64) {
+            alert('Please draw your signature!');
+            return;
         }
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        scroll.scrollToBottom();
+        setEasySignWizardOpen(false);
+        setAddSignaturePressed(true);
     };
 
     const handleReset = () => {
         setActiveStep(0);
     };
 
-    const [signaturePosition, setSignaturePosition] = React.useState(SetSignaturePositionLaterString);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleChange = (event: any) => {
-        setSignaturePosition(event.target.value);
-    };
-
-    function getStepContent(step: number) {
-        switch (step) {
-            case 0:
-                return (
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleNext(false);
-                        }}
-                    >
-                        <InputLabel
-                            htmlFor="input-with-icon-adornment"
-                            error={showErrorInStepper}
-                            required={showErrorInStepper}
-                        >
-                            Type your name
-                        </InputLabel>
-                        <Input
-                            id="input-with-icon-adornment"
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <AccountCircle />
-                                </InputAdornment>
-                            }
-                            onChange={(event) => setSignatureWizardNameInput(event.target.value)}
-                            value={signatureWizardNameInput}
-                            error={signatureWizardNameInput.length > 0 ? false : true}
-                            autoFocus={true}
-                            required={true}
-                        />
-                    </form>
-                );
-            case 1:
-                return (
-                    <FormControl
-                        component="fieldset"
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        onKeyPress={() => console.log('presat')}
-                    >
-                        <FormLabel component="legend">You can still remove or add signatures later</FormLabel>
-                        <RadioGroup
-                            aria-label="gender"
-                            name="gender1"
-                            value={signaturePosition}
-                            onChange={handleChange}
-                        >
-                            <FormControlLabel
-                                value={SetSignatureOnEachPageString}
-                                control={<Radio />}
-                                label="Each page"
-                            />
-                            <FormControlLabel
-                                value={SetSignatureOnLastPageString}
-                                control={<Radio />}
-                                label="Last page"
-                            />
-                            <FormControlLabel
-                                value={SetSignaturePositionLaterString}
-                                control={<Radio />}
-                                label="I'll place it myself"
-                            />
-                        </RadioGroup>
-                    </FormControl>
-                );
-            default:
-                return 'Unknown step';
-        }
-    }
-
     const CreateSignatureClick = () => {
         setActiveStep(0);
         setEasySignWizardOpen(true);
     };
-
-    const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(false);
 
     const handleClose = () => {
         setEasySignWizardOpen(false);
     };
     const child1 = useRef(null);
 
-    const showDownloadAndRevertButtons = signatures.length > 0;
-
-    const showErrorInStepper = activeStep != 0 || signatureWizardNameInput.length > 0 ? false : true;
+    const showDownloadAndRevertButtons = signaturesPositions.length > 0;
 
     return (
         <>
+            {addSignaturePressed && showAddSignatureToast()}
             <Backdrop className={classes.backdrop} open={isDownloadInProgress}>
                 <CircularProgress color="inherit" />
             </Backdrop>
-            <ButtonGroup
-                orientation="vertical"
-                color="primary"
-                aria-label="vertical contained primary button group"
-                variant="contained"
-                className={classes.fixedBottomRight}
-            >
-                {signatureName.length == 0 && (
-                    <Button
-                        onClick={CreateSignatureClick}
-                        variant="contained"
-                        color="primary"
-                        size={buttonSize}
-                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                        startIcon={<CreateIcon />}
-                    >
-                        Create Signature
-                    </Button>
-                )}
-                {signatureName.length > 0 && (
+            {!addSignaturePressed && !easySignWizardOpen && (
+                <ButtonGroup
+                    orientation="vertical"
+                    color="primary"
+                    aria-label="vertical contained primary button group"
+                    variant="contained"
+                    className={classes.fixedBottomRight}
+                >
                     <Button
                         onClick={addSignatureClick}
                         variant="contained"
@@ -526,21 +443,21 @@ const Editor = (props: IProps): ReactElement => {
                         className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
                         startIcon={<AddIcon />}
                     >
-                        Sign
+                        Sign other pages
                     </Button>
-                )}
-                {showDownloadAndRevertButtons && (
-                    <Button
-                        onClick={saveDocumentClick}
-                        variant="contained"
-                        color="primary"
-                        size={buttonSize}
-                        startIcon={<CloudDownloadIcon />}
-                    >
-                        Download
-                    </Button>
-                )}
-            </ButtonGroup>
+                    {showDownloadAndRevertButtons && (
+                        <Button
+                            onClick={saveDocumentClick}
+                            variant="contained"
+                            color="primary"
+                            size={buttonSize}
+                            startIcon={<CloudDownloadIcon />}
+                        >
+                            Finish & Download
+                        </Button>
+                    )}
+                </ButtonGroup>
+            )}
             {showDownloadAndRevertButtons && (
                 <ButtonGroup
                     color="primary"
@@ -551,6 +468,11 @@ const Editor = (props: IProps): ReactElement => {
                     <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Revert all changes</span>}>
                         <IconButton aria-label="Undo all" color="secondary" onClick={cancelChangesClick}>
                             <UndoIcon fontSize={fontSize} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Edit signature</span>}>
+                        <IconButton aria-label="Edit signature" color="primary" onClick={CreateSignatureClick}>
+                            <EditIcon fontSize={buttonSize} />
                         </IconButton>
                     </Tooltip>
                     {downloadPath && (
@@ -579,39 +501,39 @@ const Editor = (props: IProps): ReactElement => {
                         }}
                     >
                         <>
-                            <div className={classes.root}>
+                            <div className={classes.root} id="id1">
                                 <Stepper activeStep={activeStep} orientation="vertical">
-                                    {steps.map((label, index) => (
-                                        <Step key={label}>
-                                            <StepLabel>{label}</StepLabel>
-                                            <StepContent>
-                                                {getStepContent(index)}
-                                                <div className={classes.actionsContainer}>
-                                                    <div>
-                                                        <Button
-                                                            disabled={activeStep === 0}
-                                                            onClick={handleBack}
-                                                            className={classes.button}
-                                                        >
-                                                            Back
-                                                        </Button>
-                                                        <Button
-                                                            type="submit"
-                                                            disabled={showErrorInStepper}
-                                                            variant="contained"
-                                                            color="primary"
-                                                            onClick={() => {
-                                                                handleNext(activeStep === steps.length - 1);
-                                                            }}
-                                                            className={classes.button}
-                                                        >
-                                                            {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                                        </Button>
-                                                    </div>
+                                    <Step key="1">
+                                        <StepLabel>Please draw your signature in the box bellow</StepLabel>
+                                        <StepContent>
+                                            <FreeDrawStage
+                                                setImage={(image) => {
+                                                    setImageBase64(image);
+                                                }}
+                                                setStageHeight={(height) => {
+                                                    setSignatureHight(height);
+                                                }}
+                                                setStageWidth={(width) => {
+                                                    setSignatureWidth(width);
+                                                }}
+                                            ></FreeDrawStage>
+                                            <div className={classes.actionsContainer}>
+                                                <div>
+                                                    <Button
+                                                        type="submit"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => {
+                                                            ConfirmSignatureAndAddToPage();
+                                                        }}
+                                                        className={classes.button}
+                                                    >
+                                                        Add signature on page
+                                                    </Button>
                                                 </div>
-                                            </StepContent>
-                                        </Step>
-                                    ))}
+                                            </div>
+                                        </StepContent>
+                                    </Step>
                                 </Stepper>
                                 {activeStep === steps.length && (
                                     <Paper square elevation={0} className={classes.resetContainer}>
@@ -639,7 +561,7 @@ const Editor = (props: IProps): ReactElement => {
                                     );
                                     const scrollAnchorId = 'scrollId' + i;
 
-                                    const singaturesForThisPage = signatures
+                                    const singaturesForThisPage = signaturesPositions
                                         .filter((s) => s.pageNumber == i)
                                         .map((s) => s.signature);
                                     return (
@@ -651,7 +573,6 @@ const Editor = (props: IProps): ReactElement => {
                                                         | React.MouseEvent<HTMLDivElement, MouseEvent>
                                                         | React.TouchEvent<HTMLDivElement>,
                                                 ) => {
-                                                    console.log('asd ', e);
                                                     if (e.type == 'touchend') {
                                                         touchStartEvent(e as React.TouchEvent<HTMLDivElement>, i);
                                                     } else {
@@ -677,6 +598,7 @@ const Editor = (props: IProps): ReactElement => {
                                                             shapeSelected.current = true;
                                                             setSelectedShapeId(id);
                                                         }}
+                                                        imageBase64={imageBase64}
                                                     ></PageDrawStage>
                                                     <Element name={scrollAnchorId} className="element"></Element>
                                                 </tr>
