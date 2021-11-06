@@ -60,7 +60,6 @@ const Editor = (props: IProps): ReactElement => {
     const [signatureHeight, setSignatureHight] = React.useState<number>();
     const [signatureWidth, setSignatureWidth] = React.useState<number>();
     const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(true);
-    const [showInfoAddMsg, setShowInfoAddMsg] = React.useState<boolean>(true);
 
     const toastId = React.useRef<ReactText | string>();
     const shapeSelected = React.useRef<boolean>(false);
@@ -76,9 +75,6 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const showAddSignatureToast = () => {
-        if (!showInfoAddMsg) {
-            return;
-        }
         let addText: JSX.Element = (
             <div>
                 <Typography variant="h6"> Click where you want to add the signature!</Typography>
@@ -224,10 +220,6 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const showInfoAddSignatureMsg = () => {
-        if (!showInfoAddMsg) {
-            return;
-        }
-        setShowInfoAddMsg(false);
         let infoMessage: JSX.Element = (
             <div>
                 <Typography variant="h6"> Scroll and then Click to add the signature!</Typography>
@@ -248,7 +240,7 @@ const Editor = (props: IProps): ReactElement => {
         if (!toastId.current) {
             toastId.current = toast.success(infoMessage, {
                 position: 'bottom-center',
-                autoClose: 5000,
+                autoClose: 8000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -259,7 +251,7 @@ const Editor = (props: IProps): ReactElement => {
         } else {
             toast.update(toastId.current, {
                 position: 'bottom-center',
-                autoClose: 50000,
+                autoClose: 8000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
