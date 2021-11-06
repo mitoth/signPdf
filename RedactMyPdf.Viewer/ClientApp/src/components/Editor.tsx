@@ -66,6 +66,10 @@ const Editor = (props: IProps): ReactElement => {
     const shapeSelected = React.useRef<boolean>(false);
 
     const addSignatureClick = () => {
+        ReactGa.event({
+            category: 'Button',
+            action: 'Sign other pages',
+        });
         showInfoAddSignatureMsg();
         setAddSignaturePressed(true);
         // showAddSignatureToast();
@@ -137,6 +141,10 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const cancelChangesClick = () => {
+        ReactGa.event({
+            category: 'Button',
+            action: 'Revert click',
+        });
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
             setSignaturesPositions([]);
         }
@@ -400,6 +408,10 @@ const Editor = (props: IProps): ReactElement => {
             alert('Please draw your signature!');
             return;
         }
+        ReactGa.event({
+            category: 'Button',
+            action: 'Added signature on page',
+        });
         scroll.scrollToBottom();
         setEasySignWizardOpen(false);
         setAddSignaturePressed(true);
@@ -410,6 +422,10 @@ const Editor = (props: IProps): ReactElement => {
     };
 
     const CreateSignatureClick = () => {
+        ReactGa.event({
+            category: 'Button',
+            action: 'Click on edit signature',
+        });
         setActiveStep(0);
         setEasySignWizardOpen(true);
     };
