@@ -63,7 +63,7 @@ const FreeDrawStage = (props: IProps): ReactElement => {
         if (x) {
             setDimensions({
                 width: (x as any).offsetWidth * 0.8,
-                height: (x as any).offsetHeight * 0.5,
+                height: (x as any).offsetHeight * 0.6,
             });
         } else {
             setDimensions({
