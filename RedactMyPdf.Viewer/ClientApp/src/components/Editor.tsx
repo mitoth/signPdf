@@ -54,7 +54,7 @@ const Editor = (props: IProps): ReactElement => {
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
     const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
-    const [drawLines, setDrawLines] = React.useState<DrawLine[]>([]);
+    const [imageBase64, setImageBase64] = React.useState<string>('');
     const [signatureHeight, setSignatureHight] = React.useState<number>();
     const [signatureWidth, setSignatureWidth] = React.useState<number>();
     const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(true);
@@ -215,7 +215,6 @@ const Editor = (props: IProps): ReactElement => {
                 pageNumber: pageNumber,
                 signature: CreateSignature(x, y),
             };
-            console.log('linile ', drawLines);
             toast.dismiss(toastId.current);
             toastId.current = undefined;
 
@@ -329,18 +328,32 @@ const Editor = (props: IProps): ReactElement => {
     const steps = getSteps();
 
     function CreateSignature(x: number | undefined, y: number | undefined): SignaturePosition {
+        const fontSize: number = (ScreenSize.GetScreenHeight() + ScreenSize.GetScreenWidth()) / 50;
+
+        const height = fontSize * 1.3;
+        if (!signatureWidth || !signatureHeight) {
+            console.log('esti prost! nu trebuia ajuns aici');
+            return {
+                x: x,
+                y: y,
+                id: Math.floor(Math.random() * 1000).toString(),
+                height: 1,
+                width: 1,
+            };
+        }
+        const width = height * (signatureWidth / signatureHeight);
+        console.log('w ', width, 'h ', height);
         return {
             x: x,
             y: y,
             id: Math.floor(Math.random() * 1000).toString(),
-            height: signatureHeight,
-            width: signatureWidth,
+            height: height,
+            width: width,
         };
     }
 
     const ConfirmSignatureAndAddToPage = () => {
         scroll.scrollToBottom();
-        console.log('asdlini ', drawLines);
         setEasySignWizardOpen(false);
         setAddSignaturePressed(true);
     };
@@ -452,16 +465,13 @@ const Editor = (props: IProps): ReactElement => {
                                         <StepLabel>Please draw your signature in the box bellow</StepLabel>
                                         <StepContent>
                                             <FreeDrawStage
-                                                setDrawLines={(lines) => {
-                                                    console.log('liniii ', lines);
-                                                    setDrawLines(lines);
+                                                setImage={(image) => {
+                                                    setImageBase64(image);
                                                 }}
                                                 setStageHeight={(height) => {
-                                                    console.log('heitu ', height);
                                                     setSignatureHight(height);
                                                 }}
                                                 setStageWidth={(width) => {
-                                                    console.log('witu ', width);
                                                     setSignatureWidth(width);
                                                 }}
                                             ></FreeDrawStage>
@@ -548,7 +558,7 @@ const Editor = (props: IProps): ReactElement => {
                                                             shapeSelected.current = true;
                                                             setSelectedShapeId(id);
                                                         }}
-                                                        signatureLines={drawLines}
+                                                        imageBase64={imageBase64}
                                                     ></PageDrawStage>
                                                     <Element name={scrollAnchorId} className="element"></Element>
                                                 </tr>

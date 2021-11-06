@@ -2,19 +2,18 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { ReactElement } from 'react';
 import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
-import { Group as GroupKonvaShape } from 'konva/types/Group';
-import { Group, Line, Rect } from 'react-konva';
+import { Image as ImageKonvaShape } from 'konva/types/shapes/Image';
+import { Group } from 'react-konva';
 
 // import React, { Component } from "react";
-import { Text, Transformer, Tag, Label } from 'react-konva';
+import { Text, Transformer, Tag, Label, Image as KonvaImage } from 'react-konva';
 import SignaturePosition from '../interfaces/SignaturePosition';
-import DrawLine from '../interfaces/DrawLine';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
 
 interface IProps {
     shapeProps: SignaturePosition;
     isSelected: boolean;
-    signatureLines: DrawLine[];
+    imageBase64: string;
     onSelect: any;
     onChange: any;
     onDelete: any;
@@ -26,14 +25,12 @@ const SignatureShape = ({
     isSelected,
     onChange,
     onDelete,
-    signatureLines,
+    imageBase64,
 }: IProps): ReactElement => {
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
-    const [scaleX, setScaleX] = React.useState<number>(1);
-    const [scaleY, setScaleY] = React.useState<number>(1);
 
-    const textRef = React.useRef<GroupKonvaShape>(null);
+    const textRef = React.useRef<ImageKonvaShape>(null);
     const labelRef = React.useRef<LabelKonvaShape>();
 
     const trRef: React.MutableRefObject<TransformerKonvaShape | null> = React.useRef<TransformerKonvaShape>() as React.MutableRefObject<TransformerKonvaShape | null>;
@@ -86,84 +83,73 @@ const SignatureShape = ({
 
     const enabledAnchors: string[] = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
 
+    const getImage = (s: string) => {
+        const myImage: HTMLImageElement = new Image();
+        myImage.src = s;
+
+        return myImage;
+    };
+
     return (
         <React.Fragment>
-            {console.log('1 ', shapeProps.width, '2   ', shapeProps.height)}
+            <Group>
+                {imageBase64 && (
+                    <KonvaImage
+                        image={getImage(imageBase64)}
+                        x={shapeProps.x}
+                        y={shapeProps.y}
+                        width={shapeProps.width}
+                        height={shapeProps.height}
+                        listening
+                        drawBorder
+                        draggable
+                        ref={textRef}
+                        onClick={onSelect}
+                        onTap={onSelect}
+                        onDragEnd={(e) => {
+                            onChange({
+                                ...shapeProps,
+                                x: e.target.x(),
+                                y: e.target.y(),
+                            });
+                        }}
+                        onDragMove={() => {
+                            if (textRef.current) {
+                                setLabelPostionX(getX());
+                                setLabelPostionY(getY());
+                            }
+                        }}
+                        onTransform={() => {
+                            if (textRef.current) {
+                                setLabelPostionX(getX());
+                                setLabelPostionY(getY());
+                            }
+                        }}
+                        onTransformEnd={() => {
+                            const node: ImageKonvaShape | null = textRef.current;
+                            if (!node) return;
+                            const sX = node.scaleX();
+                            const sY = node.scaleY();
 
-            <Group
-                x={shapeProps.x}
-                y={shapeProps.y}
-                width={shapeProps.width}
-                height={shapeProps.height}
-                listening
-                drawBorder
-                draggable
-                ref={textRef}
-                onClick={onSelect}
-                onTap={onSelect}
-                onDragEnd={(e) => {
-                    console.log('end');
-                    onChange({
-                        ...shapeProps,
-                        x: e.target.x(),
-                        y: e.target.y(),
-                    });
-                }}
-                onDragMove={() => {
-                    console.log('move');
-                    if (textRef.current) {
-                        setLabelPostionX(getX());
-                        setLabelPostionY(getY());
-                    }
-                }}
-                onTransform={() => {
-                    if (textRef.current) {
-                        setLabelPostionX(getX());
-                        setLabelPostionY(getY());
-                    }
-                }}
-                onTransformEnd={() => {
-                    const node: GroupKonvaShape | null = textRef.current;
-                    if (!node) return;
-                    const sX = node.scaleX();
-                    const sY = node.scaleY();
+                            const newX = node.x();
+                            const newY = node.y();
+                            const newWidth = Math.max(5, node.width() * sX);
+                            const newHeigth = Math.max(node.height() * sY);
 
-                    const newX = node.x();
-                    const newY = node.y();
-                    const newWidth = Math.max(5, node.width() * sX);
-                    const newHeigth = Math.max(node.height() * sY);
+                            // we will reset it back
+                            node.scaleX(1);
+                            node.scaleY(1);
 
-                    setScaleX(scaleX * sX);
-                    setScaleY(scaleY * sY);
-                    // we will reset it back
-                    node.scaleX(1);
-                    node.scaleY(1);
-
-                    onChange({
-                        ...shapeProps,
-                        width: newWidth,
-                        height: newHeigth,
-                        x: newX,
-                        y: newY,
-                    });
-                }}
-            >
-                {console.log('asd32f2fe ', shapeProps.width, 'a   ', shapeProps.height)}
-                <Rect width={shapeProps.width} height={shapeProps.height}></Rect>
-                {signatureLines &&
-                    signatureLines.map((line: { points: number[] }, i: React.Key | null | undefined) => (
-                        <Line
-                            key={i}
-                            points={line.points}
-                            stroke="#C4381C"
-                            strokeWidth={5}
-                            tension={0.5}
-                            lineCap="round"
-                            globalCompositeOperation="source-over"
-                            scaleX={scaleX}
-                            scaleY={scaleY}
-                        />
-                    ))}
+                            onChange({
+                                ...shapeProps,
+                                width: newWidth,
+                                height: newHeigth,
+                                x: newX,
+                                y: newY,
+                            });
+                        }}
+                    ></KonvaImage>
+                )}
             </Group>
 
             {isSelected && (

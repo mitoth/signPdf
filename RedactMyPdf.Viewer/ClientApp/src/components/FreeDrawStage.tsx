@@ -7,9 +7,9 @@ import Stack from '@mui/material/Stack';
 import DrawLine from '../interfaces/DrawLine';
 
 interface IProps {
-    setDrawLines: (lines: DrawLine[]) => void;
     setStageHeight: (height: number) => void;
     setStageWidth: (width: number) => void;
+    setImage: (image: string) => void;
 }
 
 const FreeDrawStage = (props: IProps): ReactElement => {
@@ -42,7 +42,8 @@ const FreeDrawStage = (props: IProps): ReactElement => {
 
     const handleMouseUp = () => {
         isDrawing.current = false;
-        props.setDrawLines(lines);
+        const uri = (stageRef?.current as any).toDataURL();
+        props.setImage(uri);
         const x = document.getElementById('drawStage');
         let w: number;
         let h: number;
@@ -70,9 +71,6 @@ const FreeDrawStage = (props: IProps): ReactElement => {
                 height: 100,
             });
         }
-
-        console.log('width ' + (x as any).offsetWidth * 0.8);
-        console.log('height ' + (x as any).offsetHeight * 0.8);
     }, []);
 
     return (
