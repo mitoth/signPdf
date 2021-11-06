@@ -31,7 +31,7 @@ namespace RedactMyPdf.Repository.Tests
                 new PageShapes(1, new List<Rectangle>
                 {
                     new Rectangle(2, 2, 2, 2, "some", 2, "other")
-                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 30, 1000, 1000)})
+                }, new List<Signature>(){new Signature(2,3, 4, 5, "Mihai Toth", 1000, 1000)})
             };
 
             var documentId = Guid.NewGuid();

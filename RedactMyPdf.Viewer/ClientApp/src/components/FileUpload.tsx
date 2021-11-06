@@ -52,7 +52,6 @@ const UploadFiles = (): ReactElement => {
             .start()
             .then(() => {
                 newConnection.invoke('getConnectionId').then((connectionId) => {
-                    console.log('set connection ' + connectionId);
                     UploadService.upload(currentFile, connectionId, () => {
                         console.log('in progress');
                     }).catch(() => {

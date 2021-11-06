@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BitMiracle.Docotic.Pdf;
@@ -34,7 +35,6 @@ namespace RedactMyPdf.FileHandler.Docotic.Drawing
                     }
 
                     var pdfPage = pdf.Pages[pageShapes.PageNumber - 1];
-                    var imagePage = doc.Pages.ElementAt(pageShapes.PageNumber - 1);
                     PdfCanvas canvas = pdfPage.Canvas;
 
                     var assembly = typeof(ShapesBurner).GetTypeInfo().Assembly;
@@ -55,17 +55,16 @@ namespace RedactMyPdf.FileHandler.Docotic.Drawing
                             var signatureHeight = Math.Floor(signature.Height) * heightRatio;
                             var signatureX = signature.X * widthRatio;
                             var signatureY = signature.Y * heightRatio;
-                            
-                            canvas.FontSize = Math.Floor(signature.FontSize * heightRatio);
-                            
-                            canvas.DrawString(signature.Text, 
-                                new PdfRectangle(
-                                    Math.Round(signatureX),
-                                    Math.Floor(signatureY),
-                                    Math.Floor(signatureWidth),
-                                    Math.Floor(signatureHeight)), 
-                                PdfTextAlign.Center,
-                                PdfVerticalAlign.Center);  
+
+                            var base64Data = Regex.Match(signature.ImageAsBase64, @"data:image/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                            var image = Convert.FromBase64String(base64Data);
+                            var pdfImage = pdf.AddImage(image);
+                            canvas.DrawImage(
+                                pdfImage, 
+                                Math.Round(signatureX),
+                                Math.Floor(signatureY),
+                                Math.Floor(signatureWidth),
+                                Math.Floor(signatureHeight), 0);
                         }
                     }
                 }

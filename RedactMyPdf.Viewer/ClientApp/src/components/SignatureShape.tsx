@@ -162,9 +162,6 @@ const SignatureShape = ({
                         }
                         return newBox;
                     }}
-                    onClick={() => {
-                        console.log('clicul');
-                    }}
                     rotateEnabled={false}
                     enabledAnchors={enabledAnchors}
                 />

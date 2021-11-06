@@ -108,7 +108,6 @@ const FreeDrawStage = (props: IProps): ReactElement => {
                     size="medium"
                     onClick={() => {
                         const uri = (stageRef?.current as any).toDataURL();
-                        console.log(uri);
                         setLines([]);
                     }}
                 >

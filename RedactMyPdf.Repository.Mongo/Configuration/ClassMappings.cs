@@ -70,9 +70,8 @@ namespace RedactMyPdf.Repository.Mongo.Configuration
                 cm.MapField(p => p.Width);
                 cm.MapField(p => p.PageHeight);
                 cm.MapField(p => p.PageWidth);
-                cm.MapField(p => p.Text);
-                cm.MapField(p => p.FontSize);
-                cm.MapCreator(d => new Signature(d.X, d.Y, d.Width, d.Height, d.Text, d.FontSize, d.PageWidth, d.PageHeight));
+                cm.MapField(p => p.ImageAsBase64);
+                cm.MapCreator(d => new Signature(d.X, d.Y, d.Width, d.Height, d.ImageAsBase64, d.PageWidth, d.PageHeight));
             });
             mappingSet = true;
         }

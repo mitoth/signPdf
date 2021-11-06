@@ -16,8 +16,10 @@ import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
+
 import DeviceType from '../services/DeviceType';
 import ScreenSize from '../services/ScreenSize';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -58,18 +60,22 @@ const Editor = (props: IProps): ReactElement => {
     const [signatureHeight, setSignatureHight] = React.useState<number>();
     const [signatureWidth, setSignatureWidth] = React.useState<number>();
     const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(true);
+    const [showInfoAddMsg, setShowInfoAddMsg] = React.useState<boolean>(true);
 
     const toastId = React.useRef<ReactText | string>();
     const shapeSelected = React.useRef<boolean>(false);
 
     const addSignatureClick = () => {
+        showInfoAddSignatureMsg();
         setAddSignaturePressed(true);
         // showAddSignatureToast();
     };
 
     const showAddSignatureToast = () => {
-        // let addText = 'Click to add the signature! <br>You can scroll before clicking';
-        let addText = (
+        if (!showInfoAddMsg) {
+            return;
+        }
+        let addText: JSX.Element = (
             <div>
                 <Typography variant="h6"> Click where you want to add the signature!</Typography>
             </div>
@@ -85,8 +91,26 @@ const Editor = (props: IProps): ReactElement => {
                 </div>
             );
         }
+        showToast(addText);
+    };
+
+    if (!props.location.state) {
+        return (
+            <Redirect
+                push
+                to={{
+                    pathname: '/',
+                }}
+            />
+        );
+    }
+
+    const fileId: string = props.location.state.fileId;
+    const numberOfPages: number = props.location.state.numberOfPages;
+
+    const showToast = (message: JSX.Element) => {
         if (!toastId.current) {
-            toastId.current = toast.info(addText, {
+            toastId.current = toast.info(message, {
                 position: 'bottom-center',
                 // autoClose: 50000,
                 hideProgressBar: false,
@@ -111,20 +135,6 @@ const Editor = (props: IProps): ReactElement => {
             });
         }
     };
-
-    if (!props.location.state) {
-        return (
-            <Redirect
-                push
-                to={{
-                    pathname: '/',
-                }}
-            />
-        );
-    }
-
-    const fileId: string = props.location.state.fileId;
-    const numberOfPages: number = props.location.state.numberOfPages;
 
     const cancelChangesClick = () => {
         if (window.confirm('Are you sure you wish to revert all redactions?')) {
@@ -151,10 +161,9 @@ const Editor = (props: IProps): ReactElement => {
             const signature: SignatureDto = {
                 width: s.signature.width,
                 height: s.signature.height,
-                text: 'swef',
+                imageAsBase64: imageBase64,
                 x: s.signature.x,
                 y: s.signature.y,
-                fontSize: 20,
                 pageWidth: pageWidth,
                 pageHeight: pageHeight,
             };
@@ -206,36 +215,72 @@ const Editor = (props: IProps): ReactElement => {
         });
     };
 
-    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
-        if (addSignaturePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.clientX - rect.left; //x position within the element.
-            const y = e.clientY - rect.top; //y position within the element.
-            const signature = {
-                pageNumber: pageNumber,
-                signature: CreateSignature(x, y),
-            };
-            toast.dismiss(toastId.current);
-            toastId.current = undefined;
+    const showInfoAddSignatureMsg = () => {
+        if (!showInfoAddMsg) {
+            return;
+        }
+        setShowInfoAddMsg(false);
+        let infoMessage: JSX.Element = (
+            <div>
+                <Typography variant="h6"> Scroll and then Click to add the signature!</Typography>
+            </div>
+        );
+        if (DeviceType.IsTouchDevice()) {
+            // addText = 'Tap to add the signature! <br>You can scroll before tapping';
+            infoMessage = (
+                <div>
+                    <Typography variant="h6" align="center">
+                        {' '}
+                        Scroll and then Tap to add the signature!
+                    </Typography>
+                </div>
+            );
+        }
 
-            const existingSignature: PageSignature[] = [...signaturesPositions];
-            existingSignature.push(signature);
-            setSignaturesPositions(existingSignature);
-            setSelectedShapeId(signature.signature.id);
-            setAddSignaturePressed(false);
+        if (!toastId.current) {
+            toastId.current = toast.success(infoMessage, {
+                position: 'bottom-center',
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
         } else {
-            if (!shapeSelected.current) {
-                setSelectedShapeId(undefined);
-            }
-            shapeSelected.current = false;
+            toast.update(toastId.current, {
+                position: 'bottom-center',
+                autoClose: 50000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                style: { backgroundColor: '#ff7961' },
+                bodyStyle: { margin: '0 auto' },
+            });
         }
     };
 
+    const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        const x = e.clientX - rect.left; //x position within the element.
+        const y = e.clientY - rect.top; //y position within the element.
+
+        clickTouchEvent(x, y, pageNumber);
+    };
+
     const touchStartEvent = (e: React.TouchEvent<HTMLDivElement>, pageNumber: number) => {
+        const rect = (e.target as HTMLElement).getBoundingClientRect();
+        const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
+        const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
+
+        clickTouchEvent(x, y, pageNumber);
+    };
+
+    const clickTouchEvent = (x: number, y: number, pageNumber: number) => {
         if (addSignaturePressed) {
-            const rect = (e.target as HTMLElement).getBoundingClientRect();
-            const x = e.changedTouches[0].clientX - rect.left; //x position within the element.
-            const y = e.changedTouches[0].clientY - rect.top; //y position within the element.
             const signature = {
                 pageNumber: pageNumber,
                 signature: CreateSignature(x, y),
@@ -243,6 +288,7 @@ const Editor = (props: IProps): ReactElement => {
 
             const existingSignature: PageSignature[] = [...signaturesPositions];
             existingSignature.push(signature);
+
             toast.dismiss(toastId.current);
             toastId.current = undefined;
             setSignaturesPositions(existingSignature);
@@ -270,7 +316,6 @@ const Editor = (props: IProps): ReactElement => {
             position: 'fixed',
             top: '1vh',
             right: '1px',
-            backgroundColor: '#ff7961',
         },
         marginBottom: {
             marginBottom: theme.spacing(2),
@@ -332,7 +377,6 @@ const Editor = (props: IProps): ReactElement => {
 
         const height = fontSize * 1.3;
         if (!signatureWidth || !signatureHeight) {
-            console.log('esti prost! nu trebuia ajuns aici');
             return {
                 x: x,
                 y: y,
@@ -342,7 +386,6 @@ const Editor = (props: IProps): ReactElement => {
             };
         }
         const width = height * (signatureWidth / signatureHeight);
-        console.log('w ', width, 'h ', height);
         return {
             x: x,
             y: y,
@@ -353,6 +396,10 @@ const Editor = (props: IProps): ReactElement => {
     }
 
     const ConfirmSignatureAndAddToPage = () => {
+        if (!imageBase64) {
+            alert('Please draw your signature!');
+            return;
+        }
         scroll.scrollToBottom();
         setEasySignWizardOpen(false);
         setAddSignaturePressed(true);
@@ -389,16 +436,6 @@ const Editor = (props: IProps): ReactElement => {
                     className={classes.fixedBottomRight}
                 >
                     <Button
-                        onClick={CreateSignatureClick}
-                        variant="contained"
-                        color="primary"
-                        size={buttonSize}
-                        className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
-                        startIcon={<CreateIcon />}
-                    >
-                        Create Signature
-                    </Button>
-                    <Button
                         onClick={addSignatureClick}
                         variant="contained"
                         color="primary"
@@ -406,7 +443,7 @@ const Editor = (props: IProps): ReactElement => {
                         className={showDownloadAndRevertButtons ? classes.marginBottom : ''}
                         startIcon={<AddIcon />}
                     >
-                        Sign
+                        Sign other pages
                     </Button>
                     {showDownloadAndRevertButtons && (
                         <Button
@@ -416,7 +453,7 @@ const Editor = (props: IProps): ReactElement => {
                             size={buttonSize}
                             startIcon={<CloudDownloadIcon />}
                         >
-                            Download
+                            Finish & Download
                         </Button>
                     )}
                 </ButtonGroup>
@@ -431,6 +468,11 @@ const Editor = (props: IProps): ReactElement => {
                     <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Revert all changes</span>}>
                         <IconButton aria-label="Undo all" color="secondary" onClick={cancelChangesClick}>
                             <UndoIcon fontSize={fontSize} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={<span style={{ fontSize: '1.5vh' }}>Edit signature</span>}>
+                        <IconButton aria-label="Edit signature" color="primary" onClick={CreateSignatureClick}>
+                            <EditIcon fontSize={buttonSize} />
                         </IconButton>
                     </Tooltip>
                     {downloadPath && (
@@ -531,7 +573,6 @@ const Editor = (props: IProps): ReactElement => {
                                                         | React.MouseEvent<HTMLDivElement, MouseEvent>
                                                         | React.TouchEvent<HTMLDivElement>,
                                                 ) => {
-                                                    console.log('asd ', e);
                                                     if (e.type == 'touchend') {
                                                         touchStartEvent(e as React.TouchEvent<HTMLDivElement>, i);
                                                     } else {
@@ -543,7 +584,6 @@ const Editor = (props: IProps): ReactElement => {
                                                 }}
                                             >
                                                 <tr>
-                                                    {console.log('sen ', singaturesForThisPage)}
                                                     <PageDrawStage
                                                         signatures={singaturesForThisPage}
                                                         setSignatures={(signs) => {
