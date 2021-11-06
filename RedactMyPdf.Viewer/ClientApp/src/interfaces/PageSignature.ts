@@ -1,4 +1,4 @@
-import Signature from '../interfaces/Signature';
+import Signature from './SignaturePosition';
 
 interface PageSignature {
     pageNumber: number;

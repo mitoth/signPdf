@@ -1,7 +1,9 @@
 import React, { ReactElement } from 'react';
 import { Stage, Layer } from 'react-konva';
 import KonvaDrawLayer from './KonvaDrawLayer';
-import Signature from '../interfaces/Signature';
+import Signature from '../interfaces/SignaturePosition';
+import DrawLine from '../interfaces/DrawLine';
+
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Image } from 'react-konva';
@@ -9,6 +11,7 @@ import useImage from 'use-image';
 
 interface IProps {
     signatures: Signature[];
+    signatureLines: DrawLine[];
     pageNumber: number;
     width: number;
     height: number;
@@ -46,6 +49,7 @@ const PageDrawStage = (props: IProps): ReactElement => {
                         setSignatures={props.setSignatures}
                         selectedShapeId={props.selectedShapeId}
                         setSelectedShapeId={props.setSelectedShapeId}
+                        signatureLines={props.signatureLines}
                     ></KonvaDrawLayer>
                 </Stage>
             </>

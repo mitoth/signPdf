@@ -1,27 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React, { ReactElement } from 'react';
-import { Text as TextKonvaShape } from 'konva/types/shapes/Text';
 import { Label as LabelKonvaShape } from 'konva/types/shapes/Label';
 import { Group as GroupKonvaShape } from 'konva/types/Group';
-import { Group, Layer, Line, Rect } from 'react-konva';
+import { Group, Line, Rect } from 'react-konva';
 
 // import React, { Component } from "react";
 import { Text, Transformer, Tag, Label } from 'react-konva';
-import Signature from '../interfaces/Signature';
+import SignaturePosition from '../interfaces/SignaturePosition';
+import DrawLine from '../interfaces/DrawLine';
 import { Transformer as TransformerKonvaShape } from 'konva/types/shapes/Transformer';
-import FreeDrawStage from './FreeDrawStage';
-import { ConsoleLogger } from '@microsoft/signalr/dist/esm/Utils';
 
 interface IProps {
-    shapeProps: Signature;
+    shapeProps: SignaturePosition;
     isSelected: boolean;
+    signatureLines: DrawLine[];
     onSelect: any;
     onChange: any;
     onDelete: any;
 }
 
-const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }: IProps): ReactElement => {
+const SignatureShape = ({
+    shapeProps,
+    onSelect,
+    isSelected,
+    onChange,
+    onDelete,
+    signatureLines,
+}: IProps): ReactElement => {
     const [labelPositionX, setLabelPostionX] = React.useState<number>(0);
     const [labelPositionY, setLabelPostionY] = React.useState<number>(0);
     const [scaleX, setScaleX] = React.useState<number>(1);
@@ -144,12 +150,12 @@ const SignatureShape = ({ shapeProps, onSelect, isSelected, onChange, onDelete }
             >
                 {console.log('asd32f2fe ', shapeProps.width, 'a   ', shapeProps.height)}
                 <Rect width={shapeProps.width} height={shapeProps.height}></Rect>
-                {shapeProps.lines &&
-                    shapeProps.lines.map((line: { points: number[] }, i: React.Key | null | undefined) => (
+                {signatureLines &&
+                    signatureLines.map((line: { points: number[] }, i: React.Key | null | undefined) => (
                         <Line
                             key={i}
                             points={line.points}
-                            stroke="#000000"
+                            stroke="#C4381C"
                             strokeWidth={5}
                             tension={0.5}
                             lineCap="round"
