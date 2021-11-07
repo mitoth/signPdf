@@ -93,7 +93,7 @@ const FreeDrawStage = (props: IProps): ReactElement => {
                                 key={i}
                                 points={line.points}
                                 stroke="#000000"
-                                strokeWidth={5}
+                                strokeWidth={3}
                                 tension={0.5}
                                 lineCap="round"
                                 globalCompositeOperation="source-over"
