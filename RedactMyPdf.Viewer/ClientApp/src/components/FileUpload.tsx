@@ -7,6 +7,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
 import CookieConsent from 'react-cookie-consent';
+import ReactGa from 'react-ga';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -30,12 +31,20 @@ const UploadFiles = (): ReactElement => {
         window.setTimeout(() => {
             if (!uploadSuccessful) {
                 connection?.stop();
+                ReactGa.event({
+                    category: 'PageError',
+                    action: 'CouldNotUploadFile',
+                });
                 setDropzoneText('Sorry. Could not upload the file!. Please try again later');
                 setUploadInProgress(false);
             }
         }, 40000);
 
         window.setTimeout(() => {
+            ReactGa.event({
+                category: 'PageWarning',
+                action: 'UploadTakesLonger',
+            });
             setDropzoneText('Sorry. It takes a bit longer than expected...');
         }, 20000);
 
@@ -77,6 +86,10 @@ const UploadFiles = (): ReactElement => {
     };
 
     useEffect(() => {
+        ReactGa.event({
+            category: 'PageLoad',
+            action: 'UploadPageLoaded',
+        });
         setDropZoneText();
     }, []);
 

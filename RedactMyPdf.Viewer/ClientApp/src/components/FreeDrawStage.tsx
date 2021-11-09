@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import DrawLine from '../interfaces/DrawLine';
+import ReactGa from 'react-ga';
 
 interface IProps {
     setStageHeight: (height: number) => void;
@@ -59,6 +60,10 @@ const FreeDrawStage = (props: IProps): ReactElement => {
     };
 
     useEffect(() => {
+        ReactGa.event({
+            category: 'PageLoad',
+            action: 'FreeDrawStage',
+        });
         const x = document.getElementById('id1');
         if (x) {
             setDimensions({
