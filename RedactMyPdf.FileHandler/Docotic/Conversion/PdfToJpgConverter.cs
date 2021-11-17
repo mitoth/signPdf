@@ -30,9 +30,9 @@ namespace RedactMyPdf.FileHandler.Docotic.Conversion
                 var imageStream = new MemoryStream();
                 PdfDrawOptions options = PdfDrawOptions.Create();
                 options.BackgroundColor = new PdfRgbColor(255, 255, 255);
-                options.HorizontalResolution = 250;
-                options.VerticalResolution = 250;
-                // options.Compression = ImageCompressionOptions.CreateJpeg();
+                // options.HorizontalResolution = 250;
+                // options.VerticalResolution = 250;
+                // options.Compression = ImageCompressionOptions.CreatePng();
                 page.Save(imageStream, options);
                 imageStream.Seek(0, SeekOrigin.Begin);
                 var img = new Bitmap(imageStream);
