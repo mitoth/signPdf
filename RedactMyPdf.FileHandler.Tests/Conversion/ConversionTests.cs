@@ -32,7 +32,7 @@ namespace RedactMyPdf.FileHandler.Tests.Conversion
         {
             var testFilesParentDirectory = new DirectoryInfo($"{Assembly.GetExecutingAssembly().Location}").Parent
                 ?.Parent?.Parent?.Parent;
-            var inputPdfFilePath = $"{testFilesParentDirectory}\\PdfTestFiles\\test4PagesDocument.pdf";
+            var inputPdfFilePath = $"{testFilesParentDirectory}\\PdfTestFiles\\slow.pdf";
             var inputPdf = new FileInfo(inputPdfFilePath);
 
             var fileBinary = await File.ReadAllBytesAsync(inputPdf.FullName);
@@ -47,6 +47,8 @@ namespace RedactMyPdf.FileHandler.Tests.Conversion
                 await jpegFile.ImageStream.CopyToAsync(testFileStream);
                 Assert.IsTrue(await FileUtil.IsJpegFileSignature(testFileStream));
             }
+            
+            Assert.AreEqual(6, jpegFiles.Count);
         }
     }
 }
