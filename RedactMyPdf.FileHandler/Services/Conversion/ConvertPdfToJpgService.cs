@@ -33,6 +33,7 @@ namespace RedactMyPdf.FileHandler.Services.Conversion
             logger.LogInformation($"Converting Pdf file with id {fileBinaryId} to Jpg");
             await using var fileStream = await fileRepository.GetAsync(fileBinaryId, cancellationToken);
             var convertedImages = await pdfToJpgConverter.ConvertAsync(fileStream, cancellationToken);
+            logger.LogInformation($"Finished converting file with id {fileBinaryId}. It has {convertedImages.Count} pages");
             var pages = new List<Page>();
             for (int i=0;i< convertedImages.Count;i++)
             {
