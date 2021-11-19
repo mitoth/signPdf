@@ -8,6 +8,7 @@ import DeviceType from '../services/DeviceType';
 import Footer from './Footer';
 import CookieConsent from 'react-cookie-consent';
 import ReactGa from 'react-ga';
+import seq from 'seq-logging';
 
 const UploadFiles = (): ReactElement => {
     const [currentFile, setCurrentFile] = useState<File>();
@@ -21,7 +22,30 @@ const UploadFiles = (): ReactElement => {
     const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
     const [openContactPage, setOpenContactPage] = useState<boolean>(false);
 
+    const logger = new seq.Logger({
+        serverUrl: 'http://my-seq.default.svc.cluster.local',
+        onError: function (e: Error) {
+            console.log(e);
+        },
+    });
+
     const upload = (files: File[]) => {
+        logger.emit({
+            timestamp: new Date(),
+            level: 'Information',
+            messageTemplate: 'File Upload started!',
+            // properties: {
+            //     user: process.env.USERNAME,
+            //     n: 20,
+            // },
+        });
+
+        logger.close();
+        ReactGa.event({
+            category: 'Upload',
+            action: 'UploadStarted',
+        });
+
         const currentFile = files[0];
         setUploadSuccessful(false);
         setUploadInProgress(true);
@@ -34,6 +58,11 @@ const UploadFiles = (): ReactElement => {
                 ReactGa.event({
                     category: 'PageError',
                     action: 'CouldNotUploadFile',
+                });
+                logger.emit({
+                    timestamp: new Date(),
+                    level: 'Error',
+                    messageTemplate: 'File Upload failed!',
                 });
                 setDropzoneText('Sorry. Could not upload the file!. Please try again later');
                 setUploadInProgress(false);
@@ -63,7 +92,12 @@ const UploadFiles = (): ReactElement => {
                 newConnection.invoke('getConnectionId').then((connectionId) => {
                     UploadService.upload(currentFile, connectionId, () => {
                         console.log('in progress');
-                    }).catch(() => {
+                    }).catch((e) => {
+                        logger.emit({
+                            timestamp: new Date(),
+                            level: 'Error',
+                            messageTemplate: `File Upload error! Error: ${e}`,
+                        });
                         setCurrentFile(undefined);
                         setUploadSuccessful(false);
                         setUploadInProgress(false);
@@ -80,28 +114,31 @@ const UploadFiles = (): ReactElement => {
             })
             .catch((e) => {
                 setDropzoneText('Sorry. Could not upload the file!. Please try again later');
-                console.log('Connection failed: ', e);
+                logger.emit({
+                    timestamp: new Date(),
+                    level: 'Error',
+                    messageTemplate: `Could not upload the file! Error: ${e}`,
+                });
             });
         setConnection(newConnection);
     };
 
     useEffect(() => {
-        ReactGa.event({
-            category: 'PageLoad',
-            action: 'UploadPageLoaded',
-        });
         setDropZoneText();
     }, []);
 
     const setDropZoneText = () => {
         if (DeviceType.IsPhone()) {
             setDropzoneText('Tap to select your PDF');
+            return;
         }
         if (DeviceType.IsTablet()) {
             setDropzoneText('Tap to select your PDF');
+            return;
         }
         if (DeviceType.IsLargeEnoughSoYouDontCare()) {
             setDropzoneText('Click or tap to select your PDF');
+            return;
         }
     };
 
