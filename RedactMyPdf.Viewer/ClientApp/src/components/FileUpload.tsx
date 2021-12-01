@@ -23,7 +23,10 @@ const UploadFiles = (): ReactElement => {
 
     const upload = (files: File[]) => {
         const currentFile = files[0];
-        console.log('fisierul', currentFile);
+        if (!currentFile) {
+            console.log('no file');
+            return;
+        }
         setUploadSuccessful(false);
         setUploadInProgress(true);
         const label = `${currentFile.size}_${currentFile.type}`;
