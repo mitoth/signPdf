@@ -23,7 +23,7 @@ namespace RedactMyPdf.FileHandler.Services.Drawing
             this.fileRepository = fileRepository;
             this.shapesBurner = shapesBurner;
             this.burnedDocumentRepository = burnedDocumentRepository;
-            BitMiracle.Docotic.LicenseManager.AddLicenseData("6Y1MS-RWZI2-J436C-3IJAM-LG6OT");
+            BitMiracle.Docotic.LicenseManager.AddLicenseData("5ZNDE-ARH2W-3SE7Q-1MJ0D-UPDHM");
         }
 
         public async Task BurnShapes(Guid documentId, List<PageShapes> shapes, CancellationToken cancellationToken)

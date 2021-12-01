@@ -23,7 +23,7 @@ namespace RedactMyPdf.FileHandler.Services.Conversion
             this.pdfToJpgConverter = pdfToJpgConverter;
             this.documentRepository = documentRepository;
             this.logger = logger;
-            BitMiracle.Docotic.LicenseManager.AddLicenseData("6Y1MS-RWZI2-J436C-3IJAM-LG6OT");
+            BitMiracle.Docotic.LicenseManager.AddLicenseData("5ZNDE-ARH2W-3SE7Q-1MJ0D-UPDHM");
         }
 
         ///<inheritdoc/>

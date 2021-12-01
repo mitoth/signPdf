@@ -23,8 +23,10 @@ const UploadFiles = (): ReactElement => {
 
     const upload = (files: File[]) => {
         const currentFile = files[0];
+        console.log('fisierul', currentFile);
         setUploadSuccessful(false);
         setUploadInProgress(true);
+        const label = `${currentFile.size}_${currentFile.type}`;
 
         if (!currentFile) return;
 
@@ -34,6 +36,7 @@ const UploadFiles = (): ReactElement => {
                 ReactGa.event({
                     category: 'PageError',
                     action: 'CouldNotUploadFile',
+                    label: label,
                 });
                 setDropzoneText('Sorry. Could not upload the file!. Please try again later');
                 setUploadInProgress(false);
@@ -44,6 +47,7 @@ const UploadFiles = (): ReactElement => {
             ReactGa.event({
                 category: 'PageWarning',
                 action: 'UploadTakesLonger',
+                label: label,
             });
             setDropzoneText('Sorry. It takes a bit longer than expected...');
         }, 20000);
