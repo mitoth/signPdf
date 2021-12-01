@@ -125,9 +125,6 @@ const UploadFiles = (): ReactElement => {
 
     useEffect(() => {
         setDropZoneText();
-        () => {
-            logger.close();
-        };
     }, []);
 
     const setDropZoneText = () => {
