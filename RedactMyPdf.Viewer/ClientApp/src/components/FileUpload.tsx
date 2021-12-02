@@ -27,9 +27,21 @@ const UploadFiles = (): ReactElement => {
             console.log('no file');
             return;
         }
+
+        const tenMBinBytes = 10485760;
+        const label = `${currentFile.size}_${currentFile.type}`;
+        if (currentFile.size > tenMBinBytes) {
+            alert('Files bigger than 10MB are not supported at the moment. Sorry for the inconvenience');
+            ReactGa.event({
+                category: 'BigFileSize',
+                action: 'FileSizeTooBig',
+                label: label,
+            });
+            return;
+        }
+
         setUploadSuccessful(false);
         setUploadInProgress(true);
-        const label = `${currentFile.size}_${currentFile.type}`;
 
         if (!currentFile) return;
 
@@ -153,6 +165,7 @@ const UploadFiles = (): ReactElement => {
                     dropzoneProps={dropzoneProps}
                 />
                 <div className="margin-top1vh">
+                    {!uploadInProgress && <p>The maximum accepted file size is 10MB</p>}
                     {currentFile && uploadInProgress && <LinearProgress color="secondary" />}
                 </div>
             </div>
