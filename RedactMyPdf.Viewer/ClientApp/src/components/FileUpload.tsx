@@ -23,34 +23,17 @@ const UploadFiles = (): ReactElement => {
     const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
     const [openContactPage, setOpenContactPage] = useState<boolean>(false);
 
+    const tenMBinBytes = 10485760;
+
     const upload = (files: File[]) => {
+        console.log('fa');
         const currentFile = files[0];
         if (!currentFile) {
             console.log('no file');
             return;
         }
 
-        const tenMBinBytes = 10485760;
         const label = `${currentFile.size}_${currentFile.type}`;
-        if (currentFile.size > tenMBinBytes) {
-            const message = 'Files bigger than 10MB are not supported at the moment. Sorry for the inconvenience.';
-            toast.error(message, {
-                position: 'top-center',
-                autoClose: 10000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                style: { backgroundColor: '#ff7961' },
-                bodyStyle: { margin: '0 auto' },
-            });
-            ReactGa.event({
-                category: 'BigFileSize',
-                action: 'FileSizeTooBig',
-                label: label,
-            });
-            return;
-        }
 
         setUploadSuccessful(false);
         setUploadInProgress(true);
@@ -116,6 +99,28 @@ const UploadFiles = (): ReactElement => {
         setConnection(newConnection);
     };
 
+    const showFileToBigMessage = (file: File) => {
+        const label = `${file.size}_${file.type}`;
+        console.log('bigger');
+        const message = 'Files bigger than 10MB are not supported at the moment. Sorry for the inconvenience.';
+        toast.error(message, {
+            position: 'top-center',
+            autoClose: 10000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            style: { backgroundColor: '#ff7961' },
+            bodyStyle: { margin: '0 auto' },
+        });
+        ReactGa.event({
+            category: 'BigFileSize',
+            action: 'FileSizeTooBig',
+            label: label,
+        });
+        return;
+    };
+
     useEffect(() => {
         ReactGa.event({
             category: 'PageLoad',
@@ -175,6 +180,11 @@ const UploadFiles = (): ReactElement => {
                     onChange={upload}
                     clearOnUnmount={true}
                     dropzoneProps={dropzoneProps}
+                    maxFileSize={tenMBinBytes}
+                    getDropRejectMessage={(file: File) => {
+                        showFileToBigMessage(file);
+                        return '';
+                    }}
                 />
                 <div className="margin-top1vh">
                     {!uploadInProgress && <p>The maximum accepted file size is 10MB</p>}
