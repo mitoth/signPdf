@@ -64,11 +64,12 @@ const FreeDrawStage = (props: IProps): ReactElement => {
             category: 'PageLoad',
             action: 'FreeDrawStage',
         });
+
         const x = document.getElementById('id1');
         if (x) {
             setDimensions({
-                width: (x as any).offsetWidth * 0.8,
-                height: (x as any).offsetHeight * 0.6,
+                width: (x as any).offsetWidth, // * 0.8,
+                height: (x as any).offsetHeight, // * 0.6,
             });
         } else {
             setDimensions({

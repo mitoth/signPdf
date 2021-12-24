@@ -25,6 +25,14 @@ input[type='file'] {
     font-size: 6vh;
 }
 
+.sub-header-text {
+    color: #002984;
+    margin-bottom: 5vh;
+    margin-top: 1vh;
+    padding-bottom: 2vh;
+    font-size: 3vh;
+}
+
 /* .header-main-text {
     color: #002884;
     margin-bottom: 5%;

@@ -12,7 +12,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { makeStyles } from '@material-ui/core/styles';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import CreateIcon from '@material-ui/icons/Create';
 import AddIcon from '@material-ui/icons/Add';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import UndoIcon from '@material-ui/icons/Undo';
@@ -36,18 +35,22 @@ import SignatureDto from '../dtos/SignatureDto';
 import ReactTouchEvents from 'react-touch-events';
 import { Redirect } from 'react-router-dom';
 import ReactGa from 'react-ga';
-import DrawLine from '../interfaces/DrawLine';
 import { Element, animateScroll as scroll } from 'react-scroll';
 
 interface PageState {
     pages: Page[];
     fileId: string;
     numberOfPages: number;
+    imageBase64: string;
+    signatureHeight: number;
+    signatureWidth: number;
 }
 
 interface IProps {
     location: Location<PageState>;
 }
+
+const customId = 'custom-id-yes';
 
 const Editor = (props: IProps): ReactElement => {
     const [selectedShapeId, setSelectedShapeId] = React.useState<string | undefined>(undefined);
@@ -55,11 +58,11 @@ const Editor = (props: IProps): ReactElement => {
 
     const [downloadPath, setDownloadPath] = React.useState('');
     const [isDownloadInProgress, setIsDownloadInProgress] = React.useState(false);
-    const [addSignaturePressed, setAddSignaturePressed] = React.useState(false);
-    const [imageBase64, setImageBase64] = React.useState<string>('');
-    const [signatureHeight, setSignatureHight] = React.useState<number>();
-    const [signatureWidth, setSignatureWidth] = React.useState<number>();
-    const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(true);
+    const [addSignaturePressed, setAddSignaturePressed] = React.useState(true);
+    const [imageBase64, setImageBase64] = React.useState<string>(props.location.state.imageBase64);
+    const [signatureHeight, setSignatureHight] = React.useState<number>(props.location.state.signatureHeight);
+    const [signatureWidth, setSignatureWidth] = React.useState<number>(props.location.state.signatureWidth);
+    const [easySignWizardOpen, setEasySignWizardOpen] = React.useState(false);
 
     const toastId = React.useRef<ReactText | string>();
     const shapeSelected = React.useRef<boolean>(false);
@@ -72,26 +75,6 @@ const Editor = (props: IProps): ReactElement => {
         showInfoAddSignatureMsg();
         setAddSignaturePressed(true);
         // showAddSignatureToast();
-    };
-
-    const showAddSignatureToast = () => {
-        let addText: JSX.Element = (
-            <div>
-                <Typography variant="h6"> Click where you want to add the signature!</Typography>
-            </div>
-        );
-        if (DeviceType.IsTouchDevice()) {
-            // addText = 'Tap to add the signature! <br>You can scroll before tapping';
-            addText = (
-                <div>
-                    <Typography variant="h6" align="center">
-                        {' '}
-                        Tap where you want to add the signature!
-                    </Typography>
-                </div>
-            );
-        }
-        showToast(addText);
     };
 
     if (!props.location.state) {
@@ -109,6 +92,9 @@ const Editor = (props: IProps): ReactElement => {
     const numberOfPages: number = props.location.state.numberOfPages;
 
     const showToast = (message: JSX.Element) => {
+        if (toastId.current && !toast.isActive(toastId.current)) {
+            return;
+        }
         if (!toastId.current) {
             toastId.current = toast.info(message, {
                 position: 'bottom-center',
@@ -120,6 +106,7 @@ const Editor = (props: IProps): ReactElement => {
                 autoClose: false,
                 style: { backgroundColor: '#ff7961' },
                 bodyStyle: { margin: '0 auto' },
+                toastId: customId,
             });
         } else {
             toast.update(toastId.current, {
@@ -132,6 +119,7 @@ const Editor = (props: IProps): ReactElement => {
                 progress: undefined,
                 style: { backgroundColor: '#ff7961' },
                 bodyStyle: { margin: '0 auto' },
+                toastId: customId,
             });
         }
     };
@@ -237,30 +225,7 @@ const Editor = (props: IProps): ReactElement => {
             );
         }
 
-        if (!toastId.current) {
-            toastId.current = toast.success(infoMessage, {
-                position: 'bottom-center',
-                autoClose: 8000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                style: { backgroundColor: '#ff7961' },
-                bodyStyle: { margin: '0 auto' },
-            });
-        } else {
-            toast.update(toastId.current, {
-                position: 'bottom-center',
-                autoClose: 8000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                style: { backgroundColor: '#ff7961' },
-                bodyStyle: { margin: '0 auto' },
-            });
-        }
+        showToast(infoMessage);
     };
 
     const clickOnPageEvent = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, pageNumber: number) => {
@@ -431,7 +396,7 @@ const Editor = (props: IProps): ReactElement => {
 
     return (
         <>
-            {addSignaturePressed && showAddSignatureToast()}
+            {addSignaturePressed && showInfoAddSignatureMsg()}
             <Backdrop className={classes.backdrop} open={isDownloadInProgress}>
                 <CircularProgress color="inherit" />
             </Backdrop>
