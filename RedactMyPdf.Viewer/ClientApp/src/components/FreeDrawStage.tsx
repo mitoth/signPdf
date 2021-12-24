@@ -22,7 +22,6 @@ const FreeDrawStage = (props: IProps): ReactElement => {
     const handleMouseDown = (e: any) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        e.target.preventDefault();
         setLines([...lines, { points: [pos.x, pos.y] }]);
     };
 
@@ -32,7 +31,6 @@ const FreeDrawStage = (props: IProps): ReactElement => {
             return;
         }
         const stage = e.target.getStage();
-        e.target.preventDefault();
         const point = stage.getPointerPosition();
         const lastLine = lines[lines.length - 1];
         // add point
@@ -67,6 +65,7 @@ const FreeDrawStage = (props: IProps): ReactElement => {
             action: 'FreeDrawStage',
         });
 
+        document.body.style.overflow = 'hidden';
         const x = document.getElementById('id1');
         if (x) {
             setDimensions({

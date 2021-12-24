@@ -58,7 +58,7 @@ const UploadFiles = (): ReactElement => {
         if (!currentFile) return;
 
         window.setTimeout(() => {
-            if (!uploadSuccessful) {
+            if (!uploadSuccessful && signatureSet) {
                 uploadTimeoutExpiredDropzoneSet();
             }
         }, 40000);
