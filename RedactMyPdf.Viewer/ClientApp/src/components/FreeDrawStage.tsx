@@ -78,6 +78,9 @@ const FreeDrawStage = (props: IProps): ReactElement => {
                 height: 100,
             });
         }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, []);
 
     return (
